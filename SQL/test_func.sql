@@ -7,5 +7,14 @@ SELECT insert_user("Eric2", "Schneider2", "CoolGuy", "Pa$$Word2", "Male", DATE("
 
 
 SELECT * FROM USERS;
+SELECT  insert_survey_version("Yes", "Hi there");
+SELECT  insert_survey_version("NO", "Hi there");
 
-call get_surveys();
+SELECT * FROM SURVEY_VERSIONS;
+SELECT insert_survey("Survey", "HI THERE", 1);
+SELECT insert_survey("Survey2", "HI THERE", 1);
+SELECT insert_survey("Surve3", "HI THERE", 1);
+SELECT insert_survey("Surve3ww", "HI THERE", 2);
+
+SELECT * FROM SURVEYS;
+CALL get_surveys;

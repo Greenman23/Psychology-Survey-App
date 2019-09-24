@@ -34,10 +34,15 @@ END
  
  DROP FUNCTION IF EXISTS insert_survey_version;
  DELIMITER //
- CREATE FUNCTION insert_survey_version(survey_version_name_ varchar(60), description_ varchar(144)) RETURNS integer DETERMINISTIC
+ CREATE FUNCTION insert_survey_version(survey_version_name_ varchar(60), description_ varchar(144)) RETURNS bool DETERMINISTIC
  BEGIN
- INSERT INTO SURVEY_VERSIONS (question_version_name, description, creation_time) VALUES (survey_version_name_, description_, NOW());
- RETURN 0;
+ IF ((SELECT COUNT(survey_version_name) FROM SURVEY_VERSIONS WHERE SURVEY_VERSIONS.survey_version_name = survey_version_name_) > 0)
+ THEN
+ RETURN FALSE;
+ ELSE
+ INSERT INTO SURVEY_VERSIONS (survey_version_name, description, creation_time) VALUES (survey_version_name_, description_, NOW());
+ RETURN TRUE;
+ END IF;
  END
  //
  DELIMITER ;
@@ -46,7 +51,7 @@ END
  DELIMITER //
  CREATE FUNCTION insert_survey(survey_name_ varchar(60), survey_description_ varchar(144), survey_version_ int) RETURNS bool DETERMINISTIC
  BEGIN
- IF ((SELECT COUNT(`pk_survey_version_id`) FROM SURVEY_VERSIONS WHERE `pk_survey_version_id` = survey_version_) > 0)
+ IF ((SELECT COUNT(`pk_survey_version_id`) FROM SURVEY_VERSIONS WHERE `pk_survey_version_id` = survey_version_) = 0)
  THEN
  RETURN FALSE;
  ELSE 
@@ -61,8 +66,7 @@ END
  DELIMITER //
  CREATE PROCEDURE get_surveys() 
  BEGIN
- SELECT DISTINCT survey_version, survey_name, description FROM SURVEYS ORDER BY survey_creation_time;
- END
+SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER BY survey_creation_time; END
  //
  DELIMITER ;
  

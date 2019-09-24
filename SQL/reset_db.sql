@@ -31,7 +31,7 @@ PRIMARY KEY(pk_question_version_id)
 
 CREATE TABLE SURVEYS(
 pk_survey_id int NOT NULL AUTO_INCREMENT, 
-survey_name varchar(60) UNIQUE NOT NULL,
+survey_name varchar(60)  NOT NULL,
 description varchar(144) NOT NULL,
 survey_creation_time DATETIME NOT NULL, 
 survey_version int,
