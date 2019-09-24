@@ -13,12 +13,29 @@ age DATE NOT NULL,
 PRIMARY KEY (pk_user_id)
 );
 
+CREATE TABLE SURVEY_VERSIONS(
+pk_survey_version_id int NOT NULL AUTO_INCREMENT,
+survey_version_name varchar(60) UNIQUE,
+description varchar(144),
+creation_time DATETIME,
+PRIMARY KEY(pk_survey_version_id)
+);
+
+CREATE TABLE QUESTION_VERSIONS(
+pk_question_version_id int NOT NULL AUTO_INCREMENT, 
+question_version_name varchar(30) UNIQUE,
+description varchar(144),
+creation_time DATETIME,
+PRIMARY KEY(pk_question_version_id)
+);
+
 CREATE TABLE SURVEYS(
 pk_survey_id int NOT NULL AUTO_INCREMENT, 
-survey_name varchar(60) NOT NULL,
+survey_name varchar(60) UNIQUE NOT NULL,
 description varchar(144) NOT NULL,
-version varchar(30) NOT NULL,
 survey_creation_time DATETIME NOT NULL, 
+survey_version int,
+FOREIGN KEY(survey_version) REFERENCES SURVEY_VERSIONS(pk_survey_version_id),
 PRIMARY KEY(pk_survey_id)
 );
 
@@ -28,6 +45,8 @@ question varchar(512) NOT NULL,
 answers varchar(1024),
 question_type ENUM('MultipleChoice', 'FillInTheBlank', 'TrueFalse', 'Picture', 'Voice'),
 question_creation_time DATETIME NOT NULL,
+question_version int,
+FOREIGN KEY(question_version) REFERENCES QUESTION_VERSIONS(pk_question_version_id),
 PRIMARY KEY(pk_questions_id)
 );
 

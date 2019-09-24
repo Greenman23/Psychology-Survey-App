@@ -7,3 +7,5 @@ SELECT insert_user("Eric2", "Schneider2", "CoolGuy", "Pa$$Word2", "Male", DATE("
 
 
 SELECT * FROM USERS;
+
+call get_surveys();
