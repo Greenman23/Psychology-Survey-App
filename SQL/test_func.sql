@@ -18,3 +18,9 @@ SELECT insert_survey("Surve3ww", "HI THERE", 2);
 
 SELECT * FROM SURVEYS;
 CALL get_surveys;
+
+SELECT insert_question_version("HOW DO YOU DO?", "IT ASKS HOW YOU DO?");
+SELECT insert_question("This is a question", "These are answers", "TrueFalse", 1);
+SELECT insert_question("This is a question", "These are answers again", "TrueFalse", 1);
+SELECT * FROM QUESTION_VERSIONS;
+SELECT get_questions();

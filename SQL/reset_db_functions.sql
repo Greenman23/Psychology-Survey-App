@@ -70,5 +70,43 @@ SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER B
  //
  DELIMITER ;
  
+DROP FUNCTION IF EXISTS insert_question_version;
+ DELIMITER //
+ CREATE FUNCTION insert_question_version(question_version_name_ varchar(60), question_ varchar(144)) RETURNS bool DETERMINISTIC
+ BEGIN
+ IF ((SELECT COUNT(`question_version_name`) FROM QUESTION_VERSIONS WHERE question_version_name = question_version_name_) > 0)
+ THEN
+ RETURN FALSE;
+ ELSE
+ INSERT INTO QUESTION_VERSIONS (question_version_name, description, creation_time) VALUES (question_version_name_, question_, NOW());
+ RETURN TRUE;
+ END IF;
+ END
+ //
+ DELIMITER ;
+ 
+ DROP FUNCTION IF EXISTS insert_question;
+ DELIMITER //
+ CREATE FUNCTION insert_question(question_ varchar(512), answer_ varchar(512), question_type_ ENUM('MultipleChoice', 'FillInTheBlank', 'TrueFalse', 'Picture', 'Voice'), question_version_ int)
+ RETURNS bool
+ BEGIN
+ IF ((SELECT COUNT(`question_version_name`) FROM QUESTION_VERSIONS WHERE `pk_question_version_id` = question_version_) = 0)
+ THEN
+ RETURN FALSE;
+ ELSE
+ INSERT INTO QUESTIONS (question, answers, question_type, question_creation_time, question_version) VALUES (question_, answer_, question_type_, NOW(), question_version_);
+ RETURN TRUE;
+ END IF;
+ END
+ //
+ DELIMITER ;
 
+ DROP PROCEDURE IF EXISTS get_questions;
+ DELIMITER //
+ CREATE PROCEDURE get_questions() 
+ BEGIN
+SELECT question_version, question  FROM SURVEYS GROUP BY question_version ORDER BY question_creation_time;
+ END
+ //
+ DELIMITER ;
  
