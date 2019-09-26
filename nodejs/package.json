@@ -1,0 +1,22 @@
+{
+  "name": "psychology-survey",
+  "version": "1.0.0",
+  "description": "This acts as the backend for our survey app that will be the intermediary between our android application and our database. ",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Greenman23/Psychology-Survey-App.git"
+  },
+  "author": "Julian Lott, Eric Schneider, Aamir Ibrahim",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Greenman23/Psychology-Survey-App/issues"
+  },
+  "homepage": "https://github.com/Greenman23/Psychology-Survey-App#readme",
+  "dependencies": {
+    "mysql": "^2.17.1"
+  }
+}
