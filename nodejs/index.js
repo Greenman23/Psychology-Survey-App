@@ -5,10 +5,21 @@ const fs = require('fs');
 
 function login_verfication_request(Username, Password, connection){
 
-    var verification = 'SELECT verify_user("' + Username + '","' + Password + '");'
+    var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
 
     connection.query(verification, function(error,results,feilds){
         console.log(results)
+    });
+}
+
+function add_user(FirstName, LastName, Username, Password, Gender, BirthDate, connection){
+    var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
+    '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));';
+
+    console.log(new_user);
+
+    connection.query(new_user, function(error,results,feilds){
+        console.log(results);   
     });
 }
 
@@ -24,7 +35,14 @@ var app = http.createServer(function(request, response){
         request.on('end', function(){
             try {
                 var post = JSON.parse(body);
-                console.log(post.Username, post.Password);
+
+                if(post.FirstName != null){
+
+                    console.log(post.FirstName,post.LastName,post.Username, post.Password, post.BirthDate,post.Gender)
+                }
+                else if(post.Username != null){
+                    console.log(post.Username, post.Password);
+                }
 
 
                 //Beggining of DB Portion
@@ -47,6 +65,12 @@ var app = http.createServer(function(request, response){
                     console.log('Connection to the ' + config.name + ' has been made....');
                 });
                 
+                if(post.FirstName != undefined){
+                    var TestDate = "2001-09-11"
+                    console.log(TestDate)
+                    add_user(post.FirstName,post.LastName,post.Username,post.Password,post.Gender,TestDate, connection)
+                }
+
                 if(post.Username != undefined && post.Password != undefined){
                     login_verfication_request(post.Username, post.Password, connection);
                 }
@@ -81,5 +105,5 @@ var app = http.createServer(function(request, response){
 });
 
 
-app.listen(8000);
+app.listen(80);
 console.log("Server is on")
