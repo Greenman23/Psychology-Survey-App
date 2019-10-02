@@ -16,10 +16,60 @@ function add_user(FirstName, LastName, Username, Password, Gender, BirthDate, co
     var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
     '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));';
 
-    console.log(new_user);
-
     connection.query(new_user, function(error,results,feilds){
         console.log(results);   
+    });
+}
+
+
+function insert_survey(SurveyName, SurveyDescription, SurveyVersion, connection){
+
+    var new_survey = 'SELECT insert_survey("' + SurveyName + '","' + SurveyDescription + '","' + SurveyVersion + '");';
+
+    connection.query(new_survey,function(error,results,feilds){
+        console.log(results);
+    });
+}
+
+function insert_survey_version(SurveyVersionName,SurveyDescription,connection){
+    var survey_ver = 'SELECT insert_survey_version("' + SurveyVersionName + '","' + SurveyDescription + '");'
+
+    connection.query(qeustion_ver,function(error,results,feilds){
+        console.log(results);
+    });
+}
+
+function insert_question_version(QuestionName, Question, connection){
+    var qeustion_ver = 'SELECT insert_question_version("' + QuestionName + '","' + Question + '");'
+
+    connection.query(qeustion_ver,function(error,results,feilds){
+        console.log(results);
+    });
+}
+
+function insert_question(Question, Answer, QuestionType, QuestionVersion, connection){
+    var new_question = 'SELECT insert_question("' + Question + '","' + Answer + '","' + QuestionType + '","'  + QuestionVersion +'");';
+
+    connection.query(new_question,function(error,results,feilds){
+        console.log(results);
+    });
+
+}
+
+
+function get_all_surveys(connection){
+    var all_surveys = 'SELECT get_surveys();'
+
+    connection.query(new_question,function(error,results,feilds){
+        console.log(results);
+    });
+}
+
+function get_all_questions(connection){
+    var all_questions = 'SELECT get_questions();';
+
+    connection.query(all_questions,function(error,results,feilds){
+        console.log(results);
     });
 }
 
