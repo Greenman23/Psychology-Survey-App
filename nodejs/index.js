@@ -45,10 +45,11 @@ var app = http.createServer(function(request, response){
                 
                 let connection = mysql.createConnection(conInfo);
                 
-                if(post.FirstName != undefined){
-                    var TestDate = "2001-09-11"
-                    console.log(TestDate)
-                    quary.signup(post.FirstName,post.LastName,post.Username,post.Password,post.Gender,TestDate, connection)
+                if(post.FirstName != undefined, post.LastName != undefined, post.Username != undefined){
+
+                    quary.signup(post.FirstName,post.LastName,post.Username,post.Password,post.Gender,post.BirthDate, connection, function(signup_resp){
+                        sendJSON(response,signup_resp);
+                    });
                 }
 
                 if(post.Username != undefined && post.Password != undefined){

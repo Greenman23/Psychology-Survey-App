@@ -1,6 +1,5 @@
 
 function query(q, connection, callback){
-    console.log(q)
     connection.query(q, function(error,results,[])
     {
         if(error) throw error;
@@ -13,19 +12,12 @@ module.exports  = {
     login: function(Username, Password, connection, callback){
 
         var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
-
-        var qeury_response;
         
         var resp_sql = "";
 
         var auth;
 
         auth = 0;
-       /* connection.query(verification, function(error, results, fields)
-        {
-            if(error) throw error;
-            auth = results;
-        });*/
 
         query(verification, connection, function(error,res){
             if(error) throw error   
@@ -50,13 +42,40 @@ module.exports  = {
         });
     },
 
-    signup: function(FirstName, LastName, Username, Password, Gender, BirthDate, connection){
+    signup: function(FirstName, LastName, Username, Password, Gender, BirthDate, connection, callback){
+
         var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
         '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));';
 
-        connection.query(new_user, function(error,results,feilds){
-            console.log(results);   
+
+        var sql_resp="No Response"
+
+        var auth = 0;
+        
+        query(new_user, connection, function(error,res){
+            if(error) throw error   
+
+            for (let value of Object.values(res[0])) {
+			    auth = value;
+            }
+
+            if(auth == 1){
+                sql_resp = {
+                    "Account Creation" : "Success",
+                }
+            }
+
+            else {
+                sql_resp = {
+                    "Account Creation" : "Failure",
+                    "Reason" : "Username or Password already exist"
+                }
+            }
+
+            callback(sql_resp);
+            
         });
+        
     },
 
 
