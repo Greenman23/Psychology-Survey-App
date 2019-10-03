@@ -24,45 +24,42 @@ class MyApp extends StatelessWidget {
       ]),
     );
 
-
     ButtonTheme mainButtonTheme = ButtonTheme(
       minWidth: 400,
-      height:  50,
+      height: 50,
     );
 
-    Widget buttonOptions = Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: <Widget>[
-        Padding(
-          padding: EdgeInsets.only(
-            bottom: 20
-          ),
-       child: ButtonTheme(
+    Widget getPaddedButton(String buttonText, Function functor) {
+      return Padding(
+        padding: EdgeInsets.only(bottom: 20),
+        child: ButtonTheme(
           minWidth: 400,
-          height:  50,
-        child: RaisedButton(
-
-          child: Text('Login',
-           style: TextStyle(fontSize: 20),
+          height: 50,
+          child: RaisedButton(
+            child: Text(
+              buttonText,
+              style: TextStyle(fontSize: 20),
+            ),
+            splashColor: Colors.red,
+            color: Colors.cyan,
+            onPressed: () {
+              functor();
+            },
           ),
-          splashColor: Colors.red,
-          color: Colors.cyan,
-          onPressed: (){
-          },
         ),
-        ),
-        ),
-        RaisedButton(
-          child: Text('Create Account',
-          style: TextStyle(fontSize: 20),
-    ),
-          splashColor: Colors.red,
-          color: Colors.cyan,
-          onPressed: (){
+      );
+    }
 
-          },
-        ),
-      ],
+    Widget buttonOptions = Container(
+      child: Column(
+        children: <Widget>[
+          getPaddedButton("Login", () {}),
+          getPaddedButton("Create Account", () {}),
+          getPaddedButton("Take Survey", () {}),
+          getPaddedButton("View Metrics", () {}),
+          getPaddedButton("Logout", () {}),
+        ],
+      ),
     );
 
     return MaterialApp(
@@ -71,9 +68,15 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('Pyschological Survey App'),
         ),
-        body: Column(
-          children: [titleSection, Divider(),Center( child:buttonOptions)],
-        ),
+        body: Column(children: [
+          titleSection,
+          Divider(),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [Center(child: buttonOptions)],
+          ),
+        ]),
       ),
     );
   }
