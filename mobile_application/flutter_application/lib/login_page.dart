@@ -18,6 +18,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController myController = new TextEditingController();
+  final TextEditingController myController2 = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -52,6 +53,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _passwordField() {
     return new TextField(
       obscureText: true,
+      controller: myController2,
       decoration: InputDecoration(
           hintText: "Password",
           hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
@@ -73,8 +75,8 @@ class _LoginPageState extends State<LoginPage> {
     String url="http://192.168.1.139:80";
 
     Map map = {
-      'Username' : 'Eric2',
-      'Password' : '123456',
+      'Username' : myController.text,
+      'Password' : myController2.text,
     };
 
     postRequest(url, map);
