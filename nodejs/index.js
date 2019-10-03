@@ -45,14 +45,14 @@ var app = http.createServer(function(request, response){
                 
                 let connection = mysql.createConnection(conInfo);
                 
-                if(post.FirstName != undefined, post.LastName != undefined, post.Username != undefined){
+                if(post.Type == 'signup'){
 
                     quary.signup(post.FirstName,post.LastName,post.Username,post.Password,post.Gender,post.BirthDate, connection, function(signup_resp){
                         sendJSON(response,signup_resp);
                     });
                 }
 
-                if(post.Username != undefined && post.Password != undefined){
+                if(post.Type == 'login'){
                   quary.login(post.Username, post.Password, connection, function(my_response){
                         sendJSON(response,my_response);
                   });
