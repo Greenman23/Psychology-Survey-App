@@ -1,40 +1,18 @@
 
-function createConnection(Connection, QueryString, callback){
-    Connection.connect(function(err) {
-        if(err) throw err;
-
-        makeQuary 
-
-    });
-}
-
-function makeQuary(QueryString){
-       
-    Connection.query(QueryString, function (error, result) {
-        if (error) {
-            callback(error,null)
-        };
-        
-        callback(null,result)
-      });
-}
-
 module.exports  = {
 
-    login: function(Username, Password, connection, callback){
+    login: function(Username, Password, connection){
 
         var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
 
         var resp_sql = "";
 
-        db_query = createConnection(connection,verification);
-
         var auth;
 
         auth = 0;
-
         connection.query(verification, function(error, results, fields)
         {
+            if(error) throw error;
             auth = results;
         });
 

@@ -52,7 +52,7 @@ var app = http.createServer(function(request, response){
                 var dictstring = JSON.stringify(sql_response);
                 response.writeHead(200, {"Content-Type" : "application/json"})
                 response.end(dictstring);
-  
+                connection.end();
             }
             catch(err){
                 console.log(err)
@@ -67,7 +67,6 @@ var app = http.createServer(function(request, response){
         response.end();
     }
 });
-
 
 app.listen(80);
 console.log("Server is on")
