@@ -24,13 +24,14 @@ Future<Map<String, dynamic>> getPost(Map body) async
 void login(Config config)
 {
     Map  map = {
+      'Type': "Login",
       'Username' : config.username,
       'Password' : config.password
     };
 
     getPost(map).then((Map value)  {
-      config.loggedIn = value["loggedIn"];
-      config.hash = value["hash"];
+//      config.loggedIn = value["authentication"];
+//      config.hash = value["hash"];
       print("We got it bois");
     });
 }

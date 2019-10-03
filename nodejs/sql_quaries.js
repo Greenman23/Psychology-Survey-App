@@ -28,13 +28,15 @@ module.exports  = {
             
             if(auth == 1){
                 resp_sql = {
-                    "Authentication" : "Succeded"
+                    "Authentication" : true,
+                    "Hash" : 12345
                 };
             }
     
             else {
                 resp_sql = {
-                    "Authentication" : "Failure"
+                    "Authentication" : false,
+                    "Hash" : 12345
                 };
             }
 
