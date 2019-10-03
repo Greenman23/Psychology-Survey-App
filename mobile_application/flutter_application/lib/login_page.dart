@@ -5,15 +5,23 @@ import 'dart:io';
 
 class LoginPage extends StatefulWidget {
 
+  String text;
+  LoginPage({
+    Key key,
+    this.text = "asdf"
+}) : super (key: key);
+
   @override
   _LoginPageState createState() => _LoginPageState();
 
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final TextEditingController myController = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
+    myController.text = widget.text;
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
@@ -32,7 +40,8 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _userNameField() {
-    return new TextField(
+    return new TextFormField(
+      controller: myController,
       decoration: InputDecoration(
           hintText: "Username",
           hintStyle: TextStyle(color: Colors.grey, fontSize: 12)

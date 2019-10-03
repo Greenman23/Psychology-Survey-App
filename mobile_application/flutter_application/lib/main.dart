@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_application/login_page.dart';
+import 'login_page.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -70,7 +70,9 @@ class _HomePageState extends State<HomePage> {
     void _pushSaved() {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return LoginPage();
+        return LoginPage(
+          text: "Eric bon Eric",
+        );
       }));
     }
 
