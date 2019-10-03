@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  Config config = Config(Text("Username"), Text(""), Text(""), Text(""), false);
+  Config config = Config("Username", "", "", "", false);
   @override
   _HomePageState createState() => _HomePageState();
 }

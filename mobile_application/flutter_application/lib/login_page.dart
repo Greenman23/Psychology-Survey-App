@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'Config.dart';
+import 'Http.dart';
 class LoginPage extends StatefulWidget {
 
   String text;
@@ -19,10 +20,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController myController = new TextEditingController();
-
+  final TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
-    myController.text = widget.config.username.data;
+    myController.text = widget.config.username;
+    passwordController.text = widget.config.password;
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
@@ -43,7 +45,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget _userNameField() {
     return new TextFormField(
       onChanged: (String tex){
-        widget.config.username = Text(tex);
+        widget.config.username = (tex);
       },
       controller: myController,
       decoration: InputDecoration(
@@ -55,6 +57,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordField() {
     return new TextField(
+      onChanged: (String tex){
+        widget.config.password = tex;
+      },
       obscureText: true,
       decoration: InputDecoration(
           hintText: "Password",
@@ -73,15 +78,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginHTTP() {
-
-    String url="http://192.168.1.139:80";
-
-    Map map = {
-      'Username' : 'Eric2',
-      'Password' : '123456',
-    };
-
-    postRequest(url, map);
+login(widget.config);
+//    String url="http://192.168.2.33:80";
+//
+//    Map map = {
+//      'Username' : 'Eric2',
+//      'Password' : '123456',
+//    };
+//
+//    postRequest(url, map);
   }
 
   /*
@@ -96,7 +101,6 @@ class _LoginPageState extends State<LoginPage> {
     r.add(utf8.encode(json.encode(m)));
     HttpClientResponse response = await r.close();
     String reply = await response.transform(utf8.decoder).join();
-    print(reply);
     httpClient.close();
   }
 }
