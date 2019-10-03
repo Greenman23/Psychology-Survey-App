@@ -1,7 +1,7 @@
 
 function createConnection(Connection, QueryString, callback){
     Connection.connect(function(err) {
-        if(error) throw error;
+        if(err) throw err;
 
         makeQuary 
 
@@ -27,13 +27,18 @@ module.exports  = {
 
         var resp_sql = "";
 
-        db_quary = createConnection(connection,verification);
+        db_query = createConnection(connection,verification);
 
         var auth;
 
-        for (let value of Object.values(db_quary[0])) {
-            auth = value;
-        }
+        auth = 0;
+
+        connection.query(verification, function(error, results, fields)
+        {
+            auth = results;
+        });
+
+        
 
         if(auth == 1){
             resp_sql = {
