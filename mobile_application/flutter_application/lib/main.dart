@@ -78,6 +78,8 @@ class _HomePageState extends State<HomePage> {
 
     Widget buttonOptions = Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           getPaddedButton("Login", _pushSaved),
           getPaddedButton("Create Account", () {}),
@@ -97,12 +99,9 @@ class _HomePageState extends State<HomePage> {
         body: Column(children: [
           titleSection,
           Divider(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Center(child: buttonOptions)],
-          ),
-        ]),
+          Expanded(child: Center(child: buttonOptions)),
+        ],
+        ),
       ),
     );
   }
