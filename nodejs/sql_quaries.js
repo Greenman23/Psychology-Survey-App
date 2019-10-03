@@ -1,37 +1,53 @@
 
+function query(q, connection, callback){
+    console.log(q)
+    connection.query(q, function(error,results,[])
+    {
+        if(error) throw error;
+        callback(null,results)
+    });
+}
+
 module.exports  = {
 
-    login: function(Username, Password, connection){
+    login: function(Username, Password, connection, callback){
 
         var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
 
+        var qeury_response;
+        
         var resp_sql = "";
 
         var auth;
 
         auth = 0;
-        connection.query(verification, function(error, results, fields)
+       /* connection.query(verification, function(error, results, fields)
         {
             if(error) throw error;
             auth = results;
-        });
+        });*/
 
-        
-
-        if(auth == 1){
-            resp_sql = {
-                "Authentication" : "Succeded"
-            };
-        }
-
-        else {
-            resp_sql = {
-                "Authentication" : "Failure"
-            };
-        }
-
-        return resp_sql;
+        query(verification, connection, function(error,res){
+            if(error) throw error   
+            
+			for (let value of Object.values(res[0])) {
+			    auth = value;
+            }
+            
+            if(auth == 1){
+                resp_sql = {
+                    "Authentication" : "Succeded"
+                };
+            }
     
+            else {
+                resp_sql = {
+                    "Authentication" : "Failure"
+                };
+            }
+
+            callback(resp_sql)
+        });
     },
 
     signup: function(FirstName, LastName, Username, Password, Gender, BirthDate, connection){

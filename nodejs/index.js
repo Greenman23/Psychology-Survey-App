@@ -12,6 +12,12 @@ const conInfo = {
     database: config.name
 }
 
+function sendJSON(response, msg){
+    var dictstring = JSON.stringify(msg);
+    response.writeHead(200, {"Content-Type" : "application/json"})
+    response.end(dictstring);
+}
+
 var app = http.createServer(function(request, response){ 
 
     var sql_response = "";
@@ -46,12 +52,10 @@ var app = http.createServer(function(request, response){
                 }
 
                 if(post.Username != undefined && post.Password != undefined){
-                  sql_response =  quary.login(post.Username, post.Password, connection);
+                  quary.login(post.Username, post.Password, connection, function(my_response){
+                        sendJSON(response,my_response);
+                  });
                 }
-                
-                var dictstring = JSON.stringify(sql_response);
-                response.writeHead(200, {"Content-Type" : "application/json"})
-                response.end(dictstring);
                 connection.end();
             }
             catch(err){
