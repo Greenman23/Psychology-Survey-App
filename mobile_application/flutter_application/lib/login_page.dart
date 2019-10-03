@@ -2,13 +2,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
-
+import 'Config.dart';
 class LoginPage extends StatefulWidget {
 
   String text;
+  Config config;
   LoginPage({
     Key key,
-    this.text = "asdf"
+   @required this.config,
 }) : super (key: key);
 
   @override
@@ -18,11 +19,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final TextEditingController myController = new TextEditingController();
-  final TextEditingController myController2 = new TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    myController.text = widget.text;
+    myController.text = widget.config.username.data;
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
@@ -42,6 +42,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _userNameField() {
     return new TextFormField(
+      onChanged: (String tex){
+        widget.config.username = Text(tex);
+      },
       controller: myController,
       decoration: InputDecoration(
           hintText: "Username",
@@ -53,7 +56,6 @@ class _LoginPageState extends State<LoginPage> {
   Widget _passwordField() {
     return new TextField(
       obscureText: true,
-      controller: myController2,
       decoration: InputDecoration(
           hintText: "Password",
           hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
@@ -75,8 +77,8 @@ class _LoginPageState extends State<LoginPage> {
     String url="http://192.168.1.139:80";
 
     Map map = {
-      'Username' : myController.text,
-      'Password' : myController2.text,
+      'Username' : 'Eric2',
+      'Password' : '123456',
     };
 
     postRequest(url, map);

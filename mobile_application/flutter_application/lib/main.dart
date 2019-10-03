@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'login_page.dart';
+import 'Config.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -22,6 +23,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
+  Config config = Config(Text("Username"), Text(""), Text(""), Text(""), false);
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -71,13 +73,15 @@ class _HomePageState extends State<HomePage> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
         return LoginPage(
-          text: "Eric bon Eric",
+          config: widget.config,
         );
       }));
     }
 
     Widget buttonOptions = Container(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           getPaddedButton("Login", _pushSaved),
           getPaddedButton("Create Account", () {}),
@@ -97,12 +101,9 @@ class _HomePageState extends State<HomePage> {
         body: Column(children: [
           titleSection,
           Divider(),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [Center(child: buttonOptions)],
-          ),
-        ]),
+          Expanded(child: Center(child: buttonOptions)),
+        ],
+        ),
       ),
     );
   }
