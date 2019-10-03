@@ -78,15 +78,15 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _loginHTTP() {
-login(widget.config);
-//    String url="http://192.168.2.33:80";
-//
-//    Map map = {
-//      'Username' : 'Eric2',
-//      'Password' : '123456',
-//    };
-//
-//    postRequest(url, map);
+//    login(widget.config);
+    String url="http://192.168.2.33:80";
+
+    Map map = {
+      'Username' : 'Eric2',
+      'Password' : '123456',
+    };
+
+    postRequest(url, map);
   }
 
   /*
