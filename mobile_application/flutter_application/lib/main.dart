@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_app2/login_page.dart';
+import 'package:flutter_application/login_page.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;

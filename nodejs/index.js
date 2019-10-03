@@ -81,17 +81,19 @@ var app = http.createServer(function(request, response){
         request.on('data', function(data){
             body+= data;
         })
-        
+
         request.on('end', function(){
             try {
-                var post = JSON.parse(body);
+                if('application/json' === request.headers['content-type']){
+                    var post = JSON.parse(body);
+                    console.log(post)
+                    if(post.FirstName != null){
 
-                if(post.FirstName != null){
-
-                    console.log(post.FirstName,post.LastName,post.Username, post.Password, post.BirthDate,post.Gender)
-                }
-                else if(post.Username != null){
-                    console.log(post.Username, post.Password);
+                        console.log(post.FirstName,post.LastName,post.Username, post.Password, post.BirthDate,post.Gender)
+                    }
+                    else if(post.Username != null){
+                        console.log(post.Username, post.Password);
+                    }
                 }
 
 
@@ -139,7 +141,7 @@ var app = http.createServer(function(request, response){
                 }
                 console.log(dict);
                 var dictstring = JSON.stringify(dict);
-                response.writeHead(200, {"Content-Type" : "applocatiom/json"})
+                response.writeHead(200, {"Content-Type" : "application/json"})
                 response.end(dictstring);
             }
             catch(err){
