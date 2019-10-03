@@ -33,14 +33,15 @@ class _LoginPageState extends State<LoginPage> {
   Widget _userNameField() {
     return new TextField(
       decoration: InputDecoration(
-        hintText: "Username",
-        hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
+          hintText: "Username",
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
       ),
     );
   }
 
   Widget _passwordField() {
     return new TextField(
+      obscureText: true,
       decoration: InputDecoration(
           hintText: "Password",
           hintStyle: TextStyle(color: Colors.grey, fontSize: 12)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_app2/login_page.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -9,16 +10,12 @@ void main() {
   runApp(MyApp());
 }
 
-
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-
     return MaterialApp(
       title: '',
-      theme: ThemeData(
-          primaryColor: Colors.blue
-      ),
+      theme: ThemeData(primaryColor: Colors.blue),
       home: HomePage(),
     );
   }
@@ -70,10 +67,17 @@ class _HomePageState extends State<HomePage> {
       );
     }
 
+    void _pushSaved() {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return LoginPage();
+      }));
+    }
+
     Widget buttonOptions = Container(
       child: Column(
         children: <Widget>[
-          getPaddedButton("Login", () {}),
+          getPaddedButton("Login", _pushSaved),
           getPaddedButton("Create Account", () {}),
           getPaddedButton("Take Survey", () {}),
           getPaddedButton("View Metrics", () {}),
@@ -101,4 +105,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-
