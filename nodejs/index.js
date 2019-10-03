@@ -76,7 +76,7 @@ function get_all_questions(connection){
 var app = http.createServer(function(request, response){ 
 
     if(request.method == 'POST') {
-        console.log("I got the data!!!")
+        console.log("Post Request Received from ip address=>" + request.connection.remoteAddress + " processing request....")
         var body = '';
         request.on('data', function(data){
             body+= data;
@@ -152,7 +152,9 @@ var app = http.createServer(function(request, response){
     }
 
     else {
-        console.log("Something is going wrong!")
+        console.log("A non-POST request was recieved")
+        response.write("Sorry this webserver only receives post request. The website will be developed later.")
+        response.end();
     }
 });
 
