@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'Config.dart';
 import 'Http.dart';
-
+import 'primary_widgets.dart';
 
 class LoginPage extends StatefulWidget {
 
@@ -19,14 +19,24 @@ class LoginPage extends StatefulWidget {
 
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController myController = new TextEditingController();
-  final TextEditingController passwordController = new TextEditingController();
-  @override
-  Widget build(BuildContext context) {
 
+class _LoginPageState extends State<LoginPage> {
+  TextEditingController myController ;
+  TextEditingController passwordController;
+  Color outComeColor;
+  @override
+  void initState()
+  {
+    super.initState();
+    myController = new TextEditingController(text: "");
+    passwordController = new TextEditingController(text: "");
     myController.text = widget.config.username;
     passwordController.text = widget.config.password;
+    outComeColor = Colors.black;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
@@ -35,79 +45,34 @@ class _LoginPageState extends State<LoginPage> {
         child: ListView(
           padding: EdgeInsets.symmetric(horizontal: 24.0),
           children: <Widget>[
-            _userNameField(),
-            _passwordField(),
-            _submitButton(),
-            Text(widget.config.loginState),
+            getTextFormField(myController, "Username", (String tex){widget.config.username = tex;}),
+            getTextFormField(passwordController, "Password", (String tex){widget.config.password = tex;}, isPassword: true),
+            getPaddedButton("Login", _loginHTTP),
+            getText(widget.config.loginState, color: outComeColor, fontSize: 16),
           ],
         ),
       ),
     );
   }
 
-  Widget _userNameField() {
-    return new TextFormField(
-      onChanged: (String tex){
-        widget.config.username = (tex);
-      },
-      controller: myController,
-      decoration: InputDecoration(
-          hintText: "Username",
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
-      ),
-    );
-  }
-
-  Widget _passwordField() {
-    return new TextField(
-      controller: passwordController,
-      onChanged: (String tex){
-        widget.config.password = tex;
-      },
-      obscureText: true,
-      decoration: InputDecoration(
-          hintText: "Password",
-          hintStyle: TextStyle(color: Colors.grey, fontSize: 12)
-      ),
-    );
-  }
-
-  Widget _submitButton(){
-    return new RaisedButton(
-      child: Text("Login"),
-      onPressed:() => _loginHTTP(),
-      color: Colors.grey,
-      textColor: Colors.black,
-    );
-  }
-
-  void updateText(String text)
+  void updateText(String text, Color color)
   {
     widget.config.loginState = text;
+    outComeColor = color;
     setState(() {
-
     });
   }
 
 
-  void _loginHTTP() {
+  void _loginHTTP()
+  {
     login(widget.config, updateText);
-//    String url="http://192.168.2.33:80";
-//
-//    Map map = {
-//      'Username' : 'Eric2',
-//      'Password' : '123456',
-//    };
-//
-//    postRequest(url, map);
   }
 
-  /*
-  * This where we learned how to write post methods
-  * Link: https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
-  * */
-
-  void postRequest(String url, Map m) async {
+  // This was an example from stack overflow
+  //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
+  void postRequest(String url, Map m) async
+  {
     HttpClient httpClient = new HttpClient();
     HttpClientRequest r = await httpClient.postUrl(Uri.parse(url));
     r.headers.set('content-type', 'application/json');

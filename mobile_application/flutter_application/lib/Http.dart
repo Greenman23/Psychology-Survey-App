@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'dart:io';
 import 'Config.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-
+// This should be moved somewhere else at some point
 final String URL = "http://192.168.2.33:80";
 
-
+// We learned how to create post requests here
+//https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body) async
 {
   HttpClient httpClient = new HttpClient();
@@ -21,7 +23,7 @@ Future<Map<String, dynamic>> getPost(Map body) async
   return jsonReply;
 }
 
-void login(Config config, Function(String) functor)
+void login(Config config, Function(String, Color) functor)
 {
     Map  map = {
       'Type': "login",
@@ -30,16 +32,16 @@ void login(Config config, Function(String) functor)
     };
 
     getPost(map).then((Map value)  {
-      config.loggedIn = value["authentication"];
-      config.hash = value["hash"];
+      config.loggedIn = value["Authentication"];
+      config.hash = value["Hash"];
       print("We got it bois");
       if(config.loggedIn == true)
         {
-          functor("We did it bois");
+          functor("Login Successful", Colors.blue);
         }
       else
         {
-          functor("We did not do it my bois");
+          functor("Login not Successful", Colors.red);
         }
 
     });
