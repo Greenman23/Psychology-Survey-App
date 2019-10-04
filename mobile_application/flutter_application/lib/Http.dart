@@ -21,17 +21,26 @@ Future<Map<String, dynamic>> getPost(Map body) async
   return jsonReply;
 }
 
-void login(Config config)
+void login(Config config, Function(String) functor)
 {
     Map  map = {
-      'Type': "Login",
+      'Type': "login",
       'Username' : config.username,
       'Password' : config.password
     };
 
     getPost(map).then((Map value)  {
-//      config.loggedIn = value["authentication"];
-//      config.hash = value["hash"];
+      config.loggedIn = value["authentication"];
+      config.hash = value["hash"];
       print("We got it bois");
+      if(config.loggedIn == true)
+        {
+          functor("We did it bois");
+        }
+      else
+        {
+          functor("We did not do it my bois");
+        }
+
     });
 }

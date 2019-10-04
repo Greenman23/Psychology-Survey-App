@@ -4,9 +4,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'Config.dart';
 import 'Http.dart';
+
+
 class LoginPage extends StatefulWidget {
 
-  String text;
   Config config;
   LoginPage({
     Key key,
@@ -23,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController passwordController = new TextEditingController();
   @override
   Widget build(BuildContext context) {
+
     myController.text = widget.config.username;
     passwordController.text = widget.config.password;
     return Scaffold(
@@ -36,6 +38,7 @@ class _LoginPageState extends State<LoginPage> {
             _userNameField(),
             _passwordField(),
             _submitButton(),
+            Text(widget.config.loginState),
           ],
         ),
       ),
@@ -57,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _passwordField() {
     return new TextField(
+      controller: passwordController,
       onChanged: (String tex){
         widget.config.password = tex;
       },
@@ -77,16 +81,25 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  void updateText(String text)
+  {
+    widget.config.loginState = text;
+    setState(() {
+
+    });
+  }
+
+
   void _loginHTTP() {
-//    login(widget.config);
-    String url="http://192.168.2.33:80";
-
-    Map map = {
-      'Username' : 'Eric2',
-      'Password' : '123456',
-    };
-
-    postRequest(url, map);
+    login(widget.config, updateText);
+//    String url="http://192.168.2.33:80";
+//
+//    Map map = {
+//      'Username' : 'Eric2',
+//      'Password' : '123456',
+//    };
+//
+//    postRequest(url, map);
   }
 
   /*

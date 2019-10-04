@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  Config config = Config("Username", "", "", "", false);
+  Config config = Config("Username", "", "", "", false, "");
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -31,6 +31,8 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    widget.config.loginState = "Try to login";
+
     Widget titleSection = Container(
       child: Row(children: [
         Expanded(
@@ -72,8 +74,8 @@ class _HomePageState extends State<HomePage> {
     void _pushSaved() {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-        return LoginPage(
-          config: widget.config,
+            return LoginPage(
+              config: widget.config,
         );
       }));
     }
