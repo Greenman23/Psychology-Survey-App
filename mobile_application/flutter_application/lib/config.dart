@@ -8,6 +8,8 @@ class Config {
   String actualFirstName;
   String actualLastName;
   String loginState;
+  String gender;
+  DateTime dob;
   bool rememberPassword;
   bool loggedIn;
   int hash;

@@ -46,3 +46,31 @@ void login(Config config, Function(String, Color) functor)
 
     });
 }
+
+void signUp(Config config, Function(bool, String, Color) functor)
+{
+  Map map = {
+    "Type" : "signup",
+    "FirstName" : config.actualFirstName,
+    "LastName" : config.actualLastName,
+    "Username" : config.username,
+    "Password" : config.password,
+    "Gender" : config.gender,
+    "BirthDate" : "1997-01-12"
+  };
+
+  getPost(map).then((Map value){
+    bool success = value["Account_Creation"];
+    if(success)
+      {
+        functor(success, "Account Creation Successful!", Colors.black);
+      }
+    else
+      {
+        functor(success, "Account Creaion Failed " , Colors.red);
+      }
+  });
+
+
+}
+

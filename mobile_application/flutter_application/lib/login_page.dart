@@ -41,16 +41,14 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text("Login"),
       ),
-      body: SafeArea(
-        child: ListView(
-          padding: EdgeInsets.symmetric(horizontal: 24.0),
+      body: Column(
+
           children: <Widget>[
             getTextFormField(myController, "Username", (String tex){widget.config.username = tex;}),
             getTextFormField(passwordController, "Password", (String tex){widget.config.password = tex;}, isPassword: true),
             getPaddedButton("Login", _loginHTTP),
             getText(widget.config.loginState, color: outComeColor, fontSize: 16),
           ],
-        ),
       ),
     );
   }
@@ -69,16 +67,4 @@ class _LoginPageState extends State<LoginPage> {
     login(widget.config, updateText);
   }
 
-  // This was an example from stack overflow
-  //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
-  void postRequest(String url, Map m) async
-  {
-    HttpClient httpClient = new HttpClient();
-    HttpClientRequest r = await httpClient.postUrl(Uri.parse(url));
-    r.headers.set('content-type', 'application/json');
-    r.add(utf8.encode(json.encode(m)));
-    HttpClientResponse response = await r.close();
-    String reply = await response.transform(utf8.decoder).join();
-    httpClient.close();
-  }
 }

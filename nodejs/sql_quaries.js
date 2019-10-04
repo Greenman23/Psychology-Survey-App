@@ -21,9 +21,10 @@ module.exports  = {
 
         query(verification, connection, function(error,res){
             if(error) throw error   
-            
+            console.log(res);
 			for (let value of Object.values(res[0])) {
-			    auth = value;
+                auth = value;
+                console.log(auth);
             }
             
             if(auth == 1){
@@ -53,7 +54,6 @@ module.exports  = {
         var sql_resp="No Response"
 
         var auth = 0;
-        
         query(new_user, connection, function(error,res){
             if(error) throw error   
 
@@ -63,17 +63,17 @@ module.exports  = {
 
             if(auth == 1){
                 sql_resp = {
-                    "Account Creation" : "Success",
+                    "Account_Creation" : true,
                 }
             }
 
             else {
                 sql_resp = {
-                    "Account Creation" : "Failure",
+                    "Account_Creation" : false,
                     "Reason" : "Username or Password already exist"
                 }
             }
-
+            console.log(sql_resp);
             callback(sql_resp);
             
         });

@@ -3,6 +3,8 @@ import 'package:flutter/rendering.dart';
 import 'login_page.dart';
 import 'Config.dart';
 import 'primary_widgets.dart';
+import 'create_page.dart';
+
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
 
@@ -24,6 +26,7 @@ class MyApp extends StatelessWidget {
 
 class HomePage extends StatefulWidget {
   final Config config = Config("Username", "", "", "", false, "");
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -50,13 +53,20 @@ class _HomePageState extends State<HomePage> {
       height: 50,
     );
 
-
-
     void _pushSaved() {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
-            return LoginPage(
-              config: widget.config,
+        return LoginPage(
+          config: widget.config,
+        );
+      }));
+    }
+
+    void _createAccount() {
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return CreatePage(
+          outerConfig: widget.config,
         );
       }));
     }
@@ -67,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           getPaddedButton("Login", _pushSaved),
-          getPaddedButton("Create Account", () {}),
+          getPaddedButton("Create Account", _createAccount),
           getPaddedButton("Take Survey", () {}),
           getPaddedButton("View Metrics", () {}),
           getPaddedButton("Logout", () {}),
@@ -81,11 +91,12 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
           title: Text('Pyschological Survey App'),
         ),
-        body: Column(children: [
-          titleSection,
-          Divider(),
-          Expanded(child: Center(child: buttonOptions)),
-        ],
+        body: Column(
+          children: [
+            titleSection,
+            Divider(),
+            Expanded(child: Center(child: buttonOptions)),
+          ],
         ),
       ),
     );
