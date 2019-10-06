@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final Config config = Config("Username", "", "", "", false, "");
+  final Config config = Config("", "", "", "", false, "");
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -77,7 +77,7 @@ class _HomePageState extends State<HomePage> {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: <Widget>[
           getPaddedButton("Login", _pushSaved),
-          getPaddedButton("Create Account33", _createAccount),
+          getPaddedButton("Create Account", _createAccount),
           getPaddedButton("Take Survey", () {}),
           getPaddedButton("View Metrics", () {}),
           getPaddedButton("Logout", () {}),
