@@ -7,6 +7,7 @@ import 'Http.dart';
 import 'primary_widgets.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'profile_pic.dart';
+import 'package:intl/intl.dart';
 
 class CreatePage extends StatefulWidget {
   Config outerConfig;
@@ -142,11 +143,7 @@ class CreatePageState extends State<CreatePage> {
             update();
           }, isPassword: true),
           dropDown(),
-          getText(innerConfig.dob.month.toString() +
-              "/" +
-              innerConfig.dob.day.toString() +
-              "/" +
-              innerConfig.dob.year.toString()),
+          getText(DateFormat("MM/dd/yyyy").format(innerConfig.dob)),
           getPaddedButton(
             "Set Date of birth",
             () {

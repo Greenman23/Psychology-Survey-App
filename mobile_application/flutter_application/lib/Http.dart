@@ -3,9 +3,10 @@ import 'dart:io';
 import 'Config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 // This should be moved somewhere else at some point
-final String URL = "http://192.168.2.33:80";
+final String URL = "http://10.200.100.40:80";
 
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
@@ -58,7 +59,7 @@ void signUp(Config config, Function(bool, String, Color) functor)
     "Username" : config.username,
     "Password" : config.password,
     "Gender" : config.gender,
-    "BirthDate" : "1997-01-12"
+    "BirthDate" : DateFormat("yyyy-MM-dd").format(config.dob)
   };
 
   if(config.is_empty_or_null())
@@ -78,6 +79,7 @@ void signUp(Config config, Function(bool, String, Color) functor)
     if(success)
       {
         functor(success, "Account Creation Successful!", Colors.black);
+
       }
     else
       {
