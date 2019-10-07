@@ -6,9 +6,11 @@ import 'Config.dart';
 import 'Http.dart';
 import 'primary_widgets.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'profile_pic.dart';
 
 class CreatePage extends StatefulWidget {
   Config outerConfig;
+
   CreatePage({Key key, @required this.outerConfig}) : super(key: key);
 
   @override
@@ -23,6 +25,7 @@ class CreatePageState extends State<CreatePage> {
   String passwordsMatch;
   String gender;
   Config innerConfig;
+
   @override
   void initState() {
     firstName = new TextEditingController(text: "");
@@ -34,13 +37,12 @@ class CreatePageState extends State<CreatePage> {
     createAccountResult = "";
     gender = "Male";
     passwordMatchColor = Colors.black;
-    innerConfig = new Config("", "", "", "", false, "");
+    innerConfig = new Config("", "", "", "", false, false);
     innerConfig.dob = DateTime.now();
     innerConfig.gender = "Male";
     passwordsMatch = "";
 
     super.initState();
-
   }
 
   @override
@@ -97,14 +99,17 @@ class CreatePageState extends State<CreatePage> {
       signUp(innerConfig, (bool success, String str, Color col) {
         createAccountResult = str;
         createAccountColor = col;
-        if(success)
-          {
-            widget.outerConfig.username = innerConfig.username;
-            widget.outerConfig.password = innerConfig.password;
-          }
+        if (success) {
+          widget.outerConfig.username = innerConfig.username;
+          widget.outerConfig.password = innerConfig.password;
+          Navigator.of(context).push(MaterialPageRoute(
+              settings: RouteSettings(name: "/profilepicture"),
+              builder: (BuildContext context) {
+                return ProfilePic(config: widget.outerConfig);
+              }));
+        }
         update();
       });
-
     }
 
     return Scaffold(
@@ -150,9 +155,15 @@ class CreatePageState extends State<CreatePage> {
             },
           ),
           getPaddedButton("Create ", () {
-            _signupHttp();
+            if (password.text != passwordVerify.text) {
+              createAccountResult = "Passwords do not match";
+              createAccountColor = Colors.red;
+              update();
+            } else {
+              _signupHttp();
+            }
           }),
-          getText(createAccountResult, color:createAccountColor),
+          getText(createAccountResult, color: createAccountColor),
         ],
       ),
     );

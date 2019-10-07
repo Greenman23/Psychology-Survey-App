@@ -4,9 +4,9 @@ import 'package:flutter/rendering.dart';
 Widget getPaddedButton(String buttonText, Function functor) {
   Padding pad;
   pad = Padding(
-    padding: EdgeInsets.only(top: 10, bottom: 20, left: 30, right: 30),
+    padding: EdgeInsets.only(top: 10, bottom: 20, left: 20, right: 30),
     child: ButtonTheme(
-      minWidth: 400,
+      minWidth: 25,
       height: 50,
       child: RaisedButton(
         child: Text(
@@ -24,6 +24,8 @@ Widget getPaddedButton(String buttonText, Function functor) {
 
   return pad;
 }
+
+
 
 Widget getTextFormField(TextEditingController controller, String hint,
    Function(String) functor, {bool isPassword: false, Color color : Colors.black}) {

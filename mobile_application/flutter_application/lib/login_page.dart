@@ -24,6 +24,7 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController myController ;
   TextEditingController passwordController;
   Color outComeColor;
+  String loginState;
   @override
   void initState()
   {
@@ -33,6 +34,7 @@ class _LoginPageState extends State<LoginPage> {
     myController.text = widget.config.username;
     passwordController.text = widget.config.password;
     outComeColor = Colors.black;
+    loginState = "Try to login";
   }
 
   @override
@@ -41,13 +43,13 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         title: Text("Login"),
       ),
-      body: Column(
+      body: ListView(
 
           children: <Widget>[
             getTextFormField(myController, "Username", (String tex){widget.config.username = tex;}),
             getTextFormField(passwordController, "Password", (String tex){widget.config.password = tex;}, isPassword: true),
             getPaddedButton("Login", _loginHTTP),
-            getText(widget.config.loginState, color: outComeColor, fontSize: 16),
+            getText(loginState, color: outComeColor, fontSize: 16),
           ],
       ),
     );
@@ -55,7 +57,7 @@ class _LoginPageState extends State<LoginPage> {
 
   void updateText(String text, Color color)
   {
-    widget.config.loginState = text;
+    loginState = text;
     outComeColor = color;
     setState(() {
     });

@@ -38,10 +38,12 @@ void login(Config config, Function(String, Color) functor)
       if(config.loggedIn == true)
         {
           functor("Login Successful", Colors.blue);
+          config.loggedIn = true;
         }
       else
         {
           functor("Login not Successful", Colors.red);
+          config.loggedIn = false;
         }
 
     });
@@ -58,6 +60,18 @@ void signUp(Config config, Function(bool, String, Color) functor)
     "Gender" : config.gender,
     "BirthDate" : "1997-01-12"
   };
+
+  if(config.is_empty_or_null())
+    {
+      functor(false, "You have blank fields!", Colors.red);
+      return;
+    }
+
+  if(config.has_spaces())
+    {
+      functor(false, "Spaces are not allowed in fields!", Colors.red);
+      return;
+    }
 
   getPost(map).then((Map value){
     bool success = value["Account_Creation"];

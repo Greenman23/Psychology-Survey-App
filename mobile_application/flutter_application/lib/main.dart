@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_app2/profile_pic.dart';
 import 'login_page.dart';
 import 'Config.dart';
 import 'primary_widgets.dart';
@@ -17,15 +18,18 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '',
+      title: 'Home',
       theme: ThemeData(primaryColor: Colors.blue),
       home: HomePage(),
+      routes: <String, WidgetBuilder>{
+        '/create' : (context) => CreatePage(),
+      },
     );
   }
 }
 
 class HomePage extends StatefulWidget {
-  final Config config = Config("", "", "", "", false, "");
+  final Config config = Config("", "", "", "", false, false);
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -34,7 +38,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-    widget.config.loginState = "Try to login";
 
     Widget titleSection = Container(
       child: Row(children: [
@@ -55,47 +58,103 @@ class _HomePageState extends State<HomePage> {
 
     void _pushSaved() {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
+          .push(MaterialPageRoute(settings: RouteSettings(name: "/login"), builder: (BuildContext context) {
         return LoginPage(
           config: widget.config,
         );
       }));
     }
 
+
     void _createAccount() {
       Navigator.of(context)
-          .push(MaterialPageRoute(builder: (BuildContext context) {
+          .push(MaterialPageRoute(settings: RouteSettings(name: "/create"), builder: (BuildContext context) {
         return CreatePage(
           outerConfig: widget.config,
         );
       }));
     }
 
-    Widget buttonOptions = Container(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: <Widget>[
-          getPaddedButton("Login", _pushSaved),
-          getPaddedButton("Create Account", _createAccount),
-          getPaddedButton("Take Survey", () {}),
-          getPaddedButton("View Metrics", () {}),
-          getPaddedButton("Logout", () {}),
-        ],
-      ),
-    );
+
+    void _changePicture() {
+      Navigator.of(context)
+          .push(MaterialPageRoute(settings: RouteSettings(name: "/profilepic"), builder: (BuildContext context) {
+        return ProfilePic(
+          config: widget.config,
+        );
+      }));
+    }
+
+
+    void update() {
+      setState(() {});
+    }
+
+    Widget getMenu() {
+      if (!widget.config.loggedIn) {
+        return Container(
+          width: 400,
+          child: ListView(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            //crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              getPaddedButton("Login", _pushSaved),
+              getPaddedButton("Create Account", _createAccount),
+              getPaddedButton("Take Survey", () {}),
+              getPaddedButton("Have Conversation", () {}),
+            ],
+          ),
+        );
+      } else {
+        return Container(
+            width:  400,
+          child: ListView(
+            //mainAxisAlignment: MainAxisAlignment.center,
+            // crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              getPaddedButton("Take Survey", () {}),
+              getPaddedButton("Have Conversation", () {}),
+              getPaddedButton("View Metrics", () {}),
+              getPaddedButton("Change Profile Picture", _changePicture),
+              getPaddedButton("Logout", () {
+                this.widget.config.clear();
+                update();
+              }),
+            ],
+          ),
+        );
+      }
+    }
+
+    Widget getImage() {
+      double width = 100;
+      if (widget.config.img != null) {
+        return Image(
+          image: widget.config.img.image,
+          width: width,
+        );
+      } else {
+        return Text("");
+      }
+    }
 
     return MaterialApp(
-      title: 'Flutter layout demo',
+      title: 'Home',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Pyschological Survey App'),
-        ),
+            title: Row(
+          children: <Widget>[
+            Text('Pyschological Survey App'),
+            Padding(
+              padding: EdgeInsets.only(left: 35),
+              child: getImage(),
+            ),
+          ],
+        )),
         body: Column(
           children: [
-            titleSection,
             Divider(),
-            Expanded(child: Center(child: buttonOptions)),
+            Expanded(child: getMenu()),
           ],
         ),
       ),
