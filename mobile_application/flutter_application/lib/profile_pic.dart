@@ -12,19 +12,19 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
 final int CAMERA_ON = 0;
-final int NO_CAMERA = 1; 
+final int NO_CAMERA = 1;
 final int CAMERA_USED = 2;
 
-class ProfilePic extends StatefulWidget
-{
+class ProfilePic extends StatefulWidget {
   final Config config;
-  ProfilePic({Key key, @required this.config}) : super(key:key);
+
+  ProfilePic({Key key, @required this.config}) : super(key: key);
+
   @override
   State<StatefulWidget> createState() => ProfilePicState();
 }
 
-class ProfilePicState extends State<ProfilePic>
-{
+class ProfilePicState extends State<ProfilePic> {
   Image currentImage;
   CameraController controller;
   List<CameraDescription> allCameras;
@@ -32,8 +32,8 @@ class ProfilePicState extends State<ProfilePic>
   String startPath;
   String path;
   var thing;
-  void activateCams() async
-  {
+
+  void activateCams() async {
     allCameras = await availableCameras();
     controller = CameraController(allCameras[1], ResolutionPreset.low);
     controller.initialize().then((_) {
@@ -42,8 +42,7 @@ class ProfilePicState extends State<ProfilePic>
         update();
       }
     });
-    await getTemporaryDirectory().then((dir){
-
+    await getTemporaryDirectory().then((dir) {
       startPath = dir.path;
       path = join(dir.path, DateTime.now().toIso8601String() + ".jpg");
       File(path).delete();
@@ -51,85 +50,81 @@ class ProfilePicState extends State<ProfilePic>
   }
 
   @override
-  void initState()
-  {
+  void initState() {
     cameraState = NO_CAMERA;
     activateCams();
     super.initState();
   }
 
-  void update() => setState((){});
+  void update() => setState(() {});
 
-Widget getView()
-{
-  if(cameraState == CAMERA_ON)
-    {
-      return Column(
+  Widget getView() {
+    if (cameraState == CAMERA_ON) {
+      return Stack(
         children: <Widget>[
-          getText("Take a picture"),
-           Expanded(child: CameraPreview(controller)),
-          getPaddedButton("Take a picture", ()
-          {
-              controller.takePicture(path).then((err){
-              cameraState = CAMERA_USED;
-              update();
-            });
-          }),
+          CameraPreview(controller),
+//          getText("Take a picture"),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: getPaddedButton(
+              "",
+              () {
+                controller.takePicture(path).then((err) {
+                  cameraState = CAMERA_USED;
+                  update();
+                });
+              },
+              isCircle: true,
+            ),
+          ),
+
+          Align(
+            alignment: Alignment.topLeft,
+            child: getPaddedButton("Skip", ((){
+              Navigator.popUntil(this.context, ModalRoute.withName("/"));
+            })),
+          ),
         ],
       );
-    }
-
-  else if(cameraState == NO_CAMERA)
-    {
+    } else if (cameraState == NO_CAMERA) {
       return Column(
         children: <Widget>[
           getText("Camera Loading..."),
-          getPaddedButton("Skip", (){}),
+          getPaddedButton("Skip", () {}),
         ],
       );
-    }
-  
-  else if(cameraState == CAMERA_USED)
-
+    } else if (cameraState == CAMERA_USED)
       currentImage = Image.file((File(path)));
-       widget.config.img = currentImage;
-      return Column(
-        children: <Widget>[
-          getText("Take a picture"),
-          Expanded(child: currentImage),
-          Row(
-            children: <Widget>[
-              getPaddedButton("Take another picture", (){
-                File(path).delete().then((err)
-                {
-                  path = join(startPath, DateTime.now().toIso8601String() + ".jpg");
-                  cameraState = CAMERA_ON;
-                  currentImage = null;
-                  widget.config.img = null;
-                  update();
-                });
-              }),
+    widget.config.img = currentImage;
+    return Column(
+      children: <Widget>[
+        getText("Take a picture"),
+        Expanded(child: currentImage),
+        Row(
+          children: <Widget>[
+            getPaddedButton("Take another picture", () {
+              File(path).delete().then((err) {
+                path =
+                    join(startPath, DateTime.now().toIso8601String() + ".jpg");
+                cameraState = CAMERA_ON;
+                currentImage = null;
+                widget.config.img = null;
+                update();
+              });
+            }),
+            getPaddedButton("Finish", () {
+              Navigator.popUntil(this.context, ModalRoute.withName("/"));
+            }),
+          ],
+        ),
+      ],
+    );
+  }
 
-              getPaddedButton("Finish", (){
-                Navigator.popUntil(this.context, ModalRoute.withName("/"));
-              }),
-            ],
-          ),
-
-        ],
-      );
-}
-
-
-Widget build(BuildContext)
-{
-  return Scaffold(
-    appBar: AppBar(
-      title: Text("Profile Picture")
-    ),
-    body:
-    getView(),
-
-  );
-}
+  Widget build(BuildContext) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Profile Picture")),
+      body: getView(),
+    );
+  }
 }

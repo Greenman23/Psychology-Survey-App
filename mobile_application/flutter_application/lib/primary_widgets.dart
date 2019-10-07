@@ -1,13 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-Widget getPaddedButton(String buttonText, Function functor) {
+final ShapeBorder sh = Border();
+
+Widget getPaddedButton(String buttonText, Function functor, {bool isCircle: false}) {
+  ShapeBorder sh;
+  if(isCircle)
+    {
+      sh = CircleBorder();
+    }
+  else
+    {
+      sh = BeveledRectangleBorder();
+    }
   Padding pad;
   pad = Padding(
     padding: EdgeInsets.only(top: 10, bottom: 20, left: 20, right: 30),
     child: ButtonTheme(
-      minWidth: 25,
+      minWidth: 50,
       height: 50,
+      shape: sh ,
       child: RaisedButton(
         child: Text(
           buttonText,
