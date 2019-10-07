@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_app2/profile_pic.dart';
+import 'package:flutter_application/profile_pic.dart';
 import 'login_page.dart';
 import 'Config.dart';
 import 'primary_widgets.dart';
