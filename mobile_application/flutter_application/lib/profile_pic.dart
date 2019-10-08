@@ -6,6 +6,7 @@ import 'package:camera/new/camera.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix1;
 import 'package:flutter/rendering.dart';
+import 'package:flutter_application/gps_location.dart';
 import 'primary_widgets.dart';
 import 'Config.dart';
 import 'package:path/path.dart';
@@ -113,7 +114,11 @@ class ProfilePicState extends State<ProfilePic> {
               });
             }),
             getPaddedButton("Finish", () {
-              Navigator.popUntil(this.context, ModalRoute.withName("/"));
+              Navigator.of(this.context).push(MaterialPageRoute(
+                  settings: RouteSettings(name: "/gpslocation"),
+                  builder: (BuildContext context) {
+                    return GPSLocation(config: widget.config);
+                  }));
             }),
           ],
         ),
