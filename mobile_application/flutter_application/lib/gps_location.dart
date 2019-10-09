@@ -107,24 +107,28 @@ class _GPSLocationState  extends State<GPSLocation> {
         'your survey results with other anymosuly with other people around you. ' +
         'Do you want to provide your location?';
 
-
+    //TODO: Add logic for if the user does not enable location handling
+    //TODO: Add user location information to config
     return Stack(
       children: <Widget>[
         new Container(
           height: 250,
+          alignment: Alignment.topCenter,
           child: worldMap,
         ),
         new Container(
+          alignment: Alignment.center,
           child: new Text(msg),
         ),
         new Container(
+          alignment: Alignment.bottomLeft,
           child: getPaddedButton(
               "Yes", () {
-                widget.config.loc = currentLocation;
                 Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         ),
         new Container(
+          alignment: Alignment.bottomRight,
           child: getPaddedButton(
               "No", () {
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
