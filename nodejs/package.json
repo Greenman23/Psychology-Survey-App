@@ -2,7 +2,7 @@
   "name": "psychology-survey",
   "version": "1.0.0",
   "description": "This acts as the backend for our survey app that will be the intermediary between our android application and our database. ",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "mocha spec"
   },

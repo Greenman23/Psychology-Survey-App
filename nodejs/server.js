@@ -4,7 +4,7 @@
 const config = require('./config.json');
 const http = require('http');
 const mysql = require('mysql');
-const quary = require('./sql_quaries');
+const quary = require('./sql_queries');
 const conInfo = {
     host: config.host,
     user: config.user,
