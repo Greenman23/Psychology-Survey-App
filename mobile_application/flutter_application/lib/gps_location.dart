@@ -1,3 +1,5 @@
+// Using location and Google maps: https://github.com/Lyokone/flutterlocation
+
 import 'dart:collection';
 import 'dart:io';
 import 'dart:async';
@@ -29,7 +31,7 @@ class _GPSLocationState  extends State<GPSLocation> {
 
   String error;
 
-  bool provideLocation;
+  bool provideLocation = false;
 
   GoogleMap worldMap;
 
@@ -39,22 +41,38 @@ class _GPSLocationState  extends State<GPSLocation> {
 
   CameraPosition currentMapCam;
 
-  void initializeLocation() async{
+  @override
+  void initState(){
+    super.initState();
+    initializeLocation();
+  }
 
-    await location.changeSettings(accuracy: LocationAccuracy.HIGH);
+
+  initializeLocation() async{
+
+    //await location.changeSettings(accuracy: LocationAccuracy.HIGH);
+
+    LocationData tempLoc;
 
     try {
       bool locationStatus = await location.serviceEnabled();
+      print("LocationStatus: " + locationStatus.toString());
       if(locationStatus){
         provideLocation = await location.requestPermission();
-
+        print("Provide Location Inside Location Status: " + provideLocation.toString());
         if(provideLocation){
-          currentLocation = await location.getLocation();
-          currentMapCam = CameraPosition(target: LatLng(currentLocation.latitude,
-              currentLocation.longitude),   zoom:16);
+          tempLoc = await location.getLocation();
+          currentMapCam = CameraPosition(target: LatLng(tempLoc.latitude,
+              tempLoc.longitude),   zoom:16);
 
           final GoogleMapController tempController = await controller.future;
           tempController.animateCamera(CameraUpdate.newCameraPosition(currentMapCam));
+
+          if(mounted){
+            setState(() {
+              currentLocation = tempLoc;
+            });
+          }
         }
 
         else {
@@ -74,34 +92,46 @@ class _GPSLocationState  extends State<GPSLocation> {
     }
   }
 
-  @override
-  void initState(){
-    initializeLocation();
-    super.initState();
-  }
+  Widget getView() {
+    print("The user provided his Location? " + provideLocation.toString());
+    worldMap = GoogleMap(
+      mapType: MapType.normal,
+      myLocationEnabled: true,
+      initialCameraPosition: initialMapCam,
+      onMapCreated: (GoogleMapController con) {
+        controller.complete(con);
+      },
+    );
 
-  Widget getView(){
-    if(provideLocation){
-      worldMap = GoogleMap(
-        mapType: MapType.normal,
-        myLocationEnabled: true,
-        initialCameraPosition: initialMapCam,
-        onMapCreated: (GoogleMapController con){
-          controller.complete(con);
-        },
-      );
+    String msg = 'Submitting your location data will allow for you to compare ' +
+        'your survey results with other anymosuly with other people around you. ' +
+        'Do you want to provide your location?';
 
-      String msg = "Submitting your location data will allow for you to compare " +
-          "your survey results with other anymosuly with other people around you. " +
-          "Do you want to provide your location?";
 
-      return Center(
-        child: SizedBox(
-          height: 300.0,
+    return Stack(
+      children: <Widget>[
+        new Container(
+          height: 250,
           child: worldMap,
         ),
-      );
-    }
+        new Container(
+          child: new Text(msg),
+        ),
+        new Container(
+          child: getPaddedButton(
+              "Yes", () {
+                widget.config.loc = currentLocation;
+                Navigator.popUntil(this.context, ModalRoute.withName("/"));
+          }),
+        ),
+        new Container(
+          child: getPaddedButton(
+              "No", () {
+            Navigator.popUntil(this.context, ModalRoute.withName("/"));
+          }),
+        )
+      ],
+    );
   }
 
   Widget build(BuildContext) {

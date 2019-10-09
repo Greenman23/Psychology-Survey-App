@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 // This should be moved somewhere else at some point
-final String URL = "http://10.200.100.40:80";
+final String URL = "http://10.200.108.152:80";
 
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
