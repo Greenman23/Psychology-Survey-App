@@ -44,7 +44,6 @@ class _LoginPageState extends State<LoginPage> {
         title: Text("Login"),
       ),
       body: ListView(
-
           children: <Widget>[
             getTextFormField(myController, "Username", (String tex){widget.config.username = tex;}),
             getTextFormField(passwordController, "Password", (String tex){widget.config.password = tex;}, isPassword: true),
@@ -62,7 +61,6 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
     });
   }
-
 
   void _loginHTTP()
   {

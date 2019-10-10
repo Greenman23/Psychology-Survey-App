@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application/profile_pic.dart';
+import 'package:flutter_application/survey_list.dart';
 import 'login_page.dart';
 import 'Config.dart';
 import 'primary_widgets.dart';
@@ -84,7 +85,14 @@ class _HomePageState extends State<HomePage> {
         );
       }));
     }
-
+    void _takeSurvey() {
+      Navigator.of(context)
+          .push(MaterialPageRoute(settings: RouteSettings(name: "/survey"), builder: (BuildContext context) {
+        return Survey_List(
+          config: widget.config,
+        );
+      }));
+    }
 
     void update() {
       setState(() {});
@@ -100,7 +108,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               getPaddedButton("Login", _pushSaved),
               getPaddedButton("Create Account", _createAccount),
-              getPaddedButton("Take Survey", () {}),
+              getPaddedButton("Take Survey", _takeSurvey),
               getPaddedButton("Have Conversation", () {}),
             ],
           ),
@@ -112,7 +120,7 @@ class _HomePageState extends State<HomePage> {
             //mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              getPaddedButton("Take Survey", () {}),
+              getPaddedButton("Take Survey", _takeSurvey),
               getPaddedButton("Have Conversation", () {}),
               getPaddedButton("View Metrics", () {}),
               getPaddedButton("Change Profile Picture", _changePicture),

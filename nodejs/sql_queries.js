@@ -112,7 +112,6 @@ module.exports  = {
         connection.query(new_question,function(error,results,feilds){
             console.log(results);
         });
-
     },
 
 

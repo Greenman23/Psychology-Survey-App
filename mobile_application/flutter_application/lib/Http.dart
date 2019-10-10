@@ -1,9 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_application/survey_list.dart';
+
 import 'Config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 // This should be moved somewhere else at some point
 final String URL = "http://10.200.100.40:80";
@@ -23,6 +26,30 @@ Future<Map<String, dynamic>> getPost(Map body) async
   httpClient.close();
   return jsonReply;
 }
+/*FutureBuilder<String> getSurveys() async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest request = await httpClient.postUrl(Uri.parse(URL));
+  var result = await http.get(URL);
+
+  print('statusCode: ${result.statusCode}');
+  var contentType = result.headers['content-type'];
+  print('content-type: $contentType');
+  return contentType;
+}*/
+
+Future<List<Survey_List>> getSurveys() async{
+  var data = await http.get(URL);
+  var jsonData = json.decode(data.body);
+
+  List<Survey_List> surveys = [];
+
+  for (var u in jsonData){
+    Survey_List survey_list = Survey_List();
+  }
+
+  return surveys;
+}
+
 
 void login(Config config, Function(String, Color) functor)
 {
