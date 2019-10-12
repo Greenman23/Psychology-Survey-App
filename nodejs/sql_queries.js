@@ -115,12 +115,25 @@ module.exports  = {
     },
 
 
-    get_all_surveys: function (connection){
-        var all_surveys = 'SELECT get_surveys();'
-
-        connection.query(new_question,function(error,results,feilds){
-            console.log(results);
+     get_all_surveys: function (connection, callback){
+        var all_surveys = 'CALL get_surveys();'
+        var jsonresponse
+        var get_survey_response = "No Response"
+        var array = []
+        query(all_surveys, connection, function(error, res){
+            if (error) throw error;
+            value = 0;
+            
+            for (let value of Object.values(res[0])) {
+                array.push(value.survey_name)
+            }
+            console.log(array)
+            jsonresponse = {
+                "survey" : array
+            }
+            callback(jsonresponse)
         });
+
     },
 
     get_all_questions: function(connection){
