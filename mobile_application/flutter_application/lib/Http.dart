@@ -26,26 +26,22 @@ Future<Map<String, dynamic>> getPost(Map body) async
   httpClient.close();
   return jsonReply;
 }
-/*FutureBuilder<String> getSurveys() async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest request = await httpClient.postUrl(Uri.parse(URL));
-  var result = await http.get(URL);
-
-  print('statusCode: ${result.statusCode}');
-  var contentType = result.headers['content-type'];
-  print('content-type: $contentType');
-  return contentType;
-}*/
 
 Future<List<Survey_List>> getSurveys() async{
-  var data = await http.get(URL);
-  var jsonData = json.decode(data.body);
-
+  Map map = {
+    'Type': "getSurveys"
+  };
+  var _list = [];
   List<Survey_List> surveys = [];
+  getPost(map).then((Map value){
+    _list.addAll(value["survey"]);
 
-  for (var u in jsonData){
-    Survey_List survey_list = Survey_List();
-  }
+    for (int i = 0; i < _list.length; i++){
+      Survey_List survey_list = Survey_List(surveyName: _list[i].toString() ,surveyDescription: "", surveyVersion: "");
+      surveys.add(survey_list);
+      print(survey_list.surveyName);
+    }
+  });
 
   return surveys;
 }
