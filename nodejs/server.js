@@ -57,6 +57,11 @@ var app = http.createServer(function(request, response){
                         sendJSON(response,my_response);
                   });
                 }
+                if(post.Type == 'getSurveys'){
+                  quary.get_all_surveys(connection, function(get_survey_response){
+                        sendJSON(response, get_survey_response);
+                  });
+                }
                 connection.end();
             }
             catch(err){
