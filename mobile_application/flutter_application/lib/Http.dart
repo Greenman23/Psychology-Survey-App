@@ -33,16 +33,13 @@ Future<List<Survey_List>> getSurveys() async{
   };
   var _list = [];
   List<Survey_List> surveys = [];
-  getPost(map).then((Map value){
-    _list.addAll(value["survey"]);
+  Map value = await getPost(map);
+  _list.addAll(value["survey"]);
 
-    for (int i = 0; i < _list.length; i++){
-      Survey_List survey_list = Survey_List(surveyName: _list[i].toString() ,surveyDescription: "", surveyVersion: "");
-      surveys.add(survey_list);
-      print(survey_list.surveyName);
-    }
-  });
-
+  for (int i = 0; i < _list.length; i++){
+    Survey_List survey_list = Survey_List(surveyName: _list[i].toString() ,surveyDescription: "", surveyVersion: "");
+    surveys.add(survey_list);
+  }
   return surveys;
 }
 
