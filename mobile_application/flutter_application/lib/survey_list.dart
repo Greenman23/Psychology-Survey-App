@@ -24,29 +24,31 @@ class Survey_List extends StatefulWidget {
 class _SurveyListState extends State<Survey_List> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return new Scaffold(
       appBar: new AppBar(
         title: new Text("Surveys"),
       ),
-      body: Container(
-        child: FutureBuilder <List<Survey_List>>(
+      body: new Container(
+        child: new FutureBuilder (
           future: getSurveys(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            print(snapshot.data);
-            if (snapshot.data == null) {
-              return Container(
-                  child: Center(
-                      child: new Text("Loading...")
-                  )
-              );
-            } else {
-              return ListView.builder(
+            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+              return new ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return ListTile(
-                    title: Text(snapshot.data[index].surveyName)
+                  print(snapshot.data[index].surveyName);
+                  return new ListTile(
+                    title: new Text(snapshot.data[index].surveyName)
                   );
                 },
+              );
+            }
+            else{
+              //print(2);
+              return new Container(
+                child: new Center(
+                  child: new Text("Loading...")
+                )
               );
             }
           },
