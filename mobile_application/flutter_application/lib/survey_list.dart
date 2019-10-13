@@ -44,7 +44,6 @@ class _SurveyListState extends State<Survey_List> {
               );
             }
             else{
-              //print(2);
               return new Container(
                 child: new Center(
                   child: new Text("Loading...")
