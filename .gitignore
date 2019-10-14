@@ -1,2 +1,4 @@
 
 nodejs/config.json
+mobile_application/flutter_application/android/app/src/main/AndroidManifest.xml
+mobile_application/flutter_application/ios/Runner/AppDelegate.swift
