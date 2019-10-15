@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:location/location.dart';
 
 class Config {
   Config(this.username, this.password, this.actualFirstName, this.actualLastName, this.rememberPassword, this.loggedIn);
@@ -13,6 +14,7 @@ class Config {
   bool loggedIn;
   int hash;
   Image img;
+  LocationData loc;
 
   void clear()
   {
@@ -26,6 +28,7 @@ class Config {
     this.loggedIn = false;
     this.hash = 0;
     img = null;
+    this.loc = null;
   }
 
 
