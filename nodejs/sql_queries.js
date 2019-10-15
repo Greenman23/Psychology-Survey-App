@@ -73,7 +73,7 @@ module.exports  = {
                     "Reason" : "Username or Password already exist"
                 }
             }
-            console.log(sql_resp);
+            console.log("Response: " + sql_resp);
             callback(sql_resp);
             
         });
@@ -122,12 +122,12 @@ module.exports  = {
         var array = []
         query(all_surveys, connection, function(error, res){
             if (error) throw error;
+            
             value = 0;
             
             for (let value of Object.values(res[0])) {
                 array.push(value.survey_name)
             }
-            console.log(array)
             jsonresponse = {
                 "survey" : array
             }

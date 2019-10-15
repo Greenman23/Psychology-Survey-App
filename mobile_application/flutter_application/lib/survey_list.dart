@@ -5,6 +5,7 @@ import 'package:flutter_application/Http.dart';
 import 'Config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'primary_widgets.dart';
 
 // TODO : Make the surveys their own buttons instead of just listing them.
 
@@ -27,9 +28,9 @@ class Survey_List extends StatefulWidget {
 }
 
 class _SurveyListState extends State<Survey_List> {
-  @override
-  Widget build(BuildContext context) {
-    return new Scaffold(
+
+  Widget getView(){
+    return Scaffold(
       appBar: new AppBar(
         title: new Text("Surveys"),
       ),
@@ -42,22 +43,30 @@ class _SurveyListState extends State<Survey_List> {
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
                   print(snapshot.data[index].surveyName);
-                  return new ListTile(
-                    title: new Text(snapshot.data[index].surveyName)
+                  return new Container(
+                      child: getPaddedButton(
+                          snapshot.data[index].surveyName, () {
+                        Navigator.popUntil(this.context, ModalRoute.withName("/"));
+                      })
                   );
                 },
               );
             }
             else{
               return new Container(
-                child: new Center(
-                  child: new Text("Loading...")
-                )
+                  child: new Center(
+                      child: new Text("Loading...")
+                  )
               );
             }
           },
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return getView();
   }
 }
