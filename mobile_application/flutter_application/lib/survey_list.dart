@@ -6,7 +6,11 @@ import 'Config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+// TODO : Make the surveys their own buttons instead of just listing them.
+
 class Survey_List extends StatefulWidget {
+  final Config config;
+
   String surveyName;
   String surveyDescription;
   String surveyVersion;
@@ -16,6 +20,7 @@ class Survey_List extends StatefulWidget {
     this.surveyDescription,
     this.surveyVersion,
     Key key,
+    @required this.config
   }) : super (key: key);
   @override
   _SurveyListState createState() => _SurveyListState();

@@ -85,6 +85,8 @@ class _HomePageState extends State<HomePage> {
         );
       }));
     }
+
+    
     void _takeSurvey() {
       Navigator.of(context)
           .push(MaterialPageRoute(settings: RouteSettings(name: "/survey"), builder: (BuildContext context) {
