@@ -31,7 +31,7 @@ PRIMARY KEY(pk_question_version_id)
 
 CREATE TABLE SURVEYS(
 pk_survey_id int NOT NULL AUTO_INCREMENT, 
-survey_name varchar(60)  NOT NULL,
+survey_name varchar(60)  NOT NULL UNIQUE,
 description varchar(144) NOT NULL,
 survey_creation_time DATETIME NOT NULL, 
 survey_version int,
@@ -54,8 +54,10 @@ CREATE TABLE SURVEY_QUESTIONS(
 id int NOT NULL AUTO_INCREMENT,
 survey_id int NOT NULL, 
 question_id int NOT NULL,
+last_survey_question int,
 FOREIGN KEY(survey_id) REFERENCES SURVEYS(pk_survey_id) ON DELETE RESTRICT,
 FOREIGN KEY(question_id) REFERENCES QUESTIONS(pk_questions_id) ON DELETE RESTRICT,
+FOREIGN KEY(last_survey_question) REFERENCES SURVEY_QUESTIONS(id) ON DELETE RESTRICT,
 PRIMARY KEY(id)
 );
 

@@ -62,13 +62,7 @@ END
  //
  DELIMITER ;
  
- DROP PROCEDURE IF EXISTS get_surveys;
- DELIMITER //
- CREATE PROCEDURE get_surveys() 
- BEGIN
-SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER BY survey_creation_time; END
- //
- DELIMITER ;
+
  
 DROP FUNCTION IF EXISTS insert_question_version;
  DELIMITER //
@@ -101,6 +95,14 @@ DROP FUNCTION IF EXISTS insert_question_version;
  //
  DELIMITER ;
 
+ DROP PROCEDURE IF EXISTS get_surveys;
+ DELIMITER //
+ CREATE PROCEDURE get_surveys() 
+ BEGIN
+SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER BY survey_creation_time; END
+ //
+ DELIMITER ;
+
  DROP PROCEDURE IF EXISTS get_questions;
  DELIMITER //
  CREATE PROCEDURE get_questions() 
@@ -109,4 +111,55 @@ SELECT question_version, question  FROM SURVEYS GROUP BY question_version ORDER 
  END
  //
  DELIMITER ;
+ 
+ DROP PROCEDURE IF EXISTS get_survey_versions;
+ DELIMITER //
+ CREATE PROCEDURE get_survey_versions()
+ BEGIN 
+ SELECT pk_survey_version_id, survey_version_name FROM SURVEY_VERSIONS ORDER BY creation_time;
+ END;
+ //
+ DELIMITER ;
+ 
+ DROP PROCEDURE IF EXISTS get_question_versions;
+  DELIMITER //
+ CREATE PROCEDURE get_question_versions()
+ BEGIN 
+ SELECT pk_question_version_id, question_version_name FROM QUESTION_VERSIONS ORDER BY creation_time;
+ END;
+ //
+ DELIMITER ;
+ 
+ DROP FUNCTION IF EXISTS insert_survey_question;
+   DELIMITER //
+CREATE FUNCTION insert_survey_question(survey_id_ int, question_id_ int, last_question_id int) RETURNS bool DETERMINISTIC
+BEGIN
+if(last_question_id != -1)
+THEN
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, last_id) VALUES(survey_id_, question_id_, last_question_id);
+ELSE 
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id) VALUES(survey_id_, question_id_);
+END IF;
+RETURN TRUE;
+END;
+ //
+ DELIMITER ;
+ 
+ DROP PROCEDURE IF EXISTS get_questions_by_survey;
+ 
+    DELIMITER //
+ CREATE PROCEDURE get_questions_by_survey(name_ varchar(60))
+ BEGIN
+ SELECT questions.question, questions.answers, questions.question_type, squestions.last_survey_question FROM QUESTIONS as questions
+ LEFT JOIN SURVEY_QUESTIONS AS squestions
+ ON
+ squestions.questionid = questions.pk_questions_id
+ INNER JOIN SURVEYS AS surveys
+ ON 
+ surveys.pk_survey_id = squestions.pk_survey_id
+ WHERE surveys.survey_name = name_;
+ END
+  //
+ DELIMITER ;
+ 
  
