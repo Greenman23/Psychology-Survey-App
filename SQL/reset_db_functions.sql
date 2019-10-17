@@ -81,14 +81,15 @@ DROP FUNCTION IF EXISTS insert_question_version;
  
  DROP FUNCTION IF EXISTS insert_question;
  DELIMITER //
- CREATE FUNCTION insert_question(question_ varchar(512), answer_ varchar(512), question_type_ ENUM('MultipleChoice', 'FillInTheBlank', 'TrueFalse', 'Picture', 'Voice'), question_version_ int)
+ CREATE FUNCTION insert_question(question_ varchar(512), answer_ varchar(512), question_type_ ENUM('MultipleChoice', 'FillInTheBlank',  'MultipleChoiceRadio', 'Disabler'), question_version_ int,
+  health_data_ bool)
  RETURNS bool
  BEGIN
  IF ((SELECT COUNT(`question_version_name`) FROM QUESTION_VERSIONS WHERE `pk_question_version_id` = question_version_) = 0)
  THEN
  RETURN FALSE;
  ELSE
- INSERT INTO QUESTIONS (question, answers, question_type, question_creation_time, question_version) VALUES (question_, answer_, question_type_, NOW(), question_version_);
+ INSERT INTO QUESTIONS (question, answers, question_type, question_creation_time, question_version, health_data) VALUES (question_, answer_, question_type_, NOW(), question_version_, health_data_);
  RETURN TRUE;
  END IF;
  END
@@ -107,7 +108,7 @@ SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER B
  DELIMITER //
  CREATE PROCEDURE get_questions() 
  BEGIN
-SELECT question_version, question  FROM SURVEYS GROUP BY question_version ORDER BY question_creation_time;
+SELECT question_version, question, health_data  FROM QUESTIONS GROUP BY question_version ORDER BY question_creation_time;
  END
  //
  DELIMITER ;
@@ -132,13 +133,13 @@ SELECT question_version, question  FROM SURVEYS GROUP BY question_version ORDER 
  
  DROP FUNCTION IF EXISTS insert_survey_question;
    DELIMITER //
-CREATE FUNCTION insert_survey_question(survey_id_ int, question_id_ int, last_question_id int) RETURNS bool DETERMINISTIC
+CREATE FUNCTION insert_survey_question(survey_id_ int, question_id_ int, last_question_id int, cateogery_ varchar(60)) RETURNS bool DETERMINISTIC
 BEGIN
 if(last_question_id != -1)
 THEN
-INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, last_id) VALUES(survey_id_, question_id_, last_question_id);
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, last_id, category) VALUES(survey_id_, question_id_, last_question_id, category_);
 ELSE 
-INSERT INTO SURVEY_QUESTIONS(survey_id, question_id) VALUES(survey_id_, question_id_);
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, category_) VALUES(survey_id_, question_id_, category);
 END IF;
 RETURN TRUE;
 END;
@@ -150,13 +151,13 @@ END;
     DELIMITER //
  CREATE PROCEDURE get_questions_by_survey(name_ varchar(60))
  BEGIN
- SELECT questions.question, questions.answers, questions.question_type, squestions.last_survey_question FROM QUESTIONS as questions
- LEFT JOIN SURVEY_QUESTIONS AS squestions
+ SELECT questions.question, questions.answers, questions.question_type, squestions.last_survey_question, questions.health_data FROM SURVEY_QUESTIONS as squestions
+ LEFT JOIN QUESTIONS AS questions
  ON
- squestions.questionid = questions.pk_questions_id
+ squestions.question_id = questions.pk_questions_id
  INNER JOIN SURVEYS AS surveys
  ON 
- surveys.pk_survey_id = squestions.pk_survey_id
+ surveys.pk_survey_id = squestions.survey_id
  WHERE surveys.survey_name = name_;
  END
   //

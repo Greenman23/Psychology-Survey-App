@@ -43,9 +43,10 @@ CREATE TABLE QUESTIONS(
 pk_questions_id int NOT NULL AUTO_INCREMENT, 
 question varchar(512) NOT NULL,
 answers varchar(1024),
-question_type ENUM('MultipleChoice', 'FillInTheBlank', 'TrueFalse', 'Picture', 'Voice'),
+question_type ENUM('MultipleChoice', 'FillInTheBlank', 'MultipleChoiceRadio', 'Disabler'),
 question_creation_time DATETIME NOT NULL,
 question_version int,
+health_data bool,
 FOREIGN KEY(question_version) REFERENCES QUESTION_VERSIONS(pk_question_version_id),
 PRIMARY KEY(pk_questions_id)
 );
@@ -55,6 +56,7 @@ id int NOT NULL AUTO_INCREMENT,
 survey_id int NOT NULL, 
 question_id int NOT NULL,
 last_survey_question int,
+category varchar(60) DEFAULT "",
 FOREIGN KEY(survey_id) REFERENCES SURVEYS(pk_survey_id) ON DELETE RESTRICT,
 FOREIGN KEY(question_id) REFERENCES QUESTIONS(pk_questions_id) ON DELETE RESTRICT,
 FOREIGN KEY(last_survey_question) REFERENCES SURVEY_QUESTIONS(id) ON DELETE RESTRICT,
@@ -64,11 +66,9 @@ PRIMARY KEY(id)
 CREATE TABLE ANSWERS_TEXT(
 id int NOT NULL AUTO_INCREMENT,
 user_id int NOT NULL, 
-survey_id int NOT NULL, 
-question_id int NOT NULL, 
+survey_question int NOT NULL,
 actual_answer varchar(512) NOT NULL,
 FOREIGN KEY(user_id) REFERENCES USERS(pk_user_id) ON DELETE RESTRICT,
-FOREIGN KEY(survey_id) REFERENCES SURVEYS(pk_survey_id) ON DELETE RESTRICT,
-FOREIGN KEY(question_id) REFERENCES QUESTIONS(pk_questions_id) ON DELETE RESTRICT,
+FOREIGN KEY (survey_question) REFERENCES SURVEY_QUESTIONS(id),
 PRIMARY KEY(id)
 );
