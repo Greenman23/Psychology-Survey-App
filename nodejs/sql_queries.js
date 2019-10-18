@@ -118,7 +118,8 @@ module.exports  = {
                     'Answers': value.answers, 
                     'QuestionType': value.question_type,
                     'LastSurveyQuestion': value.last_survey_question,
-                    'HealthData': value.health_data, 
+                    'HealthData': value.health_data,
+                    'Category' : value.cat 
                 }
                 suveyQuestions.push(temp)
             }
