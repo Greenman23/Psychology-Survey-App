@@ -76,46 +76,10 @@ module.exports  = {
             console.log("Response: " + sql_resp);
             callback(sql_resp);
             
-        });
-        
+        });       
     },
 
-
-    add_survey: function (SurveyName, SurveyDescription, SurveyVersion, connection){
-
-        var new_survey = 'SELECT insert_survey("' + SurveyName + '","' + SurveyDescription + '","' + SurveyVersion + '");';
-
-        connection.query(new_survey,function(error,results,feilds){
-            console.log(results);
-        });
-    },
-
-    new_survey_version: function (SurveyVersionName,SurveyDescription,connection){
-        var survey_ver = 'SELECT insert_survey_version("' + SurveyVersionName + '","' + SurveyDescription + '");'
-
-        connection.query(qeustion_ver,function(error,results,feilds){
-            console.log(results);
-        });
-    },
-
-    new_question_version: function(QuestionName, Question, connection){
-        var qeustion_ver = 'SELECT insert_question_version("' + QuestionName + '","' + Question + '");'
-
-        connection.query(qeustion_ver,function(error,results,feilds){
-            console.log(results);
-        });
-    },
-
-    new_question: function (Question, Answer, QuestionType, QuestionVersion, connection){
-        var new_question = 'SELECT insert_question("' + Question + '","' + Answer + '","' + QuestionType + '","'  + QuestionVersion +'");';
-
-        connection.query(new_question,function(error,results,feilds){
-            console.log(results);
-        });
-    },
-
-
-     get_all_surveys: function (connection, callback){
+     get_all_surveys: function(connection, callback){
         var all_surveys = 'CALL get_surveys();'
         var jsonresponse
         var get_survey_response = "No Response"
@@ -136,11 +100,31 @@ module.exports  = {
 
     },
 
-    get_all_questions: function(connection){
-        var all_questions = 'SELECT get_questions();';
+    get_survey_questions: function(survey, connection, callback){
 
-        connection.query(all_questions,function(error,results,feilds){
-            console.log(results);
-        });
-    }
+        var questions = 'CALL get_questions_by_survey("' + survey + '");';
+
+        var suveyQuestions = []
+
+        jsonResponse="";
+
+        query(questions, connection, function(error,res){
+            jsonResponse = ""
+            if(error) throw error;
+
+            for (let value of Object.values(res[0])) {
+                let temp = {
+                    'Question': value.question,
+                    'Answers': value.answers, 
+                    'QuestionType': value.question_type,
+                    'LastSurveyQuestion': value.last_survey_question,
+                    'HealthData': value.health_data, 
+                }
+                suveyQuestions.push(temp)
+            }
+
+            callback(suveyQuestions);  
+        });       
+    },
+
 }
