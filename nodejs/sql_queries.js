@@ -104,7 +104,7 @@ module.exports  = {
 
         var questions = 'CALL get_questions_by_survey("' + survey + '");';
 
-        var suveyQuestions = []
+        var suveyQuestions = {"Questions": []}
 
         jsonResponse="";
 
@@ -113,6 +113,11 @@ module.exports  = {
             if(error) throw error;
 
             for (let value of Object.values(res[0])) {
+                console.log(value.answers)
+                value.answers = value.answers.split("'").join("\"")
+                value.answers = ('{"data" : ' + value.answers + '}')
+                console.log(value.answers)
+                value.answers = JSON.parse(value.answers)['data']
                 let temp = {
                     'Question': value.question,
                     'Answers': value.answers, 
@@ -121,7 +126,7 @@ module.exports  = {
                     'HealthData': value.health_data,
                     'Category' : value.cat 
                 }
-                suveyQuestions.push(temp)
+                suveyQuestions['Questions'].push(temp)
             }
 
             callback(suveyQuestions);  

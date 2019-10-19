@@ -82,7 +82,7 @@ void getSurveyByName(String name, Function functor)
   getPost(map).then((Map value){
     for(int i = 0; i < value['Questions'].length; i++)
       {
-        value['Questions'][i]['UserAnswer'] = '';
+        value['Questions'][i]['UserAnswer'] = new List<String>();
       }
     functor(value);
   });
