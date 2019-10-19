@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 // This should be moved somewhere else at some point
-final String URL = "http://10.100.97.187:80";
+final String URL = "http://192.168.2.33:80";
 
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
@@ -44,6 +44,7 @@ Future<List<Survey_List>> getSurveys() async{
 }
 
 
+
 void login(Config config, Function(String, Color) functor)
 {
     Map  map = {
@@ -68,6 +69,23 @@ void login(Config config, Function(String, Color) functor)
         }
 
     });
+}
+
+void getSurveyByName(String name, Function functor)
+{
+  Map map =
+  {
+    "Type" : "getQuestionsForSurvey",
+    "SurveyName" : name
+  };
+
+  getPost(map).then((Map value){
+    for(int i = 0; i < value['Questions'].length; i++)
+      {
+        value['Questions'][i]['UserAnswer'] = '';
+      }
+    functor(value);
+  });
 }
 
 void signUp(Config config, Function(bool, String, Color) functor)

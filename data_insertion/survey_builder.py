@@ -98,17 +98,20 @@ class Survey_Builder:
         response_id = -1
         while response_id == -1:
             question = input("What is the prompt for your question? (-1 for same)")
-            if question == -1:
+            if question == "-1":
                 question = self.__current_question_version_name
             question_type = self.__question_type[do_menu("What type of question ", self.__question_type, 0)]
-            health_data = True if do_menu("Is there sleep data? ", ["Yes", "No"], False) == 1 else  False
-            answer = {}
+            health_data = True if do_menu("Is there sleep data? ", ["No", "Yes"], False) == 1 else  False
+            answer = []
             key = 0
-            while key != "-1":
-                key = input("Provide an anwer key (Type -1) to quit ")
-                if key != "-1":
-                    val_pair = input("Provide a value ")
-                    answer[key] = val_pair
+            if input("Would you like your answers to just be Yes / No? (y is you want this)") == 'y':
+                answer = ['Yes', 'No']
+            else:
+                while key != "-1":
+                    key = input("Provide a value ")
+                    answer.append(key)
+            if input(f"You are going to insert a questions {question} with answer {answer} with type {question_type} and health data {health_data} are you sure (-1 for no)") == "-1":
+                continue
             response_id = insert_question(question, str(answer), question_type, question_version_id, health_data)    
             
     def add_question(self, val):
@@ -122,7 +125,8 @@ class Survey_Builder:
             category = self.__categories[-1]
         else:
             category = self.__categories[category_num]
-        
+        if input(f"Are you sure you want to add question to survey {survey_id}, {question_id}, {last_question}, {category}? (-1 to not)") == "-1":
+            return
         self.__last_question_id = insert_survey_question(survey_id, question_id, last_question, category)
 
         

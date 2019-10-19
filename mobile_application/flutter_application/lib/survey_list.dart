@@ -6,6 +6,7 @@ import 'Config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
+import 'TakeSurvey.dart';
 
 // TODO : Make the surveys their own buttons instead of just listing them.
 
@@ -16,48 +17,53 @@ class Survey_List extends StatefulWidget {
   String surveyDescription;
   String surveyVersion;
 
-  Survey_List({
-    this.surveyName,
-    this.surveyDescription,
-    this.surveyVersion,
-    Key key,
-    @required this.config
-  }) : super (key: key);
+  Survey_List(
+      {this.surveyName,
+      this.surveyDescription,
+      this.surveyVersion,
+      Key key,
+      @required this.config})
+      : super(key: key);
+
   @override
   _SurveyListState createState() => _SurveyListState();
 }
 
 class _SurveyListState extends State<Survey_List> {
+  void startSurvey(Map map)
+  {
+    List<String> disabledValues = new List<String>();
+    Navigator.of(context).push(MaterialPageRoute(
+                builder: (BuildContext context) {
+          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues);
+        }));
+  }
 
-  Widget getView(){
+  Widget getView() {
     return Scaffold(
       appBar: new AppBar(
         title: new Text("Surveys"),
       ),
       body: new Container(
-        child: new FutureBuilder (
+        child: new FutureBuilder(
           future: getSurveys(),
           builder: (BuildContext context, AsyncSnapshot snapshot) {
-            if (snapshot.connectionState == ConnectionState.done && snapshot.hasData) {
+            if (snapshot.connectionState == ConnectionState.done &&
+                snapshot.hasData) {
               return new ListView.builder(
                 itemCount: snapshot.data.length,
                 itemBuilder: (BuildContext context, int index) {
-                  print(snapshot.data[index].surveyName);
                   return new Container(
-                      child: getPaddedButton(
-                          snapshot.data[index].surveyName, () {
-                        Navigator.popUntil(this.context, ModalRoute.withName("/"));
-                      })
-                  );
+                      child:
+                          getPaddedButton(snapshot.data[index].surveyName, () {
+                    getSurveyByName(
+                        snapshot.data[index].surveyName, startSurvey);
+                  }));
                 },
               );
-            }
-            else{
+            } else {
               return new Container(
-                  child: new Center(
-                      child: new Text("Loading...")
-                  )
-              );
+                  child: new Center(child: new Text("Loading...")));
             }
           },
         ),

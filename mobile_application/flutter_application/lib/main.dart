@@ -110,7 +110,6 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               getPaddedButton("Login", _pushSaved),
               getPaddedButton("Create Account", _createAccount),
-              getPaddedButton("Take Survey", _takeSurvey),
               getPaddedButton("Have Conversation", () {}),
             ],
           ),
