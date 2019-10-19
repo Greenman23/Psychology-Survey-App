@@ -41,7 +41,7 @@ PRIMARY KEY(pk_survey_id)
 CREATE TABLE QUESTIONS(
 pk_questions_id int NOT NULL AUTO_INCREMENT, 
 question varchar(512) NOT NULL,
-answers varchar(1024),
+answers varchar(3000),
 question_type ENUM('MultipleChoice', 'FillInTheBlank', 'MultipleChoiceRadio', 'Disabler'),
 question_creation_time DATETIME NOT NULL,
 question_version int,
