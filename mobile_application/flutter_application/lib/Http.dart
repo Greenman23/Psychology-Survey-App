@@ -83,6 +83,7 @@ void getSurveyByName(String name, Function functor)
     for(int i = 0; i < value['Questions'].length; i++)
       {
         value['Questions'][i]['UserAnswer'] = new List<String>();
+       // value['Questions'][i]['UserAnswer'].add("");
       }
     functor(value);
   });

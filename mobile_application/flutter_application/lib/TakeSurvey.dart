@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
+import 'survey_overview.dart';
 
 class Survey_Question extends StatefulWidget {
   Map map;
@@ -204,7 +205,11 @@ class Survey_Question_State extends State<Survey_Question> {
             disabledValues: widget.disabledValues);
       }));
     } else {
-      Navigator.popUntil(this.context, ModalRoute.withName("/"));
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return Survey_Overview(
+            survey: widget.map,);
+      }));
     }
   }
 
