@@ -1,11 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application/profile_pic.dart';
 import 'package:flutter_application/survey_list.dart';
+import 'package:path/path.dart' as prefix0;
+import 'package:path_provider/path_provider.dart';
 import 'login_page.dart';
 import 'Config.dart';
 import 'primary_widgets.dart';
 import 'create_page.dart';
+import 'package:path/path.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -23,7 +28,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(primaryColor: Colors.blue),
       home: HomePage(),
       routes: <String, WidgetBuilder>{
-        '/create' : (context) => CreatePage(),
+        '/create': (context) => CreatePage(),
       },
     );
   }
@@ -39,7 +44,6 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
-
     Widget titleSection = Container(
       child: Row(children: [
         Expanded(
@@ -58,42 +62,43 @@ class _HomePageState extends State<HomePage> {
     );
 
     void _pushSaved() {
-      Navigator.of(context)
-          .push(MaterialPageRoute(settings: RouteSettings(name: "/login"), builder: (BuildContext context) {
-        return LoginPage(
-          config: widget.config,
-        );
-      }));
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/login"),
+          builder: (BuildContext context) {
+            return LoginPage(
+              config: widget.config,
+            );
+          }));
     }
-
 
     void _createAccount() {
-      Navigator.of(context)
-          .push(MaterialPageRoute(settings: RouteSettings(name: "/create"), builder: (BuildContext context) {
-        return CreatePage(
-          outerConfig: widget.config,
-        );
-      }));
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/create"),
+          builder: (BuildContext context) {
+            return CreatePage(
+              outerConfig: widget.config,
+            );
+          }));
     }
-
 
     void _changePicture() {
-      Navigator.of(context)
-          .push(MaterialPageRoute(settings: RouteSettings(name: "/profilepic"), builder: (BuildContext context) {
-        return ProfilePic(
-          config: widget.config,
-        );
-      }));
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/profilepic"),
+          builder: (BuildContext context) {
+            return ProfilePic(
+              config: widget.config,
+            );
+          }));
     }
 
-
     void _takeSurvey() {
-      Navigator.of(context)
-          .push(MaterialPageRoute(settings: RouteSettings(name: "/survey"), builder: (BuildContext context) {
-        return Survey_List(
-          config: widget.config,
-        );
-      }));
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/survey"),
+          builder: (BuildContext context) {
+            return Survey_List(
+              config: widget.config,
+            );
+          }));
     }
 
     void update() {
@@ -116,7 +121,7 @@ class _HomePageState extends State<HomePage> {
         );
       } else {
         return Container(
-            width:  400,
+          width: 400,
           child: ListView(
             //mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.center,
@@ -135,17 +140,42 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    Widget getImage() {
-      double width = 100;
-      if (widget.config.img != null) {
-        return Image(
-          image: widget.config.img.image,
-          width: width,
-        );
-      } else {
-        return Text("");
+    void lookupPicture() async
+    {
+      try
+      {
+        await getApplicationDocumentsDirectory().then((path)
+        {
+          widget.config.img = Image.file(File(join(path.path, widget.config.username + ".jpg")));
+          setState(() {
+
+          });
+        });
       }
+      catch(_)
+      {
+
+      }
+
     }
+
+    Widget getImage() {
+      if(widget.config.loggedIn) {
+        double width = 100;
+        if (widget.config.img != null) {
+          return Image(
+            image: widget.config.img.image,
+            width: width,
+          );
+        } else {
+          lookupPicture();
+          return Text("");
+        }
+      }
+      return Text("");
+    }
+
+
 
     return MaterialApp(
       title: 'Home',
