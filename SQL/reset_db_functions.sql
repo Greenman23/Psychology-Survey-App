@@ -18,6 +18,20 @@ END
 //
  DELIMITER ;
  
+ DROP FUNCTION IF EXISTS insert_answer
+ DELIMITER //
+ CREATE FUNCTION insert_answer(user_id_ int, survey_question_ int, actual_answer_ varchar(512)) RETURNS bool DETERMINISTIC
+ BEGIN 
+ IF ((select COUNT('id') FROM ANSWERS_TEXT WHERE 'actual_answer' = actual_answer_) > 0)
+ THEN
+ RETURN FALSE;
+ INSERT INTO ANSWERS_TEXT(user_id, survey_question, actual_answer) VALUES(user_id_, survey_question_, actual_answer_);
+ RETURN TRUE;
+ END IF;
+ END
+ //
+ DELIMITER;
+ 
  DROP FUNCTION IF EXISTS verify_user;
  DELIMITER //
  CREATE FUNCTION verify_user(user_name_ varchar(30), user_password_ varchar(30)) RETURNS bool DETERMINISTIC
@@ -130,6 +144,15 @@ SELECT question_version, answers, question_type, health_data  FROM QUESTIONS GRO
  END;
  //
  DELIMITER ;
+ 
+ DROP PROCEDURE IF EXISTS get_user_id_answer;
+ DELIMITER //
+ CREATE PROCEDURE get_user_id_answer()
+ BEGIN 
+ SELECT user_id FROM ANSWERS_TEXT;
+ END;
+ //
+ DELIMITER;
  
  DROP FUNCTION IF EXISTS insert_survey_question;
    DELIMITER //
