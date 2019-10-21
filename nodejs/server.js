@@ -12,9 +12,10 @@ const conInfo = {
     database: config.name
 }
 
-function sendJSON(response, msg){
+function sendJSON(request,response, msg){
     var dictstring = JSON.stringify(msg);
     response.writeHead(200, {"Content-Type" : "application/json"})
+    console.log("Response sent to =>" + request.connection.remoteAddress + "....")
     response.end(dictstring);
 }
 
@@ -33,14 +34,6 @@ var app = http.createServer(function(request, response){
             try {
                 if('application/json' === request.headers['content-type']){
                     var post = JSON.parse(body);
-                    console.log(post)
-                    if(post.FirstName != null){
-
-                        console.log(post.FirstName,post.LastName,post.Username, post.Password, post.BirthDate,post.Gender)
-                    }
-                    else if(post.Username != null){
-                        console.log(post.Username, post.Password);
-                    }
                 }
                 
                 let connection = mysql.createConnection(conInfo);
@@ -48,25 +41,32 @@ var app = http.createServer(function(request, response){
                 if(post.Type == 'signup'){
 
                     quary.signup(post.FirstName,post.LastName,post.Username,post.Password,post.Gender,post.BirthDate, connection, function(signup_resp){
-                        sendJSON(response,signup_resp);
+                        sendJSON(request,response,signup_resp);
                     });
                 }
 
-                if(post.Type == 'login'){
+                else if(post.Type == 'login'){
                   quary.login(post.Username, post.Password, connection, function(my_response){
-                        sendJSON(response,my_response);
+                        sendJSON(request,response,my_response);
                   });
                 }
-                if(post.Type == 'getSurveys'){
+                else if(post.Type == 'getSurveys'){
                   quary.get_all_surveys(connection, function(get_survey_response){
-                        sendJSON(response, get_survey_response);
+                        sendJSON(request,response, get_survey_response);
                   });
                 }
 
-                if(post.Type == 'getQuestionsForSurvey'){
+                else if(post.Type == 'getQuestionsForSurvey'){
                     quary.get_survey_questions(post.SurveyName,connection, function(surveyQuestions){
-                        sendJSON(response,surveyQuestions);
+                        sendJSON(request,response,surveyQuestions);
                   });
+                }
+
+                else {
+                    var error_request = {
+                        "Error" : "Bad Request",
+                    }
+                    sendJSON(request,response,error_request);
                 }
 
                 connection.end();
@@ -86,4 +86,4 @@ var app = http.createServer(function(request, response){
 });
 
 app.listen(80);
-console.log("Server is on")
+console.log("Http server is now running....")

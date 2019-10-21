@@ -11,72 +11,91 @@ module.exports  = {
 
     login: function(Username, Password, connection, callback){
 
-        var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
-        
-        var resp_sql = "";
-
-        var auth;
-
-        auth = 0;
-
-        query(verification, connection, function(error,res){
-            if(error) throw error   
-            console.log(res);
-			for (let value of Object.values(res[0])) {
-                auth = value;
-                console.log(auth);
-            }
+        if(Username != undefined && Password != undefined){
+            var verification = 'SELECT verify_user("' + Username + '","' + Password + '");';
             
-            if(auth == 1){
-                resp_sql = {
-                    "Authentication" : true,
-                    "Hash" : 12345
-                };
-            }
-    
-            else {
-                resp_sql = {
-                    "Authentication" : false,
-                    "Hash" : 12345
-                };
-            }
+            var resp_sql = "";
 
-            callback(resp_sql)
-        });
+            var auth;
+
+            auth = 0;
+
+            query(verification, connection, function(error,res){
+                if(error) throw error   
+                console.log(res);
+                for (let value of Object.values(res[0])) {
+                    auth = value;
+                    console.log(auth);
+                }
+                
+                if(auth == 1){
+                    resp_sql = {
+                        "Authentication" : true,
+                        "Hash" : 12345
+                    };
+                }
+        
+                else {
+                    resp_sql = {
+                        "Authentication" : false,
+                        "Hash" : 12345
+                    };
+                }
+
+                callback(resp_sql)
+            });
+        }
+
+        else {
+            var error_resp = {
+                "Invalid Response" : "Undefined Attributes"
+            }
+            callback(error_resp)
+        }
     },
 
     signup: function(FirstName, LastName, Username, Password, Gender, BirthDate, connection, callback){
 
-        var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
-        '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));';
+        if(FirstName != undefined && LastName != undefined && Username != undefined && Password != undefined && Gender != undefined &&
+            BirthDate !=undefined ) {
+
+            var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
+            '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));';
 
 
-        var sql_resp="No Response"
+            var sql_resp="No Response"
 
-        var auth = 0;
-        query(new_user, connection, function(error,res){
-            if(error) throw error   
+            var auth = 0;
+            query(new_user, connection, function(error,res){
+                if(error) throw error   
 
-            for (let value of Object.values(res[0])) {
-			    auth = value;
-            }
-
-            if(auth == 1){
-                sql_resp = {
-                    "Account_Creation" : true,
+                for (let value of Object.values(res[0])) {
+                    auth = value;
                 }
-            }
 
-            else {
-                sql_resp = {
-                    "Account_Creation" : false,
-                    "Reason" : "Username or Password already exist"
+                if(auth == 1){
+                    sql_resp = {
+                        "Account_Creation" : true,
+                    }
                 }
+
+                else {
+                    sql_resp = {
+                        "Account_Creation" : false,
+                        "Reason" : "Username or Password already exist"
+                    }
+                }
+                console.log("Response: " + sql_resp);
+                callback(sql_resp);
+            });
+        }
+        
+        else {
+            var error_resp = {
+                "Invalid Response" : "Undefined Attributes"
             }
-            console.log("Response: " + sql_resp);
-            callback(sql_resp);
-            
-        });       
+            callback(error_resp)
+        }
     },
 
      get_all_surveys: function(connection, callback){
@@ -102,35 +121,45 @@ module.exports  = {
 
     get_survey_questions: function(survey, connection, callback){
 
-        var questions = 'CALL get_questions_by_survey("' + survey + '");';
+        if(survey != undefined){
+            var questions = 'CALL get_questions_by_survey("' + survey + '");';
 
-        var suveyQuestions = {"Questions": []}
+            var suveyQuestions = {"Questions": []}
 
-        jsonResponse="";
+            jsonResponse="";
 
-        query(questions, connection, function(error,res){
-            jsonResponse = ""
-            if(error) throw error;
+            query(questions, connection, function(error,res){
+                jsonResponse = ""
+                if(error) throw error;
 
-            for (let value of Object.values(res[0])) {
-                console.log(value.answers)
-                value.answers = value.answers.split("'").join("\"")
-                value.answers = ('{"data" : ' + value.answers + '}')
-                console.log(value.answers)
-                value.answers = JSON.parse(value.answers)['data']
-                let temp = {
-                    'Question': value.question,
-                    'Answers': value.answers, 
-                    'QuestionType': value.question_type,
-                    'LastSurveyQuestion': value.last_survey_question,
-                    'HealthData': value.health_data,
-                    'Category' : value.cat 
+                for (let value of Object.values(res[0])) {
+                    console.log(value.answers)
+                    value.answers = value.answers.split("'").join("\"")
+                    value.answers = ('{"data" : ' + value.answers + '}')
+                    console.log(value.answers)
+                    value.answers = JSON.parse(value.answers)['data']
+                    let temp = {
+                        'Question': value.question,
+                        'Answers': value.answers, 
+                        'QuestionType': value.question_type,
+                        'LastSurveyQuestion': value.last_survey_question,
+                        'HealthData': value.health_data,
+                        'Category' : value.cat 
+                    }
+                    suveyQuestions['Questions'].push(temp)
                 }
-                suveyQuestions['Questions'].push(temp)
-            }
 
-            callback(suveyQuestions);  
-        });       
+                callback(suveyQuestions);  
+            });
+        }
+        else {
+
+            var error_resp = {
+                "Invalid Response" : "Undefined Attributes"
+            }
+            callback(error_resp)
+
+        }       
     },
 
 }
