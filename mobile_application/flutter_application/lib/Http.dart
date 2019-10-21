@@ -9,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 // This should be moved somewhere else at some point
-final String URL = "http://ec2-54-162-109-76.compute-1.amazonaws.com";
+final String URL = "http://ec2-54-162-109-76.compute-1.amazonaws.com:80";
 
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
