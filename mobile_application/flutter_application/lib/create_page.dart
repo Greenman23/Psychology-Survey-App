@@ -103,7 +103,11 @@ class CreatePageState extends State<CreatePage> {
         if (success) {
           widget.outerConfig.username = innerConfig.username;
           widget.outerConfig.password = innerConfig.password;
-
+          Navigator.of(context).push(MaterialPageRoute(
+              settings: RouteSettings(name: "/profilepicture"),
+              builder: (BuildContext context) {
+                return ProfilePic(config: widget.outerConfig);
+              }));
         }
         update();
       });
@@ -153,12 +157,8 @@ class CreatePageState extends State<CreatePage> {
               createAccountColor = Colors.red;
               update();
             } else {
-              Navigator.of(context).push(MaterialPageRoute(
-                  settings: RouteSettings(name: "/profilepicture"),
-                  builder: (BuildContext context) {
-                    return ProfilePic(config: widget.outerConfig);
-                  }));
               _signupHttp();
+
             }
           }),
           getText(createAccountResult, color: createAccountColor),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
+
 class Survey_Overview extends StatelessWidget {
   Map survey;
 
@@ -13,56 +14,60 @@ class Survey_Overview extends StatelessWidget {
         appBar: AppBar(
           title: Text("Survey Overview"),
         ),
-        body: 
-        Column( children:[
-        Expanded(
-          child: ListView.builder(
-            itemCount: survey['Questions'].length,
-            itemBuilder: (BuildContext context, int index) {
-              bool firstItem = true;
-              List<String> items = new List<String>.from(
-                  survey['Questions'][index]['UserAnswer']);
-              items.insert(0, survey['Questions'][index]['Question']);
-              if (items.length == 1) {
-                return Container();
-              }
-              current_index += 1;
-              return Container(
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: items.map<Widget>(
-                      (String answer) {
-                        if (firstItem) {
-                          firstItem = false;
-                          return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Divider(),
-                                Text(
-                                  (current_index).toString() + ": " + answer,
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                  ),
-                                ),
-                              ]);
-                        } else {
-                          return Padding(
-                              padding: EdgeInsets.only(left: 15),
-                              child: Text(answer));
-                        }
-                      },
-                    ).toList()),
-              );
-            })),
-          
+        body: Column(children: [
+          Expanded(
+              child: ListView.builder(
+                  itemCount: survey['Questions'].length,
+                  itemBuilder: (BuildContext context, int index) {
+                    bool firstItem = true;
+                    List<String> items = new List<String>.from(
+                        survey['Questions'][index]['UserAnswer']);
+                    items.insert(0, survey['Questions'][index]['Question']);
+                    if (items.length == 1) {
+                      return Container();
+                    }
+                    current_index += 1;
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(width: 2),
+                        ),
+                      ),
+                      child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: items.map<Widget>(
+                            (String answer) {
+                              if (firstItem) {
+                                firstItem = false;
+                                return Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        (current_index).toString() +
+                                            ": " +
+                                            answer,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ]);
+                              } else {
+                                return Padding(
+                                    padding: EdgeInsets.only(left: 15),
+                                    child: Text(answer));
+                              }
+                            },
+                          ).toList()),
+                    );
+                  })),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              getPaddedButton("Go back", (){
+              getPaddedButton("Go back", () {
                 Navigator.pop(buildContext);
               }),
-              
-              getPaddedButton("Finish", (){
+              getPaddedButton("Finish", () {
                 Navigator.popUntil(buildContext, ModalRoute.withName("/"));
               })
             ],

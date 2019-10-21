@@ -43,10 +43,9 @@ class ProfilePicState extends State<ProfilePic> {
         update();
       }
     });
-    await getTemporaryDirectory().then((dir) {
+    await getApplicationDocumentsDirectory().then((dir) {
       startPath = dir.path;
-      path = join(dir.path, DateTime.now().toIso8601String() + ".jpg");
-      File(path).delete();
+      path = join(dir.path, widget.config.username + ".jpg");
     });
   }
 
@@ -59,6 +58,8 @@ class ProfilePicState extends State<ProfilePic> {
 
   void update() => setState(() {});
 
+
+
   Widget getView() {
     if (cameraState == CAMERA_ON) {
       return Stack(
@@ -70,10 +71,23 @@ class ProfilePicState extends State<ProfilePic> {
             child: getPaddedButton(
               "",
               () {
-                controller.takePicture(path).then((err) {
-                  cameraState = CAMERA_USED;
-                  update();
-                });
+               if(!File(path).existsSync())
+                 {
+                  controller.takePicture(path).then((err) {
+                    cameraState = CAMERA_USED;
+                    update();
+                  });
+                }
+
+                else
+                {
+                  File(path).delete().then((a) {
+                    controller.takePicture(path).then((err) {
+                      cameraState = CAMERA_USED;
+                      update();
+                    });
+                  });
+                }
               },
               isCircle: true,
             ),
@@ -81,7 +95,7 @@ class ProfilePicState extends State<ProfilePic> {
 
           Align(
             alignment: Alignment.topLeft,
-            child: getPaddedButton("Skip", ((){
+            child: getPaddedButton("Skip", (() {
               //Navigator.popUntil(this.context, ModalRoute.withName("/"));
               Navigator.of(this.context).push(MaterialPageRoute(
                   settings: RouteSettings(name: "/gpsloction"),
