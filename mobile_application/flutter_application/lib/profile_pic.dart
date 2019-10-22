@@ -114,9 +114,10 @@ class ProfilePicState extends State<ProfilePic> {
           getPaddedButton("Skip", () {}),
         ],
       );
-    } else if (cameraState == CAMERA_USED)
+    } else if (cameraState == CAMERA_USED) {
       currentImage = Image.file((File(path)));
-    widget.config.img = currentImage;
+      widget.config.img = currentImage;
+    }
     return Column(
       children: <Widget>[
         getText("Take a picture"),
