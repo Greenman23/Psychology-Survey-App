@@ -14,7 +14,7 @@ class Config {
   bool loggedIn;
   int hash;
   Image img;
-  LocationData loc;
+  String myCity;
 
   void clear()
   {
@@ -28,7 +28,7 @@ class Config {
     this.loggedIn = false;
     this.hash = 0;
     img = null;
-    this.loc = null;
+    this.myCity = null;
   }
 
 
