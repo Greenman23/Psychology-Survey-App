@@ -103,6 +103,7 @@ class CreatePageState extends State<CreatePage> {
         if (success) {
           widget.outerConfig.username = innerConfig.username;
           widget.outerConfig.password = innerConfig.password;
+          widget.outerConfig.loggedIn = true;
           Navigator.of(context).push(MaterialPageRoute(
               settings: RouteSettings(name: "/profilepicture"),
               builder: (BuildContext context) {

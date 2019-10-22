@@ -39,14 +39,24 @@ class _GPSLocationState extends State<GPSLocation> {
 
   CameraPosition currentMapCam;
 
-  String address = "";
+  Map userLocationMap;
+
+  String stringAddress = "";
 
   void setupAddresses(Coordinates coord) async
   {
     Geocoder.local.findAddressesFromCoordinates(coord).then((err)
         {
-          if(address == "") {
-            address = err[0].locality;
+          if(userLocationMap == null) {
+            userLocationMap = {
+              'City'    : err[0].locality,
+              'County'  : err[0].subAdminArea,
+              'State'   : err[0].adminArea,
+              'Country' : err[0].countryName,
+            };
+
+            stringAddress = err[0].locality+", "+err[0].adminArea+", "+err[0].countryName;
+
             setState(() {
 
             });
@@ -64,7 +74,6 @@ class _GPSLocationState extends State<GPSLocation> {
   initializeLocation() async {
     //await location.changeSettings(accuracy: LocationAccuracy.HIGH);
     LocationData tempLoc;
-    var tempAddress;
 
     try {
 
@@ -78,9 +87,9 @@ class _GPSLocationState extends State<GPSLocation> {
           tempLoc = await location.getLocation();
 
           final cords = new Coordinates(tempLoc.latitude, tempLoc.longitude);
-          tempAddress =  await Geocoder.local.findAddressesFromCoordinates(cords);
 
           setupAddresses(cords);
+
           currentMapCam = CameraPosition(
               target: LatLng(tempLoc.latitude, tempLoc.longitude), zoom: 16);
 
@@ -125,7 +134,8 @@ class _GPSLocationState extends State<GPSLocation> {
         'your survey results with other anymosuly with other people around you. ' +
         'Do you want to provide your location?';
 
-    String loc_msg = "You are located in: " + address;
+
+    String locationMsg = "You are currently located in " + stringAddress;
 
     //TODO: Add logic for if the user does not enable location handling
     return ListView(
@@ -138,17 +148,17 @@ class _GPSLocationState extends State<GPSLocation> {
           child: new Text(msg),
         ),
         new Container(
-          child: new Text(loc_msg),
+          child: new Text(locationMsg),
         ),
         new Container(
           child: getPaddedButton("Yes", () {
-            widget.config.myCity = address;
+            widget.config.locData = userLocationMap;
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         ),
         new Container(
           child: getPaddedButton("No", () {
-            widget.config.myCity = null;
+            widget.config.locData = null;
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         )

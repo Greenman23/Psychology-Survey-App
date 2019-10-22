@@ -46,7 +46,8 @@ class _LoginPageState extends State<LoginPage> {
       body: ListView(
           children: <Widget>[
             getTextFormField(myController, "Username", (String tex){widget.config.username = tex;}),
-            getTextFormField(passwordController, "Password", (String tex){widget.config.password = tex;}, isPassword: true),
+            getTextFormField(passwordController, "Password", (String tex){
+              widget.config.password = tex;}, isPassword: true),
             getPaddedButton("Login", _loginHTTP),
             getText(loginState, color: outComeColor, fontSize: 16),
           ],
@@ -58,6 +59,9 @@ class _LoginPageState extends State<LoginPage> {
   {
     loginState = text;
     outComeColor = color;
+    if(loginState == "Login Successful"){
+      Navigator.popUntil(this.context, ModalRoute.withName("/"));
+    }
     setState(() {
     });
   }
