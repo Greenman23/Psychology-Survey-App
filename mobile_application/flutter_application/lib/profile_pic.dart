@@ -40,7 +40,7 @@ class ProfilePicState extends State<ProfilePic> {
     controller.initialize().then((_) {
       if (mounted) {
         cameraState = CAMERA_ON;
-         getApplicationDocumentsDirectory().then((dir) {
+         getTemporaryDirectory().then((dir) {
           startPath = dir.path;
           path = join(dir.path, widget.config.username + ".jpg");
           update();
@@ -115,7 +115,8 @@ class ProfilePicState extends State<ProfilePic> {
         ],
       );
     } else if (cameraState == CAMERA_USED) {
-      currentImage = Image.file((File(path)));
+
+      currentImage = Image.file(File(path));
       widget.config.img = currentImage;
     }
     return Column(
