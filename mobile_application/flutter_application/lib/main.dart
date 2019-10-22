@@ -152,21 +152,13 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    void lookupPicture() async
+    void lookupPicture()
     {
-      try
-      {
-        await getApplicationDocumentsDirectory().then((path)
-        {
-          widget.config.img = Image.file(File(join(path.path, widget.config.username + ".jpg")));
-          setState(() {
+      if(widget.config.img != "") {
+        widget.config.img = Image.file(File(widget.config.path));
+        setState(() {
 
-          });
         });
-      }
-      catch(_)
-      {
-
       }
 
     }

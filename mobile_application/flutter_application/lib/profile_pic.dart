@@ -42,7 +42,7 @@ class ProfilePicState extends State<ProfilePic> {
         cameraState = CAMERA_ON;
         getApplicationDocumentsDirectory().then((dir) {
           startPath = dir.path;
-          path = join(startPath, widget.config.username);
+          path = join(startPath, DateTime.now().toIso8601String() + ".jpg");
           update();
         });
       }
@@ -61,10 +61,12 @@ class ProfilePicState extends State<ProfilePic> {
         }
         var files2 = err.listSync();
         try {
-          controller.takePicture(path).then((err2) {
+          String newPath = join(startPath, DateTime.now().toIso8601String() + ".jpg");
+          controller.takePicture(newPath).then((err2) {
             cameraState = CAMERA_USED;
+            path = newPath;
+            widget.config.path = newPath;
             var files3 = err.listSync();
-
             update();
           });
         }
@@ -126,7 +128,7 @@ class ProfilePicState extends State<ProfilePic> {
 
           Align(
             alignment: Alignment.topLeft,
-            child: getPaddedButton("Skipa21", (() {
+            child: getPaddedButton("Skipa221", (() {
               //Navigator.popUntil(this.context, ModalRoute.withName("/"));
               Navigator.of(this.context).push(MaterialPageRoute(
                   settings: RouteSettings(name: "/gpsloction"),

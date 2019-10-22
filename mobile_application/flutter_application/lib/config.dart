@@ -2,7 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:location/location.dart';
 
 class Config {
-  Config(this.username, this.password, this.actualFirstName, this.actualLastName, this.rememberPassword, this.loggedIn);
+  Config(this.username, this.password, this.actualFirstName, this.actualLastName, this.rememberPassword, this.loggedIn)
+  {
+   this.path = "";
+  }
 
   String username;
   String password;
@@ -15,6 +18,7 @@ class Config {
   int hash;
   Image img;
   Map locData;
+  String path;
 
   void clear()
   {
@@ -27,6 +31,7 @@ class Config {
     this.rememberPassword = false;
     this.loggedIn = false;
     this.hash = 0;
+    this.path = "";
     img = null;
     this.locData = null;
   }
