@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
-
+import 'reults.dart';
 class Survey_Overview extends StatelessWidget {
   Map survey;
 
@@ -67,8 +67,10 @@ class Survey_Overview extends StatelessWidget {
               getPaddedButton("Go back", () {
                 Navigator.pop(buildContext);
               }),
-              getPaddedButton("Finish", () {
-                Navigator.popUntil(buildContext, ModalRoute.withName("/"));
+              getPaddedButton("See results", () {
+                Navigator.of(buildContext).push(MaterialPageRoute(
+                                builder: (BuildContext context) {return Results();
+                    }));
               })
             ],
           )
