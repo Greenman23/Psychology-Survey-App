@@ -41,6 +41,22 @@ class _GPSLocationState extends State<GPSLocation> {
 
   CameraPosition currentMapCam;
 
+  String julianIsMyFriend = "";
+
+  void setupAddresses(Coordinates coord) async
+  {
+    Geocoder.local.findAddressesFromCoordinates(coord).then((err)
+        {
+          if(julianIsMyFriend == "") {
+            julianIsMyFriend = err[0].locality;
+            setState(() {
+
+            });
+          }
+        });
+  }
+
+
   @override
   void initState() {
     super.initState();
@@ -53,6 +69,7 @@ class _GPSLocationState extends State<GPSLocation> {
     var tempAddress;
 
     try {
+
       bool locationStatus = await location.serviceEnabled();
       print("LocationStatus: " + locationStatus.toString());
       if (locationStatus) {
@@ -65,6 +82,7 @@ class _GPSLocationState extends State<GPSLocation> {
           final cords = new Coordinates(tempLoc.latitude, tempLoc.longitude);
           tempAddress =  await Geocoder.local.findAddressesFromCoordinates(cords);
 
+          setupAddresses(cords);
           currentMapCam = CameraPosition(
               target: LatLng(tempLoc.latitude, tempLoc.longitude), zoom: 16);
 
@@ -123,6 +141,10 @@ class _GPSLocationState extends State<GPSLocation> {
         ),
         new Container(
           child: new Text(msg),
+        ),
+
+        new Container(
+          child: new Text(julianIsMyFriend),
         ),
         new Container(
           child: new Text(loc_msg),

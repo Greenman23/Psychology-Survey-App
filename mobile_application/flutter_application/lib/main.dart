@@ -161,7 +161,7 @@ class _HomePageState extends State<HomePage> {
 
     Widget getImage() {
       if(widget.config.loggedIn) {
-        double width = 100;
+        double width = 50;
         if (widget.config.img != null) {
           return Image(
             image: widget.config.img.image,
