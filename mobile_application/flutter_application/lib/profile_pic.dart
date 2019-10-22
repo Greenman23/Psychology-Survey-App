@@ -40,14 +40,39 @@ class ProfilePicState extends State<ProfilePic> {
     controller.initialize().then((_) {
       if (mounted) {
         cameraState = CAMERA_ON;
-         getTemporaryDirectory().then((dir) {
+        getApplicationDocumentsDirectory().then((dir) {
           startPath = dir.path;
-          path = join(dir.path, widget.config.username + ".jpg");
+          path = join(startPath, widget.config.username);
           update();
         });
       }
     });
 
+  }
+
+  void takepic() async
+  {
+
+    getApplicationDocumentsDirectory().then((err) {
+        var files = err.listSync();
+        var err2 = join(err.path, widget.config.username);
+        if(File(path).existsSync()) {
+          File(path).deleteSync();
+        }
+        var files2 = err.listSync();
+        try {
+          controller.takePicture(path).then((err2) {
+            cameraState = CAMERA_USED;
+            var files3 = err.listSync();
+
+            update();
+          });
+        }
+        catch(e)
+      {
+        print(e);
+      }
+    });
   }
 
   @override
@@ -71,24 +96,29 @@ class ProfilePicState extends State<ProfilePic> {
             alignment: Alignment.bottomCenter,
             child: getPaddedButton(
               "",
-              () {
-               if(!File(path).existsSync())
-                 {
-                  controller.takePicture(path).then((err) {
-                    cameraState = CAMERA_USED;
-                    update();
-                  });
-                }
 
-                else
-                {
-                  File(path).delete().then((a) {
-                    controller.takePicture(path).then((err) {
-                      cameraState = CAMERA_USED;
-                      update();
-                    });
-                  });
-                }
+              () {
+
+                    takepic();
+
+
+//               if(!File(path).existsSync())
+//                 {
+//                  controller.takePicture(path).then((err) {
+//                    cameraState = CAMERA_USED;
+//                    update();
+//                  });
+//                }
+//
+//                else
+//                {
+//                  File(path).delete().then((a) {
+//                    controller.takePicture(path).then((err) {
+//                      cameraState = CAMERA_USED;
+//                      update();
+//                    });
+//                  });
+//                }
               },
               isCircle: true,
             ),
@@ -96,7 +126,7 @@ class ProfilePicState extends State<ProfilePic> {
 
           Align(
             alignment: Alignment.topLeft,
-            child: getPaddedButton("Skip", (() {
+            child: getPaddedButton("Skipa21", (() {
               //Navigator.popUntil(this.context, ModalRoute.withName("/"));
               Navigator.of(this.context).push(MaterialPageRoute(
                   settings: RouteSettings(name: "/gpsloction"),
@@ -115,7 +145,7 @@ class ProfilePicState extends State<ProfilePic> {
         ],
       );
     } else if (cameraState == CAMERA_USED) {
-
+      widget.config.img = null;
       currentImage = Image.file(File(path));
       widget.config.img = currentImage;
     }
