@@ -9,23 +9,23 @@ import 'primary_widgets.dart';
 import 'Config.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:geocoder/geocoder.dart';
 
 class GPSLocation extends StatefulWidget {
-
   final Config config;
 
   GPSLocation({Key key, @required this.config}) : super(key: key);
 
   @override
   _GPSLocationState createState() => _GPSLocationState();
-
 }
 
-class _GPSLocationState  extends State<GPSLocation> {
-
+class _GPSLocationState extends State<GPSLocation> {
   Location location = new Location();
 
   LocationData currentLocation;
+
+  var address;
 
   double currentLongitude, currentLatitude;
 
@@ -36,56 +36,59 @@ class _GPSLocationState  extends State<GPSLocation> {
   GoogleMap worldMap;
 
   Completer<GoogleMapController> controller = Completer();
-  static final CameraPosition initialMapCam = CameraPosition(target: LatLng(0,0),
-      zoom: 4);
+  static final CameraPosition initialMapCam =
+      CameraPosition(target: LatLng(0, 0), zoom: 4);
 
   CameraPosition currentMapCam;
 
   @override
-  void initState(){
+  void initState() {
     super.initState();
     initializeLocation();
   }
 
-
-  initializeLocation() async{
-
+  initializeLocation() async {
     //await location.changeSettings(accuracy: LocationAccuracy.HIGH);
-
     LocationData tempLoc;
+    var tempAddress;
 
     try {
       bool locationStatus = await location.serviceEnabled();
       print("LocationStatus: " + locationStatus.toString());
-      if(locationStatus){
+      if (locationStatus) {
         provideLocation = await location.requestPermission();
-        print("Provide Location Inside Location Status: " + provideLocation.toString());
-        if(provideLocation){
+        print("Provide Location Inside Location Status: " +
+            provideLocation.toString());
+        if (provideLocation) {
           tempLoc = await location.getLocation();
-          currentMapCam = CameraPosition(target: LatLng(tempLoc.latitude,
-              tempLoc.longitude),   zoom:16);
+
+          final cords = new Coordinates(tempLoc.latitude, tempLoc.longitude);
+          tempAddress =  await Geocoder.local.findAddressesFromCoordinates(cords);
+
+          currentMapCam = CameraPosition(
+              target: LatLng(tempLoc.latitude, tempLoc.longitude), zoom: 16);
 
           final GoogleMapController tempController = await controller.future;
-          tempController.animateCamera(CameraUpdate.newCameraPosition(currentMapCam));
+          tempController
+              .animateCamera(CameraUpdate.newCameraPosition(currentMapCam));
 
-          if(mounted){
+          if (mounted) {
             setState(() {
               currentLocation = tempLoc;
+              //address = tempAddress;
             });
           }
-        }
-
-        else {
+        } else {
           bool locationStatus = await location.serviceEnabled();
-          if(locationStatus){
+          if (locationStatus) {
             initializeLocation();
           }
         }
       }
-    } on PlatformException catch (e){
-      if(e.code == 'PERMISSION_DENIED'){
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
         error = e.message;
-      } else if (e.code == 'SERVICE_STATUS_ERROR'){
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
         error = e.message;
       }
       currentLocation = null;
@@ -101,42 +104,43 @@ class _GPSLocationState  extends State<GPSLocation> {
       onMapCreated: (GoogleMapController con) {
         controller.complete(con);
       },
-    );
+    );;
+
+    print(address);
 
     String msg = 'Submitting your location data will allow for you to compare ' +
         'your survey results with other anymosuly with other people around you. ' +
         'Do you want to provide your location?';
 
+    String loc_msg = "You are located in: ";
+
     //TODO: Add logic for if the user does not enable location handling
-      return Stack(
-        children: <Widget>[
-          new Container(
-            height: 250,
-            alignment: Alignment.topCenter,
-            child: worldMap,
-          ),
-          new Container(
-            alignment: Alignment.center,
-            child: new Text(msg),
-          ),
-          new Container(
-            alignment: Alignment.bottomLeft,
-            child: getPaddedButton(
-                "Yes", () {
-                  widget.config.loc = currentLocation;
-              Navigator.popUntil(this.context, ModalRoute.withName("/"));
-            }),
-          ),
-          new Container(
-            alignment: Alignment.bottomRight,
-            child: getPaddedButton(
-                "No", () {
-              widget.config.loc = null;
-              Navigator.popUntil(this.context, ModalRoute.withName("/"));
-            }),
-          )
-        ],
-      );
+    return ListView(
+      children: <Widget>[
+        new Container(
+          height: 250,
+          child: worldMap,
+        ),
+        new Container(
+          child: new Text(msg),
+        ),
+        new Container(
+          child: new Text(loc_msg),
+        ),
+        new Container(
+          child: getPaddedButton("Yes", () {
+            widget.config.loc = currentLocation;
+            Navigator.popUntil(this.context, ModalRoute.withName("/"));
+          }),
+        ),
+        new Container(
+          child: getPaddedButton("No", () {
+            widget.config.loc = null;
+            Navigator.popUntil(this.context, ModalRoute.withName("/"));
+          }),
+        )
+      ],
+    );
   }
 
   Widget build(BuildContext) {
