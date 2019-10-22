@@ -124,8 +124,6 @@ class ProfilePicState extends State<ProfilePic> {
           children: <Widget>[
             getPaddedButton("Take another picture", () {
               File(path).delete().then((err) {
-                path =
-                    join(startPath, DateTime.now().toIso8601String() + ".jpg");
                 cameraState = CAMERA_ON;
                 currentImage = null;
                 widget.config.img = null;

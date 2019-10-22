@@ -185,7 +185,7 @@ class _HomePageState extends State<HomePage> {
           children: <Widget>[
             Text('Pyschological Survey App'),
             Padding(
-              padding: EdgeInsets.only(left: 35),
+              padding: EdgeInsets.only(left: 2),
               child: getImage(),
             ),
           ],
