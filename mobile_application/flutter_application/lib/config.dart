@@ -14,7 +14,7 @@ class Config {
   bool loggedIn;
   int hash;
   Image img;
-  String myCity;
+  Map locData;
 
   void clear()
   {
@@ -28,9 +28,8 @@ class Config {
     this.loggedIn = false;
     this.hash = 0;
     img = null;
-    this.myCity = null;
+    this.locData = null;
   }
-
 
   bool has_spaces()
   {

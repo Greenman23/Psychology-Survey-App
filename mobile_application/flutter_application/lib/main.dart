@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_application/gps_location.dart';
 import 'package:flutter_application/profile_pic.dart';
 import 'package:flutter_application/survey_list.dart';
 import 'package:path/path.dart' as prefix0;
@@ -91,6 +92,16 @@ class _HomePageState extends State<HomePage> {
           }));
     }
 
+    void _changeLocation() {
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/gpslocation"),
+          builder: (BuildContext context) {
+            return GPSLocation(
+              config: widget.config,
+            );
+          }));
+    }
+
     void _takeSurvey() {
       Navigator.of(context).push(MaterialPageRoute(
           settings: RouteSettings(name: "/survey"),
@@ -130,6 +141,7 @@ class _HomePageState extends State<HomePage> {
               getPaddedButton("Have Conversation", () {}),
               getPaddedButton("View Metrics", () {}),
               getPaddedButton("Change Profile Picture", _changePicture),
+              getPaddedButton("Change Location Data", _changeLocation),
               getPaddedButton("Logout", () {
                 this.widget.config.clear();
                 update();
