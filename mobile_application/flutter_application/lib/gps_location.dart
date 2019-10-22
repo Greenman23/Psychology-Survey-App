@@ -25,8 +25,6 @@ class _GPSLocationState extends State<GPSLocation> {
 
   LocationData currentLocation;
 
-  var address;
-
   double currentLongitude, currentLatitude;
 
   String error;
@@ -41,14 +39,14 @@ class _GPSLocationState extends State<GPSLocation> {
 
   CameraPosition currentMapCam;
 
-  String julianIsMyFriend = "";
+  String address = "";
 
   void setupAddresses(Coordinates coord) async
   {
     Geocoder.local.findAddressesFromCoordinates(coord).then((err)
         {
-          if(julianIsMyFriend == "") {
-            julianIsMyFriend = err[0].locality;
+          if(address == "") {
+            address = err[0].locality;
             setState(() {
 
             });
@@ -93,7 +91,6 @@ class _GPSLocationState extends State<GPSLocation> {
           if (mounted) {
             setState(() {
               currentLocation = tempLoc;
-              //address = tempAddress;
             });
           }
         } else {
@@ -122,15 +119,13 @@ class _GPSLocationState extends State<GPSLocation> {
       onMapCreated: (GoogleMapController con) {
         controller.complete(con);
       },
-    );;
-
-    print(address);
+    );
 
     String msg = 'Submitting your location data will allow for you to compare ' +
         'your survey results with other anymosuly with other people around you. ' +
         'Do you want to provide your location?';
 
-    String loc_msg = "You are located in: ";
+    String loc_msg = "You are located in: " + address;
 
     //TODO: Add logic for if the user does not enable location handling
     return ListView(
@@ -142,22 +137,18 @@ class _GPSLocationState extends State<GPSLocation> {
         new Container(
           child: new Text(msg),
         ),
-
-        new Container(
-          child: new Text(julianIsMyFriend),
-        ),
         new Container(
           child: new Text(loc_msg),
         ),
         new Container(
           child: getPaddedButton("Yes", () {
-            widget.config.loc = currentLocation;
+            widget.config.myCity = address;
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         ),
         new Container(
           child: getPaddedButton("No", () {
-            widget.config.loc = null;
+            widget.config.myCity = null;
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         )
