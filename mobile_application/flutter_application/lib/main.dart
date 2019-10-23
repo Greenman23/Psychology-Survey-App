@@ -143,8 +143,11 @@ class _HomePageState extends State<HomePage> {
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),
               getPaddedButton("Logout", () {
-                this.widget.config.clear();
-                update();
+                this.widget.config.actualFirstName = "yeehaw";
+                this.widget.config.storeConfig().then((a) {
+                  this.widget.config.clear();
+                  update();
+                });
               }),
             ],
           ),
@@ -154,11 +157,8 @@ class _HomePageState extends State<HomePage> {
 
     void lookupPicture()
     {
-      if(widget.config.img != "") {
-        widget.config.img = Image.file(File(widget.config.path));
-        setState(() {
+      if(widget.config.path != "") {
 
-        });
       }
 
     }
@@ -171,8 +171,15 @@ class _HomePageState extends State<HomePage> {
             image: widget.config.img.image,
             width: width,
           );
-        } else {
-          lookupPicture();
+        } else if(widget.config.path != "") {
+          widget.config.img = Image.file(File(widget.config.path));
+          return Image(
+            image: widget.config.img.image,
+            width: width,
+          );
+        }
+        else
+          {
           return Text("");
         }
       }
