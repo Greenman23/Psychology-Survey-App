@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'Config.dart';
+import 'package:flutter_application/config.dart';
 import 'Http.dart';
 import 'primary_widgets.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';

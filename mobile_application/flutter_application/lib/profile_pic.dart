@@ -8,7 +8,7 @@ import 'package:flutter/material.dart' as prefix1;
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application/gps_location.dart';
 import 'primary_widgets.dart';
-import 'Config.dart';
+import 'package:flutter_application/config.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -67,7 +67,9 @@ class ProfilePicState extends State<ProfilePic> {
             path = newPath;
             widget.config.path = newPath;
             var files3 = err.listSync();
-            update();
+            widget.config.storeConfig().then((onValue){
+              update();
+            });
           });
         }
         catch(e)

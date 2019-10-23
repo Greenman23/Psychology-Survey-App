@@ -6,7 +6,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
 import 'primary_widgets.dart';
-import 'Config.dart';
+import 'package:flutter_application/config.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';

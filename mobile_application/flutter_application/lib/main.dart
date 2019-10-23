@@ -8,7 +8,7 @@ import 'package:flutter_application/survey_list.dart';
 import 'package:path/path.dart' as prefix0;
 import 'package:path_provider/path_provider.dart';
 import 'login_page.dart';
-import 'Config.dart';
+import 'package:flutter_application/config.dart';
 import 'primary_widgets.dart';
 import 'create_page.dart';
 import 'package:path/path.dart';
@@ -43,6 +43,21 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+
+
+  void update() {
+    setState(() {});
+  }
+
+  @override
+  void initState()
+  {
+    super.initState();
+    int x =2;
+    widget.config.fillGlobalConfig(update);
+  }
+
+
   @override
   Widget build(BuildContext context) {
     Widget titleSection = Container(
@@ -144,9 +159,8 @@ class _HomePageState extends State<HomePage> {
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),
               getPaddedButton("Logout", () {
-                this.widget.config.actualFirstName = "yeehaw";
-                this.widget.config.storeConfig().then((a) {
-                  this.widget.config.clear();
+                this.widget.config.storeConfig(loggedin: false).then((a) {
+                this.widget.config.clear();
                   update();
                 });
               }),
@@ -156,13 +170,7 @@ class _HomePageState extends State<HomePage> {
       }
     }
 
-    void lookupPicture()
-    {
-      if(widget.config.path != "") {
 
-      }
-
-    }
 
     Widget getImage() {
       if(widget.config.loggedIn) {
@@ -187,28 +195,27 @@ class _HomePageState extends State<HomePage> {
       return Text("");
     }
 
-
-
-    return MaterialApp(
-      title: 'Home',
-      home: Scaffold(
-        appBar: AppBar(
-            title: Row(
-          children: <Widget>[
-            Text('Pyschological Survey App'),
-            Padding(
-              padding: EdgeInsets.only(left: 2),
-              child: getImage(),
+        return MaterialApp(
+          title: 'Home',
+          home: Scaffold(
+            appBar: AppBar(
+                title: Row(
+                  children: <Widget>[
+                    Text('Pyschological Survey App'),
+                    Padding(
+                      padding: EdgeInsets.only(left: 2),
+                      child: getImage(),
+                    ),
+                  ],
+                )),
+            body: Column(
+              children: [
+                Divider(),
+                Expanded(child: getMenu()),
+              ],
             ),
-          ],
-        )),
-        body: Column(
-          children: [
-            Divider(),
-            Expanded(child: getMenu()),
-          ],
-        ),
-      ),
-    );
+          ),
+        );
+      }
   }
-}
+

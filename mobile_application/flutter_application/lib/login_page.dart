@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
-import 'Config.dart';
+import 'package:flutter_application/config.dart';
 import 'Http.dart';
 import 'primary_widgets.dart';
 
@@ -61,9 +61,11 @@ class _LoginPageState extends State<LoginPage> {
     loginState = text;
     outComeColor = color;
     if (loginState == "Login Successful") {
-      widget.config.fillConfig().then((a) {
-        Navigator.popUntil(this.context, ModalRoute.withName("/"));
-        setState(() {});
+      widget.config.storeConfig(loggedin: true).then((e) {
+        widget.config.fillConfig().then((a) {
+          Navigator.popUntil(this.context, ModalRoute.withName("/"));
+          setState(() {});
+        });
       });
     }
   }
