@@ -144,11 +144,12 @@ class _GPSLocationState extends State<GPSLocation> {
           height: 250,
           child: worldMap,
         ),
-        new Container(
-          child: new Text(msg),
+        new ListTile(
+          title: new Text(msg),
+          trailing: Icon(Icons.explore),
         ),
-        new Container(
-          child: new Text(locationMsg),
+        new ListTile(
+          title: new Text(locationMsg),
         ),
         new Container(
           child: getPaddedButton("Yes", () {
