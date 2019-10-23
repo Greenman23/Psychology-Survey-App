@@ -76,24 +76,16 @@ class Config  {
    // map["hash"] = this.hash;
     map["path"] = this.path;
     map["locData"] = this.locData;
-    this.actualLastName = "ff1";
     String json = jsonEncode(map);
-    this.actualLastName = "ff2";
     await getApplicationDocumentsDirectory().then((onValue) {
-      this.actualLastName = "ff3";
       String p = join(onValue.path, this.username);
       File con = File(p);
       if (con.existsSync()) {
-        this.actualLastName = "ff4";
         con.writeAsStringSync(json);
-        this.actualLastName = "ff5";
       } else {
         con.createSync();
-        this.actualLastName = "ff6";
         con.openWrite();
-        this.actualLastName = "ff7";
         con.writeAsStringSync(json);
-        this.actualLastName = "ff8";
       }
       return 0;
     });
@@ -103,15 +95,11 @@ class Config  {
   Future<int> fillConfig() async  {
     int x = 2;
     x+=1;
-    this.actualLastName = "sdsad";
-    this.actualLastName = "sdsad1.5";
+
     await getApplicationDocumentsDirectory().then((onValue) {
-      this.actualLastName = "sdsad2";
       String p = join(onValue.path, this.username);
       File con = File(p);
-      this.actualLastName = "sdsad2.5";
       if (con.existsSync()) {
-        this.actualLastName = "sdsad3";
         String j = con.readAsStringSync();
         Map map = jsonDecode(j);
         this.username = map["username"];
@@ -121,7 +109,6 @@ class Config  {
 //        this.gender = map["gender"];
 //        this.dob = map["dob"];
         this.rememberPassword = map["rememberPassword"];
-        this.actualLastName = "sdsad4";
 //        this.hash = map["hash"];
         this.path = map["path"];
         this.locData = map["locData"];

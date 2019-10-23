@@ -88,6 +88,7 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return ProfilePic(
               config: widget.config,
+              isCreator: false,
             );
           }));
     }

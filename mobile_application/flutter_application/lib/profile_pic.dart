@@ -18,8 +18,8 @@ final int CAMERA_USED = 2;
 
 class ProfilePic extends StatefulWidget {
   final Config config;
-
-  ProfilePic({Key key, @required this.config}) : super(key: key);
+  bool isCreator;
+  ProfilePic({Key key, @required this.config, this.isCreator = false}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ProfilePicState();
@@ -128,7 +128,7 @@ class ProfilePicState extends State<ProfilePic> {
 
           Align(
             alignment: Alignment.topLeft,
-            child: getPaddedButton("Skipa221", (() {
+            child: getPaddedButton("Skip", (() {
               //Navigator.popUntil(this.context, ModalRoute.withName("/"));
               Navigator.of(this.context).push(MaterialPageRoute(
                   settings: RouteSettings(name: "/gpsloction"),
@@ -166,12 +166,18 @@ class ProfilePicState extends State<ProfilePic> {
               });
             }),
             getPaddedButton("Finish", () {
-              //Navigator.popUntil(this.context, ModalRoute.withName("/"));
-              Navigator.of(this.context).push(MaterialPageRoute(
-                  settings: RouteSettings(name: "/gpsloction"),
-                  builder: (BuildContext context) {
-                    return GPSLocation(config: widget.config);
-                  }));
+              if(widget.isCreator) {
+                //Navigator.popUntil(this.context, ModalRoute.withName("/"));
+                Navigator.of(this.context).push(MaterialPageRoute(
+                    settings: RouteSettings(name: "/gpsloction"),
+                    builder: (BuildContext context) {
+                      return GPSLocation(config: widget.config);
+                    }));
+              }
+              else
+                {
+                  Navigator.pop(this.context);
+                }
             }),
           ],
         ),
