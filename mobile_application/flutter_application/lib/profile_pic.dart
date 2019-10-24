@@ -95,7 +95,7 @@ class ProfilePicState extends State<ProfilePic> {
       return Stack(
         children: <Widget>[
           CameraPreview(controller),
-//          getText("Take a picture"),
+//          getText("Try again"),
           Align(
             alignment: Alignment.bottomCenter,
             child: getPaddedButton(
@@ -159,7 +159,7 @@ class ProfilePicState extends State<ProfilePic> {
         Expanded(child: currentImage),
         Row(
           children: <Widget>[
-            getPaddedButton("Take another picture", () {
+            getPaddedButton("Try Again", () {
               File(path).delete().then((err) {
                 cameraState = CAMERA_ON;
                 currentImage = null;
