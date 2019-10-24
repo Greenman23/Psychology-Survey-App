@@ -19,7 +19,7 @@ final int CAMERA_USED = 2;
 class ProfilePic extends StatefulWidget {
   final Config config;
   bool isCreator;
-  ProfilePic({Key key, @required this.config, this.isCreator = false}) : super(key: key);
+  ProfilePic({Key key, @required this.config, this.isCreator = true}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ProfilePicState();
