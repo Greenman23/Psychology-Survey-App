@@ -1,6 +1,8 @@
  USE PROJECT;
  DROP FUNCTION IF EXISTS insert_user;
- 
+DROP PROCEDURE IF EXISTS insert_answer;
+ DROP FUNCTION IF EXISTS insert_survey_question;
+
  DELIMITER //
  CREATE FUNCTION insert_user(first_name_ varchar(30), last_name_ varchar(30), username_ varchar(30), user_password_ varchar(30),
  sex_ ENUM('Male', 'Female'), dob_ DATE) RETURNS bool DETERMINISTIC
@@ -18,19 +20,6 @@ END
 //
  DELIMITER ;
  
- DROP FUNCTION IF EXISTS insert_answer
- DELIMITER //
- CREATE FUNCTION insert_answer(user_id_ int, survey_question_ int, actual_answer_ varchar(512)) RETURNS bool DETERMINISTIC
- BEGIN 
- IF ((select COUNT('id') FROM ANSWERS_TEXT WHERE 'actual_answer' = actual_answer_) > 0)
- THEN
- RETURN FALSE;
- INSERT INTO ANSWERS_TEXT(user_id, survey_question, actual_answer) VALUES(user_id_, survey_question_, actual_answer_);
- RETURN TRUE;
- END IF;
- END
- //
- DELIMITER;
  
  DROP FUNCTION IF EXISTS verify_user;
  DELIMITER //
@@ -147,12 +136,23 @@ SELECT question_version, answers, question_type, health_data  FROM QUESTIONS GRO
  
  DROP PROCEDURE IF EXISTS get_user_id_answer;
  DELIMITER //
- CREATE PROCEDURE get_user_id_answer()
+ CREATE PROCEDURE get_user_id_answer(user_name_ varchar(30), password_ varchar(30) )
  BEGIN 
- SELECT user_id FROM ANSWERS_TEXT;
+ SELECT pk_user_id FROM USERS WHERE user_name = user_name_ and user_password = password_;
  END;
  //
  DELIMITER;
+ 
+ 
+ DROP PROCEDURE IF EXISTS insert_answer;
+DELIMITER //
+CREATE PROCEDURE insert_answer(user_name_ varchar(30), password_ varchar(30), survey_id_ int, answer_ varchar(512))
+BEGIN
+INSERT INTO ANSWERS_TEXT (user_id, survey_question, actual_answer) VALUES ((SELECT pk_user_id FROM USERS WHERE user_name =  user_name_ and user_password = password_), survey_id_, answer_);
+SELECT user_id FROM ANSWERS_TEXT;
+END;
+ //
+DELIMITER;
  
  DROP FUNCTION IF EXISTS insert_survey_question;
    DELIMITER //
@@ -174,7 +174,7 @@ END;
     DELIMITER //
  CREATE PROCEDURE get_questions_by_survey(name_ varchar(60))
  BEGIN
- SELECT questions.question, questions.answers, questions.question_type, squestions.last_survey_question, questions.health_data FROM SURVEY_QUESTIONS as squestions
+ SELECT squestions.id, questions.question, questions.answers, questions.question_type, squestions.last_survey_question, questions.health_data FROM SURVEY_QUESTIONS as squestions
  LEFT JOIN QUESTIONS AS questions
  ON
  squestions.question_id = questions.pk_questions_id
