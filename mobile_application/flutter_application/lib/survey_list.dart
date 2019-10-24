@@ -35,7 +35,7 @@ class _SurveyListState extends State<Survey_List> {
     List<String> disabledValues = new List<String>();
     Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) {
-          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues);
+          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues, config: widget.config,);
         }));
   }
 

@@ -16,16 +16,16 @@ class Results extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Padding(
-          padding: EdgeInsets.only(top: 40),
+            padding: EdgeInsets.only(top: 40),
             child: Column(
-          children: <Widget>[
-            getText("You have signs of " +
-                diagnosis[Random().nextInt(diagnosis.length - 1)]),
-            getPaddedButton("Finish", () {
-              Navigator.popUntil(context, ModalRoute.withName("/"));
-            })
-          ],
-        )),
+              children: <Widget>[
+                getText("You have signs of " +
+                    diagnosis[Random().nextInt(diagnosis.length - 1)]),
+                getPaddedButton("Finish", () {
+                  Navigator.popUntil(context, ModalRoute.withName("/"));
+                })
+              ],
+            )),
       ),
     );
   }

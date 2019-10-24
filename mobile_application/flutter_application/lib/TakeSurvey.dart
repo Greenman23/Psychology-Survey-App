@@ -2,18 +2,19 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
 import 'survey_overview.dart';
-
+import 'package:flutter_application/config.dart';
 class Survey_Question extends StatefulWidget {
   Map map;
   int index;
   String surveyName;
   List<String> disabledValues;
-
+  Config config;
   Survey_Question(
       {Key key,
       @required this.map,
       @required this.index,
-      @required this.disabledValues})
+      @required this.disabledValues,
+      @required this.config})
       : super(key: key);
 
   @override
@@ -201,6 +202,7 @@ class Survey_Question_State extends State<Survey_Question> {
           .push(MaterialPageRoute(builder: (BuildContext context) {
         return Survey_Question(
             map: widget.map,
+            config: widget.config,
             index: newIndex,
             disabledValues: widget.disabledValues);
       }));
@@ -208,6 +210,7 @@ class Survey_Question_State extends State<Survey_Question> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
         return Survey_Overview(
+            config: widget.config,
             survey: widget.map,);
       }));
     }

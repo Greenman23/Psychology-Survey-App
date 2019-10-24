@@ -2,10 +2,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
 import 'reults.dart';
+import 'package:flutter_application/Http.dart';
+import 'package:flutter_application/config.dart';
 class Survey_Overview extends StatelessWidget {
   Map survey;
-
-  Survey_Overview({@required this.survey});
+  Config config;
+  Survey_Overview({@required this.config, @required this.survey});
 
   Widget build(BuildContext buildContext) {
     //List<Map> actualSurvey = survey['Questions'];
@@ -68,6 +70,7 @@ class Survey_Overview extends StatelessWidget {
                 Navigator.pop(buildContext);
               }),
               getPaddedButton("See results", () {
+                outputAnswers(config, survey);
                 Navigator.of(buildContext).push(MaterialPageRoute(
                                 builder: (BuildContext context) {return Results();
                     }));

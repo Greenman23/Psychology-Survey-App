@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 
 // This should be moved somewhere else at some point
 final String URL = "http://ec2-54-162-109-76.compute-1.amazonaws.com:80";
-
+//final String URL = "192.168.2.33:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body) async
@@ -89,43 +89,50 @@ void getSurveyByName(String name, Function functor)
   });
 }
 
-void signUp(Config config, Function(bool, String, Color) functor)
-{
+void signUp(Config config, Function(bool, String, Color) functor) {
   Map map = {
-    "Type" : "signup",
-    "FirstName" : config.actualFirstName,
-    "LastName" : config.actualLastName,
-    "Username" : config.username,
-    "Password" : config.password,
-    "Gender" : config.gender,
-    "BirthDate" : DateFormat("yyyy-MM-dd").format(config.dob)
+    "Type": "signup",
+    "FirstName": config.actualFirstName,
+    "LastName": config.actualLastName,
+    "Username": config.username,
+    "Password": config.password,
+    "Gender": config.gender,
+    "BirthDate": DateFormat("yyyy-MM-dd").format(config.dob)
   };
 
-  if(config.is_empty_or_null())
-    {
-      functor(false, "You have blank fields!", Colors.red);
-      return;
-    }
+  if (config.is_empty_or_null()) {
+    functor(false, "You have blank fields!", Colors.red);
+    return;
+  }
 
-  if(config.has_spaces())
-    {
-      functor(false, "Spaces are not allowed in fields!", Colors.red);
-      return;
-    }
+  if (config.has_spaces()) {
+    functor(false, "Spaces are not allowed in fields!", Colors.red);
+    return;
+  }
 
-  getPost(map).then((Map value){
+  getPost(map).then((Map value) {
     bool success = value["Account_Creation"];
-    if(success)
-      {
-        functor(success, "Account Creation Successful!", Colors.black);
-
-      }
-    else
-      {
-        functor(success, "Account Creaion Failed " , Colors.red);
-      }
+    if (success) {
+      functor(success, "Account Creation Successful!", Colors.black);
+    }
+    else {
+      functor(success, "Account Creaion Failed ", Colors.red);
+    }
   });
-
-
 }
+
+  void outputAnswers(Config config, Map ogMap)
+  {
+    Map map = {
+      "Type" : "answers",
+      "Map" : ogMap,
+      "Username" : config.username,
+      "Password" : config.password
+    };
+
+    getPost(map).then((Map value){
+      print("Submitted");
+    });
+  }
+
 
