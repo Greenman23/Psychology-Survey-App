@@ -56,11 +56,18 @@ var app = http.createServer(function(request, response){
                   });
                 }
 
-                else if(post.Type == 'getQuestionsForSurvey'){
+                else if(post.Type == 'getQuestionsForSurvey'){  
                     query.get_survey_questions(post.SurveyName,connection, function(surveyQuestions){
                         sendJSON(request,response,surveyQuestions);
                   });
                 }
+
+                else if(post.Type == 'answers'){  
+                    query.send_answers(post.Username, post.Password, connection, post.Map, function(status){
+                        sendJSON(request,response,status);
+                  });
+                }
+
 
                 else {
                     var error_request = {
