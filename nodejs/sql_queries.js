@@ -196,7 +196,6 @@ module.exports  = {
             for(i = 0; i < answers.Questions.length; i++){
 
                 var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '");';
-                console.log(answer)
                 insert_query(answer, connection, function(res){
 
                     console.log("Result ", res);
