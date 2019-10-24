@@ -7,6 +7,34 @@ function query(q, connection, callback){
     });
 }
 
+function insert_query(q, connection, callback){
+    connection.query(q, function(error)
+    {
+        if(error) throw error;
+
+        callback("Success")
+    });
+}
+
+function get_user_id(Username, Password, connection, callback){
+    
+    console.log("Username: ", Username, "Password: ", Password)
+
+    var get_user_id = 'CALL get_user_id_answer("' + Username + '","' + Password + '");';
+
+    query(get_user_id, connection, function(error,res){
+
+        var userid;
+
+        if(error) throw error   
+
+        for (let value of Object.values(res[0])) {
+            userid = value.pk_user_id;
+        }
+        callback(userid);
+    });
+}
+
 module.exports  = {
 
     login: function(Username, Password, connection, callback){
@@ -22,10 +50,8 @@ module.exports  = {
 
             query(verification, connection, function(error,res){
                 if(error) throw error   
-                console.log(res);
                 for (let value of Object.values(res[0])) {
                     auth = value;
-                    console.log(auth);
                 }
                 
                 if(auth == 1){
@@ -133,12 +159,11 @@ module.exports  = {
                 if(error) throw error;
 
                 for (let value of Object.values(res[0])) {
-                    console.log(value.answers)
                     value.answers = value.answers.split("'").join("\"")
                     value.answers = ('{"data" : ' + value.answers + '}')
-                    console.log(value.answers)
                     value.answers = JSON.parse(value.answers)['data']
                     let temp = {
+                        'ID' : value.id,
                         'Question': value.question,
                         'Answers': value.answers, 
                         'QuestionType': value.question_type,
@@ -159,6 +184,38 @@ module.exports  = {
             }
             callback(error_resp)
 
+        }       
+    },
+
+    send_answers: function(user, pass, connection, answers, callback){
+
+
+        if(user != undefined && pass != undefined && answers != undefined ){
+
+            
+            for(i = 0; i < answers.Questions.length; i++){
+
+                var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '");';
+                console.log(answer)
+                insert_query(answer, connection, function(res){
+
+                    console.log("Result ", res);
+                    console.log("_____________________________________________________")
+                });
+            }
+            callback("done")
+
+           /* get_user_id(user,pass, connection, function(userID){
+                console.log(userID);
+
+
+            });*/
+        }
+        else {
+            var error_resp = {
+                "Invalid Response" : "Undefined Attributes"
+            }
+            callback(error_resp)
         }       
     },
 
