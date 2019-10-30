@@ -77,7 +77,7 @@ var app = http.createServer(function(request, response){
                 }
                 else if('image/jpeg' === request.headers['content-type']){
                     img.end();
-                    var resp = "Ok"
+                    var resp = "Image upload sucessful"
                     sendJSON(request,response,resp)
                 }
                 else{
