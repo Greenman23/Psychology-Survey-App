@@ -163,4 +163,8 @@ module.exports  = {
             callback(error_resp)
         }       
     },
+
+    send_profile_picture: function(user, connection, callback){
+        
+    }
 }

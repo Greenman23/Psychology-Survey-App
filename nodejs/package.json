@@ -17,6 +17,11 @@
   },
   "homepage": "https://github.com/Greenman23/Psychology-Survey-App#readme",
   "dependencies": {
+    "connect-form": "^0.2.1",
+    "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
+    "multer": "^1.4.2",
+    "multiparty": "^4.2.1",
     "mysql": "^2.17.1"
   }
 }
