@@ -10,7 +10,7 @@ import 'TakeSurvey.dart';
 
 // TODO : Make the surveys their own buttons instead of just listing them.
 
-class Survey_List extends StatefulWidget {
+class Survey_List  {
   final Config config;
 
   String surveyName;
@@ -22,20 +22,22 @@ class Survey_List extends StatefulWidget {
       this.surveyDescription,
       this.surveyVersion,
       Key key,
-      @required this.config})
-      : super(key: key);
+      @required this.config});
 
-  @override
-  _SurveyListState createState() => _SurveyListState();
 }
 
-class _SurveyListState extends State<Survey_List> {
+class SurveyListState extends StatelessWidget {
+
+  Config config;
+  SurveyListState({this.config});
+
+  BuildContext context;
   void startSurvey(Map map)
   {
     List<String> disabledValues = new List<String>();
     Navigator.of(context).push(MaterialPageRoute(
                 builder: (BuildContext context) {
-          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues, config: widget.config,);
+          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues, config: config,);
         }));
   }
 
@@ -73,6 +75,7 @@ class _SurveyListState extends State<Survey_List> {
 
   @override
   Widget build(BuildContext context) {
+    this.context = context;
     return getView();
   }
 }

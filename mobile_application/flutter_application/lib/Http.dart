@@ -9,8 +9,8 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 
 // This should be moved somewhere else at some point
-final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
-//final String URL = "192.168.2.33:80";
+//final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
+final String URL = "http://192.168.2.33:8080";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body) async
@@ -37,7 +37,7 @@ Future<List<Survey_List>> getSurveys() async{
   _list.addAll(value["survey"]);
 
   for (int i = 0; i < _list.length; i++){
-    Survey_List survey_list = Survey_List(surveyName: _list[i].toString() ,surveyDescription: "", surveyVersion: "");
+    Survey_List survey_list = Survey_List(surveyName: _list[i].toString() ,surveyDescription: "", surveyVersion: "", config: null);
     surveys.add(survey_list);
   }
   return surveys;
