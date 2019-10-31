@@ -22,8 +22,7 @@ class Server_Test_Functions:
     def begin(self):
         continueTest = True
         while(continueTest):
-            value = input("What function would you like to test? -1 to exit, 0 for login, 1 for sign up, 2 for surveys, 
-            , "3 for questions, 4 for sending an image, 5 to recieve an image: ")
+            value = input("What function would you like to test? -1 to exit, 0 for login, 1 for sign up, 2 for surveys, 3 for questions, 4 for sending an image, 5 to recieve an image:")
             value = int(value)
             if value == 0:
                 self.login_test()
@@ -66,7 +65,7 @@ class Server_Test_Functions:
         print()
 
     def all_surveys_test(self):
-        all_survey_function_dict = ""
+        all_survey_function_dict = {}
         sendUrl = URL  + '/allSurveys'
         response = requests.post(sendUrl, json=all_survey_function_dict)
         print(json.dumps(response.json(), indent=4, sort_keys=True))
@@ -76,7 +75,7 @@ class Server_Test_Functions:
         surveyName = input("enter a survey name: ")
         questions_for_surveys_function_dict = { 'SurveyName' : surveyName, 'Type' : 'getQuestionsForSurvey'}
         sendUrl = URL  + '/surveyQuestions'
-        response = requests.post(URL, json=questions_for_surveys_function_dict)
+        response = requests.post(sendUrl, json=questions_for_surveys_function_dict)
         print(json.dumps(response.json(), indent=4, sort_keys=True))
 
     def send_image_test(self):
@@ -89,7 +88,6 @@ class Server_Test_Functions:
             'image': (imageName, image),
             'username' : username,
         }
-        #response = requests.post(sendUrl, headers=headers, data=image)
         response = requests.post(sendUrl, headers = head, files=multipart_form_data)
         print(json.dumps(response.json(), indent=4, sort_keys=True))
 
