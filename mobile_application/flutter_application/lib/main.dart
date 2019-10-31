@@ -122,7 +122,7 @@ class _HomePageState extends State<HomePage> {
       Navigator.of(context).push(MaterialPageRoute(
           settings: RouteSettings(name: "/survey"),
           builder: (BuildContext context) {
-            return Survey_List(
+            return SurveyListState(
               config: widget.config,
             );
           }));
