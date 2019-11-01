@@ -61,16 +61,21 @@ class _LoginPageState extends State<LoginPage> {
     loginState = text;
     outComeColor = color;
     if (loginState == "Login Successful") {
-      widget.config.storeConfig(loggedin: true).then((e) {
-        widget.config.fillConfig().then((a) {
+      widget.config.storeGlobalConfig().then((e) {
           Navigator.popUntil(this.context, ModalRoute.withName("/"));
           setState(() {});
-        });
       });
     }
   }
 
+  void update()
+  {
+    setState(() {
+
+    });
+  }
+
   void _loginHTTP() {
-    login(widget.config, updateText);
+    login(widget.config, updateText, update);
   }
 }

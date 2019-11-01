@@ -67,7 +67,7 @@ class ProfilePicState extends State<ProfilePic> {
             path = newPath;
             widget.config.path = newPath;
             var files3 = err.listSync();
-            widget.config.storeConfig().then((onValue){
+            widget.config.storeGlobalConfig().then((onValue){
               update();
             });
           });

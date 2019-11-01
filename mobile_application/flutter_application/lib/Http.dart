@@ -45,7 +45,7 @@ Future<List<Survey_List>> getSurveys() async{
 
 
 
-void login(Config config, Function(String, Color) functor)
+void login(Config config, Function(String, Color) functor, Function() update)
 {
     Map  map = {
       'Type': "login",
@@ -56,11 +56,11 @@ void login(Config config, Function(String, Color) functor)
     getPost(map, "login").then((Map value)  {
       config.loggedIn = value["Authentication"];
       config.hash = value["Hash"];
-      print("We got it bois");
       if(config.loggedIn == true)
         {
           functor("Login Successful", Colors.blue);
           config.loggedIn = true;
+         // getPicture(config, update);
         }
       else
         {
@@ -69,6 +69,20 @@ void login(Config config, Function(String, Color) functor)
         }
 
     });
+}
+
+void getPicture(Config config, Function  functor)
+{
+  Map map = {
+    'Type' : "ProfilePic",
+    "username" : config.username
+  };
+
+  getPost(map, "ProfilePic").then((var value)  {
+    print(value);
+    functor();
+  });
+
 }
 
 void getSurveyByName(String name, Function functor)
