@@ -27,6 +27,8 @@ function sendJSON404(request,response, msg){
 
 var __profilePictureDirectory = 'assets/images/profile_images'
 
+var __defaultImagesDirectory = 'assets/images/default_images'
+
 var webApp = express()
 
 webApp.use(express.json())
@@ -132,7 +134,10 @@ webApp.post('/ProfilePic', function(request,response){
         console.log("writing to ", filePath)
         if(err){
             console.error(err)
-            sendJSON404(request,response,"File not found in request")
+            //sendJSON404(request,response,"File not found in request")
+            filePath = __defaultImagesDirectory + '/default_profile.jpg'
+            response.sendFile(filePath, {root: __dirname})
+            console.log("No profile picture for this user! Default was sent")
         }
         else {
             response.sendFile(filePath, {root: __dirname})
