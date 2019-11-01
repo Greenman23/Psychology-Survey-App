@@ -26,11 +26,23 @@ class Survey_List  {
 
 }
 
-class SurveyListState extends StatelessWidget {
+class SurveyListStateful extends StatefulWidget
+{
+Config config;
+SurveyListStateful({this.config});
+
+
+@override
+State createState() {
+  return SurveyListState(config: config);
+}
+}
+
+class SurveyListState extends State<SurveyListStateful> {
 
   Config config;
   SurveyListState({this.config});
-
+  Future fut;
   BuildContext context;
   void startSurvey(Map map)
   {
@@ -41,6 +53,12 @@ class SurveyListState extends StatelessWidget {
         }));
   }
 
+  @override
+  void initState()
+  {
+    fut = getSurveys();
+  }
+
   Widget getView() {
     return Scaffold(
       appBar: new AppBar(
@@ -48,7 +66,7 @@ class SurveyListState extends StatelessWidget {
       ),
       body: new Container(
         child: new FutureBuilder(
-          future: getSurveys(),
+          future: fut,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState == ConnectionState.done &&
                 snapshot.hasData) {

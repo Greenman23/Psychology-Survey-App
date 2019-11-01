@@ -13,10 +13,10 @@ import 'package:http/http.dart' as http;
 final String URL = "http://192.168.2.33:8080";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
-Future<Map<String, dynamic>> getPost(Map body) async
+Future<Map<String, dynamic>> getPost(Map body, String addition) async
 {
   HttpClient httpClient = new HttpClient();
-  HttpClientRequest r = await httpClient.postUrl(Uri.parse(URL));
+  HttpClientRequest r = await httpClient.postUrl(Uri.parse(URL + "/" + addition));
   r.headers.set('content-type', 'application/json');
   r.add(utf8.encode(json.encode(body)));
   HttpClientResponse response = await r.close();
@@ -33,7 +33,7 @@ Future<List<Survey_List>> getSurveys() async{
   };
   var _list = [];
   List<Survey_List> surveys = [];
-  Map value = await getPost(map);
+  Map value = await getPost(map, "allSurveys");
   _list.addAll(value["survey"]);
 
   for (int i = 0; i < _list.length; i++){
@@ -53,7 +53,7 @@ void login(Config config, Function(String, Color) functor)
       'Password' : config.password
     };
 
-    getPost(map).then((Map value)  {
+    getPost(map, "login").then((Map value)  {
       config.loggedIn = value["Authentication"];
       config.hash = value["Hash"];
       print("We got it bois");
@@ -79,7 +79,7 @@ void getSurveyByName(String name, Function functor)
     "SurveyName" : name
   };
 
-  getPost(map).then((Map value){
+  getPost(map, "surveyQuestions").then((Map value){
     for(int i = 0; i < value['Questions'].length; i++)
       {
         value['Questions'][i]['UserAnswer'] = new List<String>();
@@ -110,7 +110,7 @@ void signUp(Config config, Function(bool, String, Color) functor) {
     return;
   }
 
-  getPost(map).then((Map value) {
+  getPost(map, "signup").then((Map value) {
     bool success = value["Account_Creation"];
     if (success) {
       functor(success, "Account Creation Successful!", Colors.black);
@@ -130,7 +130,7 @@ void signUp(Config config, Function(bool, String, Color) functor) {
       "Password" : config.password
     };
 
-    getPost(map).then((Map value){
+    getPost(map, "uploadAnswers").then((Map value){
       print("Submitted");
     });
   }
