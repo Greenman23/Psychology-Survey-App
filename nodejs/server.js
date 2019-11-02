@@ -80,62 +80,80 @@ webApp.post('/uploadAnswers', function(request,response){
 });
 
 webApp.post('/uploadProfilePic', function(request,response){
+    let connection = mysql.createConnection(conInfo)
     console.log("Incoming request from ip =>", request.headers.host, " Type: uploadProfilePic")
     var form = new multiparty.Form()
     if(!request.headers['content-type'].includes('multipart/form-data')){
         sendJSON(request,response,"This request does not contain an image")
     }
     else {
-        form.parse(request, function(err, fields, files) {
-            var user = request.headers.username
-            if(files != undefined && user!= undefined && user!=""){
-                var filePath = __profilePictureDirectory + '/' + user + '.jpg';
-                fs.readFile(files.image[0].path,  function(err, data){
-                    console.log("writing to ", filePath)
-                    if(err){
-                        console.error(error)
-                        sendJSON(request,response,"File not found in request")
-                    }
-                    else {
-                        fs.writeFile(filePath,data,function(error) {
-                            if(error) {
+        query.login(request.headers.username, request.headers.password, connection, function(result){
+            if(result.Authentication === true){
+                form.parse(request, function(err, fields, files) {
+                    console.log(files)
+                    var user = request.headers.username
+                    if(files != undefined && user!= undefined && user!=""){
+                        var filePath = __profilePictureDirectory + '/' + user + '.jpg';
+                        fs.readFile(files.image[0].path,  function(err, data){
+                            console.log("writing to ", filePath)
+                            if(err){
                                 console.error(error)
-                                sendJSON404(request,response,"File could not be uploaded")
+                                sendJSON(request,response,"File not found in request")
                             }
-                            else{
-                                sendJSON(request,response,"profile picture has been uploaded")
-                            }
-                        }); 
-                        fs.unlink(files.image[0].path, function(error){
-                            if(error){
-                                console.error(error)
+                            else {
+                                fs.writeFile(filePath,data,function(error) {
+                                    if(error) {
+                                        console.error(error)
+                                        sendJSON404(request,response,"File could not be uploaded")
+                                    }
+                                    else{
+                                        sendJSON(request,response,"profile picture has been uploaded")
+                                    }
+                                }); 
+                                fs.unlink(files.image[0].path, function(error){
+                                    if(error){
+                                        console.error(error)
+                                    }
+                                })
                             }
                         })
                     }
-                })
+                    else {
+                        sendJSON(request,response,"Could not find picture in request")
+                    }
+                });
             }
             else {
-                sendJSON(request,response,"Could not find picture in request")
+                sendJSON404(request,response, "Invalid user!")
             }
-        });
+        })
     }
 })
 
 webApp.post('/ProfilePic', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: getProfilePic")
+    let connection = mysql.createConnection(conInfo)
     var user = request.body.username
-    var filePath = __profilePictureDirectory + '/' + user +'.jpg'
-    fs.readFile(filePath, 'utf8',function(err, data){
-        console.log("getting profile picture for ", filePath)
-        if(err){
-            console.error(err)
-            filePath = __defaultImagesDirectory + '/default_profile.jpg'
-            response.sendFile(filePath, {root: __dirname})
-            console.log("No profile picture for this user! Default was sent")
+    var pass = request.body.password
+    query.login(user,pass,connection,function(uploadResult){
+        if(uploadResult.Authentication === true){
+            var filePath = __profilePictureDirectory + '/' + user +'.jpg'
+            fs.readFile(filePath, 'utf8',function(err, data){
+                console.log("getting profile picture for ", filePath)
+                if(err){
+                    console.error(err)
+                    filePath = __defaultImagesDirectory + '/default_profile.jpg'
+                    response.sendFile(filePath, {root: __dirname})
+                    console.log("No profile picture for this user! Default was sent")
+                }
+                else {
+                    response.sendFile(filePath, {root: __dirname})
+                    console.log("file has been sent.")
+                }
+            })
         }
         else {
-            response.sendFile(filePath, {root: __dirname})
-            console.log("file has been sent.")
+            sendJSON404(request,response,"Invalid User!")
         }
     })
 })

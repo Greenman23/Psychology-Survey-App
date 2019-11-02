@@ -80,13 +80,15 @@ class Server_Test_Functions:
 
     def send_image_test(self):
         username = input("Enter username: ")
+        password = input("Enter password: ")
         imageName = input("Enter an image name: ")
         image = open('images_to_send/' + imageName  + ".jpg", 'rb').read()
-        head = {'username' : username}
+        head = {'username' : username, 'password' : password}
         sendUrl = URL  + '/uploadProfilePic'
         multipart_form_data = {
             'image': (imageName, image),
             'username' : username,
+            'password' : password,
         }
         response = requests.post(sendUrl, headers = head, files=multipart_form_data)
         print(json.dumps(response.json(), indent=4, sort_keys=True))
@@ -95,10 +97,12 @@ class Server_Test_Functions:
     def request_image_test(self):
         
         username = input("enter username: ")
+        password = input("enter password: ")
 
         head = {'request-type' : 'ProfileImageRequest'}
         request_image_dict = {
             'username' : username,
+            'password' :password,
         }
         sendURL = URL + '/ProfilePic'
         response = requests.post(sendURL, headers = head,json=request_image_dict, stream=True)

@@ -28,6 +28,7 @@ module.exports  = {
                             'last_name' : results[0].last_name,
                             'Gender' : results[0].sex,
                             'DOB' : results[0].age,
+                            "Authentication" : true,
                         }
                         connection.end()
                         callback(user_info)
@@ -45,7 +46,7 @@ module.exports  = {
         }
         else {
             var error_resp = {
-                "Invalid Response" : "Undefined Attributes"
+                "Authentication" : "False"
             }
             connection.end()
             callback(error_resp)
