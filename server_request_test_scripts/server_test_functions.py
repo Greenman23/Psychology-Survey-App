@@ -55,7 +55,7 @@ class Server_Test_Functions:
         lastName = input("enter a last name: ")
         username = input("enter a username: ")
         password = input("enter a password: ")
-        gender = input("enter gender(M for male, and F for Female): ")
+        gender = input("enter gender(Male, Female): ")
         birthDate = input("enter a birthday exe(YYYY-MM-DD): ")
         sign_up_dict = {'FirstName': firstName, 'LastName': lastName, 'Username': username, 'Password': password,
             'Gender': gender, 'BirthDate': birthDate}
