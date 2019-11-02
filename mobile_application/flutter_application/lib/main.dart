@@ -167,12 +167,13 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget getImage() {
-      if (widget.config.loggedIn) {
-        double width = 50;
+      if (widget.config.loggedIn || true) {
+        double width = 100;
         if (widget.config.img != null) {
           return Image(
             image: widget.config.img.image,
             width: width,
+            height: 100,
           );
         } else if (widget.config.path != "") {
           widget.config.img = Image.file(File(widget.config.path));
@@ -194,10 +195,7 @@ class _HomePageState extends State<HomePage> {
             title: Row(
           children: <Widget>[
             Text('Pyschological Survey App'),
-            Padding(
-              padding: EdgeInsets.only(left: 2),
-              child: getImage(),
-            ),
+            getImage()
           ],
         )),
         body: Column(

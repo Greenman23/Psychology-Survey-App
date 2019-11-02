@@ -1,5 +1,7 @@
 import 'dart:convert';
+import 'dart:ffi';
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:flutter_application/survey_list.dart';
 
 import 'package:flutter_application/config.dart';
@@ -7,6 +9,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
@@ -25,6 +29,40 @@ Future<Map<String, dynamic>> getPost(Map body, String addition) async
   Map<String, dynamic> jsonReply = jsonDecode(reply);
   httpClient.close();
   return jsonReply;
+}
+
+Future<Image> getPicturePost(Map body, String addition) async
+{
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest r = await httpClient.postUrl(Uri.parse(URL + "/" + addition));
+  r.headers.set('content-type', 'application/json');
+  r.add(utf8.encode(json.encode(body)));
+  HttpClientResponse response = await r.close();
+  String r2 =(response.toString());
+  int count= 0;
+   var list = await response.toList();
+     int len = list.length;
+     for(int i = 0; i < len; i++)
+     {
+      count += (list[i].length);
+     }
+    Uint8List l = new Uint8List(count);
+      count = 0;
+    for(int i = 0; i < len; i++)
+    {
+      for(int j = 0; j < list[i].length; j++)
+        {
+          l[count] = list[i][j];
+          count++;
+        }
+    }
+
+     Image img =  Image.memory(l);
+     //String reply = await response.transform(utf8.decoder).join();
+     var x = 2;
+     return img;
+
+
 }
 
 Future<List<Survey_List>> getSurveys() async{
@@ -58,14 +96,14 @@ void login(Config config, Function(String, Color) functor, Function() update)
       config.hash = value["Hash"];
       if(config.loggedIn == true)
         {
-          functor("Login Successful", Colors.blue);
           config.loggedIn = true;
-         // getPicture(config, update);
+          functor("Login Successful", Colors.blue);
+          getPicture(config, update);
         }
       else
         {
-          functor("Login not Successful", Colors.red);
           config.loggedIn = false;
+          functor("Login not Successful", Colors.red);
         }
 
     });
@@ -78,8 +116,9 @@ void getPicture(Config config, Function  functor)
     "username" : config.username
   };
 
-  getPost(map, "ProfilePic").then((var value)  {
-    print(value);
+  getPicturePost(map, "ProfilePic").then((Image value)  {
+    config.img = value;
+    config.loggedIn = true;
     functor();
   });
 
