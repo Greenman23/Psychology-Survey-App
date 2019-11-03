@@ -11,7 +11,7 @@ import 'primary_widgets.dart';
 import 'package:flutter_application/config.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:flutter_application/Http.dart';
 final int CAMERA_ON = 0;
 final int NO_CAMERA = 1;
 final int CAMERA_USED = 2;
@@ -19,7 +19,9 @@ final int CAMERA_USED = 2;
 class ProfilePic extends StatefulWidget {
   final Config config;
   bool isCreator;
-  ProfilePic({Key key, @required this.config, this.isCreator = true}) : super(key: key);
+
+  ProfilePic({Key key, @required this.config, this.isCreator = true})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => ProfilePicState();
@@ -47,33 +49,30 @@ class ProfilePicState extends State<ProfilePic> {
         });
       }
     });
-
   }
 
-  void takepic() async
-  {
-
+  void takepic() async {
     getApplicationDocumentsDirectory().then((err) {
-        var files = err.listSync();
-        var err2 = join(err.path, widget.config.username);
-        if(File(path).existsSync()) {
-          File(path).deleteSync();
-        }
-        var files2 = err.listSync();
-        try {
-          String newPath = join(startPath, DateTime.now().toIso8601String() + ".jpg");
+      var files = err.listSync();
+      var err2 = join(err.path, widget.config.username);
+      if (File(path).existsSync()) {
+        File(path).deleteSync();
+      }
+      var files2 = err.listSync();
+      try {
+        String newPath =
+          join(startPath, DateTime.now().toIso8601String() + ".jpg");
           controller.takePicture(newPath).then((err2) {
-            cameraState = CAMERA_USED;
-            path = newPath;
-            widget.config.path = newPath;
-            var files3 = err.listSync();
-            widget.config.storeGlobalConfig().then((onValue){
-              update();
-            });
+          cameraState = CAMERA_USED;
+          path = newPath;
+          widget.config.path = newPath;
+          var files3 = err.listSync();
+          widget.config.img = Image.file(File(newPath));
+          uploadImage(widget.config).then((onValue){
+            update();
           });
-        }
-        catch(e)
-      {
+        });
+      } catch (e) {
         print(e);
       }
     });
@@ -88,41 +87,17 @@ class ProfilePicState extends State<ProfilePic> {
 
   void update() => setState(() {});
 
-
-
   Widget getView() {
     if (cameraState == CAMERA_ON) {
       return Stack(
         children: <Widget>[
           CameraPreview(controller),
-//          getText("Try again"),
           Align(
             alignment: Alignment.bottomCenter,
             child: getPaddedButton(
               "",
-
               () {
-
-                    takepic();
-
-
-//               if(!File(path).existsSync())
-//                 {
-//                  controller.takePicture(path).then((err) {
-//                    cameraState = CAMERA_USED;
-//                    update();
-//                  });
-//                }
-//
-//                else
-//                {
-//                  File(path).delete().then((a) {
-//                    controller.takePicture(path).then((err) {
-//                      cameraState = CAMERA_USED;
-//                      update();
-//                    });
-//                  });
-//                }
+                takepic();
               },
               isCircle: true,
             ),
@@ -168,18 +143,16 @@ class ProfilePicState extends State<ProfilePic> {
               });
             }),
             getPaddedButton("Finish", () {
-              if(widget.isCreator) {
+              if (widget.isCreator) {
                 //Navigator.popUntil(this.context, ModalRoute.withName("/"));
                 Navigator.of(this.context).push(MaterialPageRoute(
                     settings: RouteSettings(name: "/gpsloction"),
                     builder: (BuildContext context) {
                       return GPSLocation(config: widget.config);
                     }));
+              } else {
+                Navigator.pop(this.context);
               }
-              else
-                {
-                  Navigator.pop(this.context);
-                }
             }),
           ],
         ),

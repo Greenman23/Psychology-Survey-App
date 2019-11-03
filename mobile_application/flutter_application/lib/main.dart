@@ -12,6 +12,7 @@ import 'package:flutter_application/config.dart';
 import 'primary_widgets.dart';
 import 'create_page.dart';
 import 'package:path/path.dart';
+import 'package:flutter_application/Http.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -167,7 +168,7 @@ class _HomePageState extends State<HomePage> {
     }
 
     Widget getImage() {
-      if (widget.config.loggedIn || true) {
+      if (widget.config.loggedIn) {
         double width = 100;
         if (widget.config.img != null) {
           return Image(
@@ -175,17 +176,23 @@ class _HomePageState extends State<HomePage> {
             width: width,
             height: 100,
           );
-        } else if (widget.config.path != "") {
-          widget.config.img = Image.file(File(widget.config.path));
-          return Image(
-            image: widget.config.img.image,
-            width: width,
-          );
         } else {
-          return Text("");
+          getPicture(widget.config, update);
         }
       }
       return Text("");
+    }
+
+    Text getUsername()
+    {
+      if(widget.config.username != null)
+        {
+          if(widget.config.username != "")
+            {
+              return Text(widget.config.username);
+            }
+        }
+      return Text("Welcome to the App!");
     }
 
     return MaterialApp(
@@ -194,7 +201,7 @@ class _HomePageState extends State<HomePage> {
         appBar: AppBar(
             title: Row(
           children: <Widget>[
-            Text('Pyschological Survey App'),
+            getUsername(),
             getImage()
           ],
         )),

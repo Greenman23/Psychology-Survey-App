@@ -64,75 +64,6 @@ class Config {
     return false;
   }
 
-//  Future<int> storeConfig({bool loggedin = true})  async {
-//    Map map = new Map();
-//        map["username"] = this.username;
-//        map["password"] = this.password;
-//        map["actualLastName"] = this.actualLastName;
-//        map["actualFirstName"] = this.actualFirstName;
-////    map["gender"] = this.gender;
-////    map["dob"] = this.dob;
-//         map["rememberPassword"] = this.rememberPassword;
-//         map['loggedin'] = this.loggedIn & loggedin;
-//         // map["hash"] = this.hash;
-//         map["path"] = this.path;
-//         map["locData"] = this.locData;
-//         String json = jsonEncode(map);
-//         await getApplicationDocumentsDirectory().then((onValue) {
-//             String p = join(onValue.path, this.username);
-//             File con = File(p);
-//             if (con.existsSync()) {
-//               con.writeAsStringSync(json);
-//             } else {
-//               con.createSync();
-//               con.openWrite();
-//               con.writeAsStringSync(json);
-//             }
-//             String q = join(onValue.path, GLOBAL);
-//             File con2 = File(q);
-//             if (con2.existsSync()) {
-//               con2.writeAsStringSync(json);
-//             } else {
-//               con2.createSync();
-//               con2.openWrite();
-//               con2.writeAsStringSync(json);
-//             }
-//             return 0;
-//    });
-//    return 6;
-//  }
-//
-//  Future<int> fillConfig() async  {
-//    int x = 2;
-//    x+=1;
-//
-//    await getApplicationDocumentsDirectory().then((onValue) {
-//      String p = join(onValue.path, this.username);
-//      File con = File(p);
-//      if (con.existsSync()) {
-//        String j = con.readAsStringSync();
-//        Map map = jsonDecode(j);
-//        this.username = map["username"];
-//        this.password = map["password"];
-//        this.actualLastName = map["actualLastName"];
-//        this.actualFirstName = map["actualFirstName"];
-//        var loggedIn = map['loggedin'];
-//        if(loggedIn != null)
-//          {
-//            this.loggedIn = map['loggedin'];
-//          }
-//
-////        this.gender = map["gender"];
-////        this.dob = map["dob"];
-//        this.rememberPassword = map["rememberPassword"];
-////        this.hash = map["hash"];
-//        this.path = map["path"];
-//        this.locData = map["locData"];
-//      }
-//      return 0;
-//    });
-//    return 7;
-//  }
 
   final String GLOBAL = "xyzGLOBALxyz";
 
@@ -145,6 +76,7 @@ class Config {
         Map map = jsonDecode(j);
         this.username = map["username"];
         this.password = map["password"];
+        this.path = map["path"];
         login(this, (String, Color){func();}, func);
       }
       return 0;
@@ -158,11 +90,7 @@ class Config {
       Map map = Map();
       map["username"] = this.username;
       map["password"] = this.password;
-      map["actualLastName"] = this.actualLastName;
-      map["actualFirstName"] = this.actualFirstName;
-      map["rememberPassword"] = this.rememberPassword;
       map["path"] = this.path;
-      map["locData"] = this.locData;
 
       File con = File(p);
       if (con.existsSync()) {

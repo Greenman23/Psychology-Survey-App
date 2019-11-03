@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:camera/camera.dart';
 import 'package:flutter_application/survey_list.dart';
 
 import 'package:flutter_application/config.dart';
@@ -61,8 +62,37 @@ Future<Image> getPicturePost(Map body, String addition) async
      //String reply = await response.transform(utf8.decoder).join();
      var x = 2;
      return img;
+}
 
+Future<Map<String, dynamic>> uploadImage(Config config) async
+{
+  HttpClient client = new HttpClient();
+  http.MultipartRequest request = new http.MultipartRequest("POST", Uri.parse(URL + "/uploadProfilePic"));
+  Map<String, String> map = {
+    "username" : config.username
+  };
+  request.headers.addAll(map);
+  http.MultipartFile file = await http.MultipartFile.fromPath("image", config.path);
+  request.files.add(file);
+  var resone = await request.send();
 
+  print(resone);
+
+//  await client(Uri.parse(URL + "/uploadProfilePic"));
+//  request.headers.set("content-type", "multipart/form-data");
+//  request.headers.add("username", config.username);
+//  request.headers.add("password", config.password);
+//  Map map =
+//  {
+//      "image": [ "img", File(config.path).readAsBytesSync()]
+//  };
+//  //request.add(File(config.path).readAsBytesSync());
+// // request.add(utf8.encode(json.encode(map)));
+//  request.headers.add("files", File(config.path).readAsBytesSync());
+//  HttpClientResponse response = await request.close();
+//  String reply = await response.transform(utf8.decoder).join();
+//  Map<String, dynamic> jsonReply = jsonDecode(reply);
+//   return jsonReply;
 }
 
 Future<List<Survey_List>> getSurveys() async{
@@ -97,8 +127,11 @@ void login(Config config, Function(String, Color) functor, Function() update)
       if(config.loggedIn == true)
         {
           config.loggedIn = true;
+          config.actualFirstName = value["first_name"];
+          config.actualLastName = value["last_name"];
+          config.gender = value["Gender"];
+          //config.dob = value["DOB"];
           functor("Login Successful", Colors.blue);
-          getPicture(config, update);
         }
       else
         {
@@ -113,7 +146,8 @@ void getPicture(Config config, Function  functor)
 {
   Map map = {
     'Type' : "ProfilePic",
-    "username" : config.username
+    "username" : config.username,
+    "password" : config.password
   };
 
   getPicturePost(map, "ProfilePic").then((Image value)  {
