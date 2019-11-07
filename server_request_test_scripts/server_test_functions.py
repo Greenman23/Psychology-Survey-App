@@ -2,7 +2,10 @@ import requests
 import json
 import socket
 import os
+from os import walk
 import shutil
+from pick import pick
+import glob
 
 IP = socket.gethostname()
 URL = "http://" + IP + ":80"
@@ -22,8 +25,10 @@ class Server_Test_Functions:
     def begin(self):
         continueTest = True
         while(continueTest):
-            value = input("What function would you like to test? -1 to exit, 0 for login, 1 for sign up, 2 for surveys, 3 for questions, 4 for sending an image, 5 to recieve an image:")
-            value = int(value)
+            title = 'Choose a server function to test: '
+            options = ['Login test', 'Signup test', 'Get surveys function', 'Get surveys for a question', 'Send an profile picture image from images to send directory', 
+                "Request profile image", "Exit"]
+            options, value = pick(options, title)
             if value == 0:
                 self.login_test()
             elif value == 1:
@@ -36,7 +41,7 @@ class Server_Test_Functions:
                 self.send_image_test()
             elif value == 5:
                 self.request_image_test()
-            elif value == -1:
+            elif value == 6:
                 continueTest = False
             else:
                 print("Invalid input")
@@ -81,17 +86,38 @@ class Server_Test_Functions:
     def send_image_test(self):
         username = input("Enter username: ")
         password = input("Enter password: ")
-        imageName = input("Enter an image name: ")
-        image = open('images_to_send/' + imageName  + ".jpg", 'rb').read()
-        head = {'username' : username, 'password' : password}
-        sendUrl = URL  + '/uploadProfilePic'
-        multipart_form_data = {
-            'image': (imageName, image),
-            'username' : username,
-            'password' : password,
-        }
-        response = requests.post(sendUrl, headers = head, files=multipart_form_data)
-        print(json.dumps(response.json(), indent=4, sort_keys=True))
+        images = [] 
+        mypath = 'images_to_send/'
+        os.chdir(mypath)
+        for file in glob.glob("*.jpg"):
+            images.append(file) 
+
+        if not images:
+            print("There are not jpg files in sending images directory")
+        else:
+            title = 'Choose an image to send: '
+            images, index = pick(images, title)
+            imageName = images
+            image = open(images, 'rb').read()
+            head = {'username' : username, 'password' : password}
+            sendUrl = URL  + '/uploadProfilePic'
+            multipart_form_data = {
+                'image': (imageName, image),
+                'username' : username,
+                'password' : password,
+            }
+            try:
+                response = requests.post(sendUrl, headers = head, files=multipart_form_data)
+                print(json.dumps(response.json(), indent=4, sort_keys=True))
+            
+            except requests.exceptions.Timeout:
+                print("There was a timeout error with the server")
+            
+            except requests.exceptions.TooManyRedirects:
+                print("Bad server url")
+
+            except requests.exceptions.RequestException as e:  
+                print("Error connecting to server")
 
     #TODO: Figure out how to recive images back with server
     def request_image_test(self):

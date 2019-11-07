@@ -15,7 +15,7 @@ import 'package:path_provider/path_provider.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
-final String URL = "http://192.168.2.33:8080";
+final String URL = "http://192.168.1.139:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async
@@ -69,7 +69,8 @@ Future<Map<String, dynamic>> uploadImage(Config config) async
   HttpClient client = new HttpClient();
   http.MultipartRequest request = new http.MultipartRequest("POST", Uri.parse(URL + "/uploadProfilePic"));
   Map<String, String> map = {
-    "username" : config.username
+    "username" : config.username,
+    "password" : config.password
   };
   request.headers.addAll(map);
   http.MultipartFile file = await http.MultipartFile.fromPath("image", config.path);
