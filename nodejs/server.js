@@ -90,7 +90,6 @@ webApp.post('/uploadProfilePic', function(request,response){
         query.login(request.headers.username, request.headers.password, connection, function(result){
             if(result.Authentication === true){
                 form.parse(request, function(err, fields, files) {
-                    console.log(files)
                     var user = request.headers.username
                     if(files != undefined && user!= undefined && user!=""){
                         var filePath = __profilePictureDirectory + '/' + user + '.jpg';

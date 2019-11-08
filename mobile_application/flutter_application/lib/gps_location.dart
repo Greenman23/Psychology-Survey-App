@@ -55,10 +55,10 @@ class _GPSLocationState extends State<GPSLocation> {
               'Country' : err[0].countryName,
             };
 
-            stringAddress = err[0].locality+", "+err[0].adminArea+", "+err[0].countryName;
+            stringAddress = err[0].locality+", "+err[0].adminArea+", "+
+                err[0].countryName;
 
             setState(() {
-
             });
           }
         });
