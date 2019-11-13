@@ -10,6 +10,8 @@ import glob
 IP = socket.gethostname()
 URL = "http://" + IP + ":80"
 
+bottleUrl = "http://localhost:8080"
+
 class Server_Test_Functions:
 
     def __init__(self):
@@ -27,7 +29,7 @@ class Server_Test_Functions:
         while(continueTest):
             title = 'Choose a server function to test: '
             options = ['Login test', 'Signup test', 'Get surveys function', 'Get surveys for a question', 'Send an profile picture image from images to send directory', 
-                "Request profile image", "Exit"]
+                "Request profile image", "How do i feel?", "Exit"]
             options, value = pick(options, title)
             if value == 0:
                 self.login_test()
@@ -42,6 +44,8 @@ class Server_Test_Functions:
             elif value == 5:
                 self.request_image_test()
             elif value == 6:
+                self.theFeels()
+            elif value == 7:
                 continueTest = False
             else:
                 print("Invalid input")
@@ -119,7 +123,6 @@ class Server_Test_Functions:
             except requests.exceptions.RequestException as e:  
                 print("Error connecting to server")
 
-    #TODO: Figure out how to recive images back with server
     def request_image_test(self):
         
         username = input("enter username: ")
@@ -141,3 +144,58 @@ class Server_Test_Functions:
                 print("image has been recieved")
         else:
             print(json.dumps(response.json(), indent=4, sort_keys=True))
+        
+    def theFeels(self):
+        username = input("enter username: ")
+        password = input("enter password: ")
+        the_feels_dict = {
+            'username' : username,
+            'password' :password,
+        }
+        sendURL = URL + '/profilePicAnalysis'
+        try:
+            response = requests.post(sendURL, json=the_feels_dict)
+            print(json.dumps(response.json(), indent=4, sort_keys=True))
+        
+        except requests.exceptions.Timeout:
+            print("There was a timeout error with the server")
+        
+        except requests.exceptions.TooManyRedirects:
+            print("Bad server url")
+
+        except requests.exceptions.RequestException as e:  
+            print("Error connecting to server")
+    
+    def imageRecognitionServerDirect(self):
+        images = [] 
+        mypath = 'images_to_send/'
+        os.chdir(mypath)
+        for file in glob.glob("*.jpg"):
+            images.append(file) 
+
+        if not images:
+            print("There are not jpg files in sending images directory")
+        else:
+            title = 'Choose an image to send: '
+            images, index = pick(images, title)
+            imageName = images
+            image = open(images, 'rb').read()
+            head = {'username' : username, 'password' : password}
+            sendUrl = URL  + '/uploadProfilePic'
+            multipart_form_data = {
+                'image': (imageName, image),
+                'username' : username,
+                'password' : password,
+            }
+            try:
+                response = requests.post(bottleUrl, headers = head, files=multipart_form_data)
+                print(json.dumps(response.json(), indent=4, sort_keys=True))
+            
+            except requests.exceptions.Timeout:
+                print("There was a timeout error with the server")
+            
+            except requests.exceptions.TooManyRedirects:
+                print("Bad server url")
+
+            except requests.exceptions.RequestException as e:  
+                print("Error connecting to server")

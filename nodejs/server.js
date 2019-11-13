@@ -6,6 +6,8 @@ const fs=require('fs');
 const mysql = require('mysql');
 const multiparty = require('multiparty');
 const query = require('./sql_queries');
+var FormData = require('form-data');
+var request = require('request');
 const conInfo = {
     host: config.host,
     user: config.user,
@@ -13,6 +15,16 @@ const conInfo = {
     database: config.name,
     multipleStatements: true
 }
+
+var __profilePictureDirectory = 'assets/images/profile_images'
+
+var __defaultImagesDirectory = 'assets/images/default_images'
+
+var _botserverURL = 'http://localhost:8080'
+
+var webApp = express()
+
+webApp.use(express.json())
 
 function sendJSON(request,response, msg){
     var dictstring = JSON.stringify(msg)
@@ -25,60 +37,61 @@ function sendJSON404(request,response, msg){
     console.log("Response sent to =>" + request.connection.remoteAddress + ".")
     response.status(404).send(dictstring)
 }
+function postToBotServer(file, url, main_request,response){
+    var reques = request.post(url, function(error, server_response, response_body){
+        if(error){
+            sendJSON404(main_request,response, "Error when connecting to image server")
+        }
 
-var __profilePictureDirectory = 'assets/images/profile_images'
-
-var __defaultImagesDirectory = 'assets/images/default_images'
-
-var webApp = express()
-
-webApp.use(express.json())
+        else{
+            sendJSON404(main_request,response,response_body)
+        }
+    })
+    var form = reques.form();
+    form.append('image', fs.createReadStream(file))
+}
 
 webApp.post('/', function(request,response){
     sendJSON(request,response,'Please use an operation')
-});
-
+})
 webApp.post('/signup', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: signup")
     let connection = mysql.createConnection(conInfo)
     query.signup(request.body.FirstName,request.body.LastName,request.body.Username,request.body.Password,request.body.Gender,
         request.body.BirthDate, connection, function(signup_resp){
         sendJSON(request,response,signup_resp)
-    });
-});
+    })
+})
 
 webApp.post('/login', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: login")
     let connection = mysql.createConnection(conInfo)
     query.login(request.body.Username, request.body.Password, connection, function(my_response){
         sendJSON(request,response,my_response)
-    });
-});
+    })
+})
 
 webApp.post('/allSurveys', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: allsurveys")
     let connection = mysql.createConnection(conInfo)
     query.get_all_surveys(connection, function(get_survey_response){
         sendJSON(request,response, get_survey_response)
-    });
-});
-
+    })
+})
 webApp.post('/surveyQuestions', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: getSurveyQuestions")
     let connection = mysql.createConnection(conInfo)
     query.get_survey_questions(request.body.SurveyName,connection, function(surveyQuestions){
         sendJSON(request,response,surveyQuestions)
-    });
-});
-
+    })
+})
 webApp.post('/uploadAnswers', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: uploadAnswers")
     let connection = mysql.createConnection(conInfo)
     query.send_answers(request.body.Username, request.body.Password, connection, request.body.Map, function(status){
         sendJSON(request,response,status)
-    });
-});
-
+    })
+})
 webApp.post('/uploadProfilePic', function(request,response){
     let connection = mysql.createConnection(conInfo)
     console.log("Incoming request from ip =>", request.headers.host, " Type: uploadProfilePic")
@@ -128,7 +141,6 @@ webApp.post('/uploadProfilePic', function(request,response){
         })
     }
 })
-
 webApp.post('/ProfilePic', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: getProfilePic")
     let connection = mysql.createConnection(conInfo)
@@ -156,10 +168,24 @@ webApp.post('/ProfilePic', function(request,response){
         }
     })
 })
+webApp.post('/profilePicAnalysis', function(request,response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: imageReading")
+    var user = request.body.username
+    var pass = request.body.password
+    let connection = mysql.createConnection(conInfo)
+    query.login(user, pass, connection, function(authentication){
+        if(authentication.Authentication === true){
+            var filePath = __profilePictureDirectory + '/' + user + '.jpg'
+            postToBotServer(filePath, _botserverURL,request, response)
+        }
+        else{
+            sendJSON404(request,response,"Invalid User!")
+        }
+    })
+})
 
-webApp.post('userInformation', function(request,response){
+webApp.post('/userInformation', function(request,response){
     console.log("Incoming request from op =>", request.headers.host, " Type: reqeustUserInformation")
-
 })
 
 webApp.listen(80)

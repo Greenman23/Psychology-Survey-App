@@ -19,7 +19,10 @@
   "dependencies": {
     "connect-form": "^0.2.1",
     "express": "^4.17.1",
+    "form-data": "^3.0.0",
+    "http": "0.0.0",
     "multiparty": "^4.2.1",
-    "mysql": "^2.17.1"
+    "mysql": "^2.17.1",
+    "request": "^2.88.0"
   }
 }
