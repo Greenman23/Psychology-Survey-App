@@ -29,7 +29,8 @@ class Server_Test_Functions:
         while(continueTest):
             title = 'Choose a server function to test: '
             options = ['Login test', 'Signup test', 'Get surveys function', 'Get surveys for a question', 'Send an profile picture image from images to send directory', 
-                "Request profile image", "How do i feel?", "Exit"]
+                "Request profile image", "How does my profile feel?", "Connect to image recongnition server directly", 
+                "Test sending an image to nodejs for an emotion", "Exit"]
             options, value = pick(options, title)
             if value == 0:
                 self.login_test()
@@ -46,6 +47,10 @@ class Server_Test_Functions:
             elif value == 6:
                 self.theFeels()
             elif value == 7:
+                self.imageRecognitionServerDirect()
+            elif value == 8:
+                self.picture_analysis_test()
+            elif value == 9:
                 continueTest = False
             else:
                 print("Invalid input")
@@ -183,12 +188,46 @@ class Server_Test_Functions:
             head = {'username' : username, 'password' : password}
             sendUrl = URL  + '/uploadProfilePic'
             multipart_form_data = {
+                'image': (imageName, image)
+            }
+            try:
+                response = requests.post(bottleUrl, headers = head, files=multipart_form_data)
+                print(json.dumps(response.json(), indent=4, sort_keys=True))
+            
+            except requests.exceptions.Timeout:
+                print("There was a timeout error with the server")
+            
+            except requests.exceptions.TooManyRedirects:
+                print("Bad server url")
+
+            except requests.exceptions.RequestException as e:  
+                print("Error connecting to server")
+
+    def picture_analysis_test(self):
+        username = input("Enter username: ")
+        password = input("Enter password: ")
+        images = [] 
+        mypath = 'images_to_send/'
+        os.chdir(mypath)
+        for file in glob.glob("*.jpg"):
+            images.append(file) 
+
+        if not images:
+            print("There are not jpg files in sending images directory")
+        else:
+            title = 'Choose an image to send: '
+            images, index = pick(images, title)
+            imageName = images
+            image = open(images, 'rb').read()
+            head = {'username' : username, 'password' : password}
+            sendUrl = URL  + '/pictureAnalysis'
+            multipart_form_data = {
                 'image': (imageName, image),
                 'username' : username,
                 'password' : password,
             }
             try:
-                response = requests.post(bottleUrl, headers = head, files=multipart_form_data)
+                response = requests.post(sendUrl, headers = head, files=multipart_form_data)
                 print(json.dumps(response.json(), indent=4, sort_keys=True))
             
             except requests.exceptions.Timeout:

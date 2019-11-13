@@ -15,15 +15,10 @@ const conInfo = {
     database: config.name,
     multipleStatements: true
 }
-
 var __profilePictureDirectory = 'assets/images/profile_images'
-
 var __defaultImagesDirectory = 'assets/images/default_images'
-
 var _botserverURL = 'http://localhost:8080'
-
 var webApp = express()
-
 webApp.use(express.json())
 
 function sendJSON(request,response, msg){
@@ -31,26 +26,11 @@ function sendJSON(request,response, msg){
     console.log("Response sent to =>" + request.connection.remoteAddress + ".")
     response.send(dictstring)
 }
-
 function sendJSON404(request,response, msg){
     var dictstring = JSON.stringify(msg)
     console.log("Response sent to =>" + request.connection.remoteAddress + ".")
     response.status(404).send(dictstring)
 }
-function postToBotServer(file, url, main_request,response){
-    var reques = request.post(url, function(error, server_response, response_body){
-        if(error){
-            sendJSON404(main_request,response, "Error when connecting to image server")
-        }
-
-        else{
-            sendJSON404(main_request,response,response_body)
-        }
-    })
-    var form = reques.form();
-    form.append('image', fs.createReadStream(file))
-}
-
 webApp.post('/', function(request,response){
     sendJSON(request,response,'Please use an operation')
 })
@@ -168,26 +148,76 @@ webApp.post('/ProfilePic', function(request,response){
         }
     })
 })
-webApp.post('/profilePicAnalysis', function(request,response){
-    console.log("Incoming request from ip =>", request.headers.host, " Type: imageReading")
-    var user = request.body.username
-    var pass = request.body.password
+webApp.post('/profilePicAnalysis', function(req,response){
+    console.log("Incoming request from ip =>", req.headers.host, " Type: imageReading")
+    var user = req.body.username
+    var pass = req.body.password
     let connection = mysql.createConnection(conInfo)
     query.login(user, pass, connection, function(authentication){
         if(authentication.Authentication === true){
             var filePath = __profilePictureDirectory + '/' + user + '.jpg'
-            postToBotServer(filePath, _botserverURL,request, response)
+            var reques = request.post(_botserverURL, function(error, server_response, response_body){
+                if(error){
+                    sendJSON404(req,response, "Error when connecting to image server")
+                }
+        
+                else{
+                    sendJSON404(req,response,response_body)
+                }
+            })
+            var form = reques.form();
+            form.append('image', fs.createReadStream(filePath))
         }
         else{
-            sendJSON404(request,response,"Invalid User!")
+            sendJSON404(req,response,"Invalid User!")
         }
     })
 })
-
+webApp.post('/pictureAnalysis', function(req,response){
+    let connection = mysql.createConnection(conInfo)
+    console.log("Incoming request from ip =>", req.headers.host, " Type: pictureAnalysis")
+    var form = new multiparty.Form()
+    if(!req.headers['content-type'].includes('multipart/form-data')){
+        sendJSON(req,response,"This request does not contain an image")
+    }
+    query.login(req.headers.username, req.headers.password, connection, function(auth){
+        if(auth.Authentication===true){
+            form.parse(req, function(err, fields, files) {
+                if(err){
+                    console.error(error)
+                    sendJSON(req,response,"File not found in request")
+                }
+                var reques = request.post(_botserverURL, function(error, server_response, response_body){
+                    if(error){
+                        fs.unlink(files.image[0].path, function(error){
+                            if(error){
+                                console.error(error)
+                            }
+                        })
+                        sendJSON404(req,response, "Error when connecting to image server")
+                    }
+            
+                    else{
+                        fs.unlink(files.image[0].path, function(error){
+                            if(error){
+                                console.error(error)
+                            }
+                        })
+                        sendJSON404(req,response,response_body)
+                    }
+                })
+                var form = reques.form();
+                form.append('image', fs.createReadStream(files.image[0].path))
+            })
+        }
+        else{
+            sendJSON404(req,response,"Invalid user")
+        }
+    })
+})
 webApp.post('/userInformation', function(request,response){
     console.log("Incoming request from op =>", request.headers.host, " Type: reqeustUserInformation")
 })
-
 webApp.listen(80)
 console.log("Express server is running now")
 
