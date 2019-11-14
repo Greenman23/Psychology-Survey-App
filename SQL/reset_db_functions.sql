@@ -186,4 +186,45 @@ END;
   //
  DELIMITER ;
  
+ DROP PROCEDURE IF EXISTS get_taken_survey_names;
+ DELIMITER //
+ CREATE PROCEDURE get_taken_survey_names(username_ varchar(60), password_ varchar(60))
+ BEGIN
+ SELECT surveys.survey_name FROM SURVEYS AS surveys
+ INNER JOIN USERS AS users
+ ON
+ users.user_name = username_ AND users.user_password = password_
+ INNER JOIN ANSWERS_TEXT AS answers
+ ON users.pk_user_id = answers.user_id
+ INNER JOIN SURVEY_QUESTIONS AS squestions
+ ON 
+ squestions.survey_id = answers.survey_question
+ WHERE surveys.pk_survey_id = survey_id
+ GROUP BY surveys.survey_name;
+ END
+ //
+ DELIMITER ;
+ 
+ DROP PROCEDURE IF EXISTS get_answers_by_taken;
+ DELIMITER //
+ CREATE PROCEDURE get_answers_by_taken(username_ varchar(60), password_ varchar(60), survey_name_ varchar(120))
+ BEGIN
+ SELECT questions.question, answers.actual_answer, CURDATE() FROM ANSWERS_TEXT AS answers
+ INNER JOIN USERS AS users
+ ON 
+ users.user_name = username_ AND users.user_password = password_ AND users.pk_user_id = answers.user_id
+ INNER JOIN SURVEY_QUESTIONS AS squestions
+ ON
+ answers.survey_question = squestions.id
+ INNER JOIN SURVEYS AS surveys
+ ON 
+ squestions.survey_id = surveys.pk_survey_id
+ LEFT JOIN QUESTIONS AS questions
+ ON 
+ questions.pk_questions_id = squestions.question_id
+ WHERE surveys.survey_name = survey_name_;
+ END
+ //
+ DELIMITER ;
+ 
  
