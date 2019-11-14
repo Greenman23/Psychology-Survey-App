@@ -209,7 +209,7 @@ END;
  DELIMITER //
  CREATE PROCEDURE get_answers_by_taken(username_ varchar(60), password_ varchar(60), survey_name_ varchar(120))
  BEGIN
- SELECT questions.question, answers.actual_answer, CURDATE() FROM ANSWERS_TEXT AS answers
+ SELECT questions.question, answers.actual_answer, CURDATE() AS "date" FROM ANSWERS_TEXT AS answers
  INNER JOIN USERS AS users
  ON 
  users.user_name = username_ AND users.user_password = password_ AND users.pk_user_id = answers.user_id
