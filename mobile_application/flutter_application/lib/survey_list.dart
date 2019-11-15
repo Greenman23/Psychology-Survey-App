@@ -10,7 +10,7 @@ import 'TakeSurvey.dart';
 
 // TODO : Make the surveys their own buttons instead of just listing them.
 
-class Survey_List  {
+class Survey_List {
   final Config config;
 
   String surveyName;
@@ -23,40 +23,36 @@ class Survey_List  {
       this.surveyVersion,
       Key key,
       @required this.config});
-
 }
 
-class SurveyListStateful extends StatefulWidget
-{
-Config config;
-SurveyListStateful({this.config});
+class SurveyListStateful extends StatefulWidget {
+  Config config;
+  Function getFutureList;
+  Function getInformation;
+  Function(Map map) startTaskWithFuture;
 
+  SurveyListStateful(
+      {this.config, this.getFutureList, this.getInformation, this.startTaskWithFuture});
 
-@override
-State createState() {
-  return SurveyListState(config: config);
-}
+  @override
+  State createState() {
+    return SurveyListState(config: config);
+  }
 }
 
 class SurveyListState extends State<SurveyListStateful> {
-
   Config config;
+
   SurveyListState({this.config});
+
   Future fut;
   BuildContext context;
-  void startSurvey(Map map)
-  {
-    List<String> disabledValues = new List<String>();
-    Navigator.of(context).push(MaterialPageRoute(
-                builder: (BuildContext context) {
-          return Survey_Question(map: map,  index: 0, disabledValues: disabledValues, config: config,);
-        }));
-  }
+
+
 
   @override
-  void initState()
-  {
-    fut = getSurveys();
+  void initState() {
+    fut = widget.getFutureList(widget.config);
   }
 
   Widget getView() {
@@ -76,8 +72,8 @@ class SurveyListState extends State<SurveyListStateful> {
                   return new Container(
                       child:
                           getPaddedButton(snapshot.data[index].surveyName, () {
-                    getSurveyByName(
-                        snapshot.data[index].surveyName, startSurvey);
+                    widget.getInformation(
+                        widget.config, snapshot.data[index].surveyName, widget.startTaskWithFuture);
                   }));
                 },
               );

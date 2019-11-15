@@ -7,12 +7,14 @@ import 'package:flutter_application/profile_pic.dart';
 import 'package:flutter_application/survey_list.dart';
 import 'package:path/path.dart' as prefix0;
 import 'package:path_provider/path_provider.dart';
+import 'TakeSurvey.dart';
 import 'login_page.dart';
 import 'package:flutter_application/config.dart';
 import 'primary_widgets.dart';
 import 'create_page.dart';
 import 'package:path/path.dart';
 import 'package:flutter_application/Http.dart';
+import 'package:flutter_application/survey_history_overview.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -74,6 +76,7 @@ class _HomePageState extends State<HomePage> {
       height: 50,
     );
 
+
     void _pushSaved() {
       Navigator.of(context).push(MaterialPageRoute(
           settings: RouteSettings(name: "/login"),
@@ -115,15 +118,60 @@ class _HomePageState extends State<HomePage> {
           }));
     }
 
+    void startSurvey(Map map) {
+      List<String> disabledValues = new List<String>();
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return Survey_Question(
+          map: map,
+          index: 0,
+          disabledValues: disabledValues,
+          config: widget.config,
+        );
+      }));
+    }
+
+    void startHistory(Map map){
+        for(int i = 0; i < 2; i++)
+          {
+            int x = 2;
+          }
+          Map refinedMap = map['surveys'][0];
+          Navigator.of(context).push(MaterialPageRoute(
+            settings: RouteSettings(name: "/history_overview"),
+            builder: (BuildContext context) {
+             return Survey_History_Overview(config: widget.config, survey: refinedMap);
+            }
+          ));
+    }
+
+    void _viewHistory(){
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/survey"),
+          builder: (BuildContext context) {
+            return SurveyListStateful(
+              config: widget.config,
+              getFutureList: getSurveyHistory,
+              getInformation: getSurveyQuestionHistory,
+              startTaskWithFuture: startHistory,
+            );
+          }));
+    }
+
     void _takeSurvey() {
       Navigator.of(context).push(MaterialPageRoute(
           settings: RouteSettings(name: "/survey"),
           builder: (BuildContext context) {
             return SurveyListStateful(
               config: widget.config,
+               getFutureList: getSurveys,
+               getInformation: getSurveyByName,
+               startTaskWithFuture: startSurvey,
             );
           }));
     }
+
+
 
     void update() {
       setState(() {});
@@ -152,7 +200,7 @@ class _HomePageState extends State<HomePage> {
             children: <Widget>[
               getPaddedButton("Take Survey", _takeSurvey),
               getPaddedButton("Have Conversation", () {}),
-              getPaddedButton("View Metrics", () {}),
+              getPaddedButton("View History", _viewHistory),
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),
               getPaddedButton("Logout", () {
