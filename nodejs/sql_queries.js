@@ -7,6 +7,7 @@
         callback(null,results)
     });
 }*/
+function get_user_anwers(user, pass, survey, connection, callback){}
 module.exports  = {
     login: function(Username, Password, connection, callback){
         if(Username != undefined && Password != undefined){
@@ -175,4 +176,47 @@ module.exports  = {
             callback(error_resp)
         }       
     },
+    surveyHistory: function(user, pass, connection, callback){
+        var survey_name_history = 'CALL get_taken_survey_names("' + user + '","' + pass + '");'
+        var surveyhistory = {
+            'SurveyHistory' : []
+        }
+        connection.query(survey_name_history, function(error,results){
+            if(error){
+                console.error(error)
+            } 
+            else {
+                var taken = []
+                for (let value of Object.values(results[0])) {
+                    taken.push(value.survey_name)
+                }
+                connection.end()
+                surveyhistory['SurveyHistory'].push(taken)
+                callback(surveyhistory)
+            }
+        })
+    },
+    survey_question_history: function(user, pass, surveyname, connection, callback){
+        answeredQuestions = 'CALL get_answers_by_taken("' + user + '","' + pass +  '","' + surveyname + '");'
+        connection.query(answeredQuestions, function(error,results,feilds){
+            surveys = {
+                'surveys' : []
+            }
+            var tempDict = {}
+            for (let value of Object.values(results[0])) {
+                var date = value.date
+                if(value.question!=undefined){
+                    if(tempDict.hasOwnProperty(date)){
+                        tempDict[date].push({'Question' : value.question, 'Answer' : value.actual_answer })
+                    }
+                    else{
+                        var tempDict = {}
+                        tempDict[date] = [{'Question' : value.question, 'Answer' : value.actual_answer }] 
+                    }       
+                }
+            }
+            surveys['surveys'].push(tempDict)
+            callback(surveys)
+        })           
+    }
 }

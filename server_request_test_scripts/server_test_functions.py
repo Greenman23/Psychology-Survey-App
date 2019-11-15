@@ -30,7 +30,7 @@ class Server_Test_Functions:
             title = 'Choose a server function to test: '
             options = ['Login test', 'Signup test', 'Get surveys function', 'Get surveys for a question', 'Send an profile picture image from images to send directory', 
                 "Request profile image", "How does my profile feel?", "Connect to image recongnition server directly", 
-                "Test sending an image to nodejs for an emotion", "Exit"]
+                "Test sending an image to nodejs for an emotion", "Get survey history for user", "Get questions history for surveys","Exit"]
             options, value = pick(options, title)
             if value == 0:
                 self.login_test()
@@ -51,6 +51,10 @@ class Server_Test_Functions:
             elif value == 8:
                 self.picture_analysis_test()
             elif value == 9:
+                self.survey_history()
+            elif value == 10:
+                self.survey_history_questions()
+            elif value == 11:
                 continueTest = False
             else:
                 print("Invalid input")
@@ -185,13 +189,12 @@ class Server_Test_Functions:
             images, index = pick(images, title)
             imageName = images
             image = open(images, 'rb').read()
-            head = {'username' : username, 'password' : password}
             sendUrl = URL  + '/uploadProfilePic'
             multipart_form_data = {
                 'image': (imageName, image)
             }
             try:
-                response = requests.post(bottleUrl, headers = head, files=multipart_form_data)
+                response = requests.post(bottleUrl, files=multipart_form_data)
                 print(json.dumps(response.json(), indent=4, sort_keys=True))
             
             except requests.exceptions.Timeout:
@@ -238,3 +241,48 @@ class Server_Test_Functions:
 
             except requests.exceptions.RequestException as e:  
                 print("Error connecting to server")
+
+    def survey_history(self):
+        username = input("enter username: ")
+        password = input("enter password: ")
+        userinfo = {
+            'username' : username,
+            'password' :password,
+        }
+        sendUrl = URL  + '/userSurveyHistory'
+        try:
+            response = requests.post(sendUrl, json=userinfo)
+            print(json.dumps(response.json(), indent=4, sort_keys=True))
+        
+        except requests.exceptions.Timeout:
+            print("There was a timeout error with the server")
+        
+        except requests.exceptions.TooManyRedirects:
+            print("Bad server url")
+
+        except requests.exceptions.RequestException as e:  
+            print("Error connecting to server")
+
+    def survey_history_questions(self):
+        username = input("enter username: ")
+        password = input("enter password: ")
+        surveyname = input("enter survey name: ")
+        usersur = {
+            'username' : username,
+            'password' : password,
+            'SurveyName': surveyname,
+        }
+        sendUrl = URL  + '/userSurveyQuestionHistory'
+        try:
+            response = requests.post(sendUrl, json=usersur)
+            print(json.dumps(response.json(), indent=4, sort_keys=True))
+        
+        except requests.exceptions.Timeout:
+            print("There was a timeout error with the server")
+        
+        except requests.exceptions.TooManyRedirects:
+            print("Bad server url")
+
+        except requests.exceptions.RequestException as e:  
+            print("Error connecting to server")
+

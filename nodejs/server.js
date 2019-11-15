@@ -8,6 +8,7 @@ const multiparty = require('multiparty');
 const query = require('./sql_queries');
 var FormData = require('form-data');
 var request = require('request');
+var async = require("async")
 const conInfo = {
     host: config.host,
     user: config.user,
@@ -215,8 +216,53 @@ webApp.post('/pictureAnalysis', function(req,response){
         }
     })
 })
-webApp.post('/userInformation', function(request,response){
-    console.log("Incoming request from op =>", request.headers.host, " Type: reqeustUserInformation")
+webApp.post('/userSurveyHistory', function(request,response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: userSurveyHistory")
+    let connection = mysql.createConnection(conInfo)
+    var login = 'SELECT verify_user("' + request.body.username + '","' + request.body.password + '");'
+    connection.query(login, function(error,results){
+        var authentication = 0
+        if(error){
+            console.error(error)
+        }
+        else{
+            for (let value of Object.values(results[0])) {
+               authentication = value
+            }
+            if(authentication==1){
+                query.surveyHistory(request.body.username,request.body.password, connection,function(history){
+                    sendJSON(request,response,history)
+                })
+            }
+            else {
+                sendJSON404(request,response,"Invalid user")
+            }
+        }
+    })
+})
+webApp.post('/userSurveyQuestionHistory', function(request,response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: userSurveyQuestionHistory")
+    let connection = mysql.createConnection(conInfo)
+    var login = 'SELECT verify_user("' + request.body.username + '","' + request.body.password + '");'
+    connection.query(login, function(error,results){
+        var authentication = 0
+        if(error){
+            console.error(error)
+        }
+        else{
+            for (let value of Object.values(results[0])) {
+               authentication = value
+            }
+            if(authentication==1){
+                query.survey_question_history(request.body.username,request.body.password, request.body.SurveyName,connection,function(history){
+                    sendJSON(request,response,history)
+                })
+            }
+            else {
+                sendJSON404(request,response,"Invalid user")
+            }
+        }
+    })
 })
 webApp.listen(80)
 console.log("Express server is running now")
