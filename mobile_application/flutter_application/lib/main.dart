@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_application/chatbot.dart';
 import 'package:flutter_application/gps_location.dart';
 import 'package:flutter_application/profile_pic.dart';
 import 'package:flutter_application/survey_list.dart';
@@ -171,6 +172,16 @@ class _HomePageState extends State<HomePage> {
           }));
     }
 
+    void _haveConversation() {
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/chatbot"),
+          builder: (BuildContext context) {
+            return ChatBot(
+              con: widget.config,
+            );
+          }));
+    }
+
 
 
     void update() {
@@ -199,7 +210,7 @@ class _HomePageState extends State<HomePage> {
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               getPaddedButton("Take Survey", _takeSurvey),
-              getPaddedButton("Have Conversation", () {}),
+              getPaddedButton("Have Conversation", _haveConversation),
               getPaddedButton("View History", _viewHistory),
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),
