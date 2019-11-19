@@ -8,6 +8,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_application/primary_widgets.dart';
 import 'package:flutter_application/config.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:flutter_application/Http.dart';
 
 class Message {
   bool isFromBot;
@@ -26,7 +27,10 @@ class ChatBot extends StatefulWidget {
   final int STATE_NEW_MESSAGE = 2;
   int state;
 
-  ChatBot({@required con});
+  //ChatBot({@required con});
+
+  ChatBot({Key key, @required this.con})
+      : super(key: key);
 
   @override
   State createState() => ChatBotState();
@@ -40,6 +44,7 @@ class ChatBotState extends State<ChatBot> {
   @override
   void initState() {
     widget.state = widget.STATE_NORMAL;
+
     controller = new TextEditingController();
     widgets = [];
     waitingForPast = false;
@@ -132,9 +137,10 @@ class ChatBotState extends State<ChatBot> {
     }
 
     // Callback for getting replies here
-    void getNewMessage() async {
-      await Future.delayed(Duration(seconds: 1));
-      widgets.add(Message(isFromBot: true, mes: "Hello there"));
+    void getNewMessage(String msg) async {
+      //await Future.delayed(Duration(seconds: 1));
+      String response = await chatBotResponse(widget.con, msg);
+      widgets.add(Message(isFromBot: true, mes: response));
       widget.state = widget.STATE_NEW_MESSAGE;
       setState(() {});
     }
@@ -171,15 +177,19 @@ class ChatBotState extends State<ChatBot> {
     Widget getSend() {
       return FlatButton(
           onPressed: () {
+            String user_message = controller.text;
+            print(user_message);
             widgets.add(Message(isFromBot: false, mes: controller.text));
             controller.clear();
             setState(() {});
-            getNewMessage();
+            getNewMessage(user_message);
           },
           child: Icon(Icons.redo));
     }
 
-    // https://stackoverflow.com/questions/49040679/flutter-how-to-make-a-textfield-with-hinttext-but-no-underline dealing with the underline in textformfield
+    // https://stackoverflow.com/questions/49040679/flutter-how-to-make-a-
+    // textfield-with-hinttext-but-no-underline dealing with the underline in
+    // textformfield
     Scaffold scaff = Scaffold(
         body: Padding(
             padding: EdgeInsets.only(top: 50),

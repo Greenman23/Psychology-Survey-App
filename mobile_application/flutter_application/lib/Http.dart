@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
+import 'package:flutter_application/chatbot.dart';
 import 'package:flutter_application/survey_list.dart';
 
 import 'package:flutter_application/config.dart';
@@ -16,7 +17,8 @@ import 'package:path_provider/path_provider.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
-final String URL = "http://192.168.2.33:8085";
+//final String URL = "http://192.168.2.33:8085";
+final String URL = "http://192.168.1.139:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -240,4 +242,19 @@ void outputAnswers(Config config, Map ogMap) {
   getPost(map, "uploadAnswers").then((Map value) {
     print("Submitted");
   });
+}
+
+Future<String> chatBotResponse(Config config, String msg) async{
+  Map map = {
+    "username" : config.username,
+    "password" : config.password,
+    "message"  : msg
+  };
+
+  print(msg);
+
+  Map surveyMap = await getPost(map, 'chatBotRouter');
+  String mesage = surveyMap["Message"];
+
+  return mesage;
 }
