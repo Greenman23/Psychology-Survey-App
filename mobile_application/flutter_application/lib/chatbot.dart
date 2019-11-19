@@ -1,7 +1,7 @@
 // Getting to the end of a list view https://stackoverflow.com/questions/43485529/programmatically-scrolling-to-the-end-of-a-listview
 
 import 'dart:io';
-
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart' as prefix0;
 import 'package:flutter/rendering.dart';
@@ -48,6 +48,7 @@ class ChatBotState extends State<ChatBot> {
     Widget getListView() {
       s = ListView.builder(
           key: new Key("abcde"),
+
           itemExtent: 50,
           itemCount: widgets.length,
           controller: scroller,
@@ -79,23 +80,36 @@ class ChatBotState extends State<ChatBot> {
     }
 
     void getPastMessage() async {
-      await Future.delayed(Duration(seconds: 5));
+      await Future.delayed(Duration(seconds: 1));
       widgets.removeAt(0);
       widgets.insert(0, Text("Old Message"));
       waitingForPast = false;
+      widget.state = widget.STATE_OLD_MESSAGE;
       setState(() {
       });
-      widget.state = widget.STATE_OLD_MESSAGE;
     }
 
     void getNewMessage() async {
       await Future.delayed(Duration(seconds: 1));
       widgets.add(Text("New message"));
+      widget.state = widget.STATE_NEW_MESSAGE;
       setState(() {
       });
-      widget.state = widget.STATE_NEW_MESSAGE;
     }
 
+    void nudge() async{
+      await Future.delayed(Duration(milliseconds: 1));
+      while(scroller.positions.isEmpty);
+      if (widget.state == widget.STATE_OLD_MESSAGE) {
+        scroller.animateTo(5,
+            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+        widget.state = widget.STATE_NORMAL;
+      } else if (widget.state == widget.STATE_NEW_MESSAGE) {
+        scroller.animateTo(scroller.position.maxScrollExtent + 1000,
+            duration: Duration(milliseconds: 250), curve: Curves.easeIn);
+        widget.state = widget.STATE_NORMAL;
+      }
+    }
 
     scroller.addListener(() {
       if (scroller.position.pixels <= 0 && !waitingForPast) {
@@ -103,23 +117,8 @@ class ChatBotState extends State<ChatBot> {
         widgets.insert(0, CircularProgressIndicator());
         setState(() {});
         getPastMessage();
-        int x = 2;
       }
     });
-
-    void nudge() async{
-      await Future.delayed(Duration(milliseconds: 1));
-      while(scroller.positions.isEmpty);
-      if (widget.state == widget.STATE_OLD_MESSAGE) {
-      scroller.animateTo(5,
-      duration: Duration(milliseconds: 250), curve: Curves.ease);
-      widget.state = widget.STATE_NORMAL;
-      } else if (widget.state == widget.STATE_NEW_MESSAGE) {
-      scroller.animateTo(scroller.position.maxScrollExtent,
-      duration: Duration(milliseconds: 250), curve: Curves.ease);
-      widget.state = widget.STATE_NORMAL;
-      }
-    }
 
     Widget getQuit() {
       // return getPaddedButton("Quit", () {scroller.animateTo(1000000, duration: Duration(seconds: 1), curve: Curves.bounceOut);});
@@ -162,7 +161,7 @@ class ChatBotState extends State<ChatBot> {
                 child: getQuit(),
               )
             ])));
-  nudge();
+    nudge();
     return scaff;
   }
 }
