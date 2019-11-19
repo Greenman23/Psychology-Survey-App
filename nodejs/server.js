@@ -264,6 +264,44 @@ webApp.post('/userSurveyQuestionHistory', function(request,response){
         }
     })
 })
+
+webApp.post('/chatBotRouter', function(request,response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: chatbot")
+    let connection = mysql.createConnection(conInfo)
+    var login = 'SELECT verify_user("' + request.body.username + '","' + request.body.password + '");'
+    connection.query(login, function(error,results){
+        var authentication = 0
+        if(error){
+            console.error(error)
+        }
+        else{
+            for (let value of Object.values(results[0])) {
+               authentication = value
+            }
+            if(authentication==1){
+                console.log(request.body.message)
+                if(request.message === "How are you?"){
+                    sendJSON(request,response,{'Message' : 'I am good!'})
+                }
+                else if(request.body.message === "Hi"){
+                    sendJSON(request,response,{'Message' : 'Hi how are you?'})
+                }
+                else if(request.body.message === "What's your name?" || request.body.message === "Who are you?"){
+                    sendJSON(request,response,{'Message' : 'I am James your therapist'})
+                }
+                else if(request.body.message === "I need help"){
+                    sendJSON(request,response,{'Message' : 'I can help you'})
+                }
+                else {
+                    sendJSON(request,response,{'Message' : 'I can not understand you'})
+                }
+            }
+            else {
+                sendJSON404(request,response,"Invalid user")
+            }
+        }
+    })
+})
 webApp.listen(80)
 console.log("Express server is running now")
 

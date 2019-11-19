@@ -30,7 +30,7 @@ class Server_Test_Functions:
             title = 'Choose a server function to test: '
             options = ['Login test', 'Signup test', 'Get surveys function', 'Get surveys for a question', 'Send an profile picture image from images to send directory', 
                 "Request profile image", "How does my profile feel?", "Connect to image recongnition server directly", 
-                "Test sending an image to nodejs for an emotion", "Get survey history for user", "Get questions history for surveys","Exit"]
+                "Test sending an image to nodejs for an emotion", "Get survey history for user", "Get questions history for surveys", "lets chat", "Exit"]
             options, value = pick(options, title)
             if value == 0:
                 self.login_test()
@@ -55,6 +55,8 @@ class Server_Test_Functions:
             elif value == 10:
                 self.survey_history_questions()
             elif value == 11:
+                self.chat_bot_tester()
+            elif value == 12:
                 continueTest = False
             else:
                 print("Invalid input")
@@ -275,6 +277,29 @@ class Server_Test_Functions:
         sendUrl = URL  + '/userSurveyQuestionHistory'
         try:
             response = requests.post(sendUrl, json=usersur)
+            print(json.dumps(response.json(), indent=4, sort_keys=True))
+        
+        except requests.exceptions.Timeout:
+            print("There was a timeout error with the server")
+        
+        except requests.exceptions.TooManyRedirects:
+            print("Bad server url")
+
+        except requests.exceptions.RequestException as e:  
+            print("Error connecting to server")
+    
+    def chat_bot_tester(self):
+        username = input("enter username: ")
+        password = input("enter password: ")
+        msg = input("what do you want to say? ")
+        message = {
+            'username' : username,
+            'password' : password,
+            'message': msg,
+        }
+        sendUrl = URL  + '/chatBotRouter'
+        try:
+            response = requests.post(sendUrl, json=message)
             print(json.dumps(response.json(), indent=4, sort_keys=True))
         
         except requests.exceptions.Timeout:
