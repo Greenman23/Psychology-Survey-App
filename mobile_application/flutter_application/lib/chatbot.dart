@@ -9,6 +9,16 @@ import 'package:flutter_application/primary_widgets.dart';
 import 'package:flutter_application/config.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 
+class Message {
+  bool isFromBot;
+  String mes;
+
+  Message({@required isFromBot, @required mes}) {
+    this.isFromBot = isFromBot;
+    this.mes = mes;
+  }
+}
+
 class ChatBot extends StatefulWidget {
   Config con;
   final int STATE_NORMAL = -1;
@@ -24,7 +34,7 @@ class ChatBot extends StatefulWidget {
 
 class ChatBotState extends State<ChatBot> {
   TextEditingController controller;
-  List<prefix0.Widget> widgets;
+  List<Message> widgets;
   bool waitingForPast;
 
   @override
@@ -32,9 +42,6 @@ class ChatBotState extends State<ChatBot> {
     widget.state = widget.STATE_NORMAL;
     controller = new TextEditingController();
     widgets = [];
-    for (int i = 0; i < 40; i++) {
-      widgets.add(Text("Yeehaw"));
-    }
     waitingForPast = false;
   }
 
@@ -45,17 +52,53 @@ class ChatBotState extends State<ChatBot> {
     ScrollController scroller =
         new ScrollController(initialScrollOffset: offset);
     int state;
+
+    Widget getMessageBubble(Message message) {
+      double paddingVal = 0;
+      Color background = Colors.blue;
+      if (message.isFromBot) {
+        paddingVal = 50;
+        background = Colors.green;
+      }
+      return Padding(
+        padding: EdgeInsets.only(right: paddingVal),
+        child: Container(
+          width: 300,
+
+          child: Align(alignment: Alignment.bottomRight, heightFactor: .9, child: Text(
+            message.mes,
+            style: TextStyle(fontSize: 22 ),
+          )),
+          decoration: BoxDecoration(
+              color: background,
+              border: Border.all(color: background),
+              shape: BoxShape.rectangle,
+              borderRadius: BorderRadius.circular(5)),
+        ),
+      );
+    }
+
     Widget getListView() {
+      int itemCount = widgets.length;
+      if (waitingForPast) {
+        itemCount += 1;
+      }
       s = ListView.builder(
           key: new Key("abcde"),
-
           itemExtent: 50,
-          itemCount: widgets.length,
+          itemCount: itemCount,
           controller: scroller,
           itemBuilder: (BuildContext context, int index) {
-            return Center(child: widgets[index]);
+            if (waitingForPast) {
+              if (index == 0) {
+                return CircularProgressIndicator();
+              } else {
+                return Center(child: getMessageBubble(widgets[index]));
+              }
+            } else {
+              return Center(child: getMessageBubble(widgets[index]));
+            }
           });
-
       return s;
     }
 
@@ -79,27 +122,26 @@ class ChatBotState extends State<ChatBot> {
       );
     }
 
+    // Call back for getting old messages here
     void getPastMessage() async {
       await Future.delayed(Duration(seconds: 1));
-      widgets.removeAt(0);
-      widgets.insert(0, Text("Old Message"));
+      widgets.insert(0, Message(isFromBot: false, mes: "Hello friend"));
       waitingForPast = false;
       widget.state = widget.STATE_OLD_MESSAGE;
-      setState(() {
-      });
+      setState(() {});
     }
 
+    // Callback for getting replies here
     void getNewMessage() async {
       await Future.delayed(Duration(seconds: 1));
-      widgets.add(Text("New message"));
+      widgets.add(Message(isFromBot: true, mes: "Hello there"));
       widget.state = widget.STATE_NEW_MESSAGE;
-      setState(() {
-      });
+      setState(() {});
     }
 
-    void nudge() async{
+    void nudge() async {
       await Future.delayed(Duration(milliseconds: 1));
-      while(scroller.positions.isEmpty);
+      while (scroller.positions.isEmpty);
       if (widget.state == widget.STATE_OLD_MESSAGE) {
         scroller.animateTo(5,
             duration: Duration(milliseconds: 250), curve: Curves.easeIn);
@@ -114,7 +156,6 @@ class ChatBotState extends State<ChatBot> {
     scroller.addListener(() {
       if (scroller.position.pixels <= 0 && !waitingForPast) {
         waitingForPast = true;
-        widgets.insert(0, CircularProgressIndicator());
         setState(() {});
         getPastMessage();
       }
@@ -130,7 +171,7 @@ class ChatBotState extends State<ChatBot> {
     Widget getSend() {
       return FlatButton(
           onPressed: () {
-            widgets.add(Text(controller.text));
+            widgets.add(Message(isFromBot: false, mes: controller.text));
             controller.clear();
             setState(() {});
             getNewMessage();
@@ -144,8 +185,6 @@ class ChatBotState extends State<ChatBot> {
             padding: EdgeInsets.only(top: 50),
             child: Stack(children: <Widget>[
               Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(child: getListView()),
                   Row(
