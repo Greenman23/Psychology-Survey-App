@@ -155,9 +155,9 @@ SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER B
  
  DROP PROCEDURE IF EXISTS insert_answer;
 DELIMITER //
-CREATE PROCEDURE insert_answer(user_name_ varchar(30), password_ varchar(30), survey_id_ int, answer_ varchar(512), date__ DATETIME)
+CREATE PROCEDURE insert_answer(user_name_ varchar(30), password_ varchar(30), survey_id_ int, answer_ varchar(512), date__ DATETIME, chat_or_surv_ ENUM('C', 'S'))
 BEGIN
-INSERT INTO ANSWERS_TEXT (user_id, survey_question, actual_answer, date_) VALUES ((SELECT pk_user_id FROM USERS WHERE user_name =  user_name_ and user_password = password_), survey_id_, answer_, date__);
+INSERT INTO ANSWERS_TEXT (user_id, survey_question, actual_answer, date_, chat_or_surv) VALUES ((SELECT pk_user_id FROM USERS WHERE user_name =  user_name_ and user_password = password_), survey_id_, answer_, date__, chat_or_surv_);
 SELECT user_id FROM ANSWERS_TEXT;
 END;
  //
@@ -231,7 +231,7 @@ END;
  LEFT JOIN QUESTIONS AS questions
  ON 
  questions.pk_questions_id = squestions.question_id
- WHERE surveys.survey_name = survey_name_ AND squestions.chat_or_surv != C;
+ WHERE surveys.survey_name = survey_name_ AND answers.chat_or_surv != 'C';
  END
  //
  DELIMITER ;
