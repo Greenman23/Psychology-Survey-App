@@ -24,9 +24,9 @@ country varchar (60),
 state_province varchar (60),
 city varchar (60),
 date_ datetime,
-user_id int,
+userid int,
 PRIMARY KEY(id),
-FOREIGN KEY (user_id) REFERENCES USERS(pk_user_id)
+FOREIGN KEY (userid) REFERENCES USERS(pk_user_id)
 );
 
 CREATE TABLE SURVEY_VERSIONS(
