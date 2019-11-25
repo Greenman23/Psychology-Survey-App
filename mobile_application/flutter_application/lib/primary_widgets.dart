@@ -54,6 +54,27 @@ Widget getTextFormField(
   );
 }
 
+Widget getPhoneFormField(
+    TextEditingController controller, String hint, Function(String) functor,
+    {bool isPassword: false, Color color: Colors.black}) {
+  return Padding(
+    padding: EdgeInsets.only(top: 10, bottom: 20, left: 30, right: 30),
+    child: TextField(
+      keyboardType: TextInputType.phone,
+      maxLength: 15,
+      controller: controller,
+      onChanged: (String num) {
+        functor(num);
+      },
+      style: TextStyle(color: color),
+      obscureText: isPassword,
+      decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 12)),
+    ),
+  );
+}
+
 Widget getText(String data, {double fontSize: 16, Color color: Colors.black}) {
   return Padding(
       padding: EdgeInsets.only(top: 10, bottom: 10),

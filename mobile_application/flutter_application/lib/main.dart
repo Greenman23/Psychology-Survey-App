@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final Config config = Config("", "", "", "", false, false);
+  final Config config = Config("","","","" "", "", "", "", false, false);
 
   @override
   _HomePageState createState() => _HomePageState();

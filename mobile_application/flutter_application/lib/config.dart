@@ -7,7 +7,8 @@ import 'package:flutter_application/Http.dart';
 
 class Config {
   Config(this.username, this.password, this.actualFirstName,
-      this.actualLastName, this.rememberPassword, this.loggedIn) {
+      this.actualLastName, this.email,
+      this.address, this.phone,this.rememberPassword, this.loggedIn) {
     this.path = "";
   }
 
@@ -15,6 +16,12 @@ class Config {
   String password;
   String actualFirstName;
   String actualLastName;
+  String smoker;
+  String education;
+  String email;
+  String address;
+  String phone;
+  String race;
   String gender;
   DateTime dob;
   bool rememberPassword;
@@ -31,6 +38,12 @@ class Config {
     this.actualFirstName = "";
     this.gender = "Male";
     this.dob = DateTime.now();
+    this.smoker="No";
+    this.education="Bachelors";
+    this.email="";
+    this.address="";
+    this.phone="";
+    this.race="White";
     this.rememberPassword = false;
     this.loggedIn = false;
     this.hash = 0;

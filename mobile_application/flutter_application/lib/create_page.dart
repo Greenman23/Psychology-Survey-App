@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/cupertino.dart' as prefix0;
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'dart:io';
@@ -19,12 +20,18 @@ class CreatePage extends StatefulWidget {
 }
 
 class CreatePageState extends State<CreatePage> {
-  TextEditingController firstName, lastName, userName, password, passwordVerify;
+  TextEditingController firstName, lastName, userName, password, passwordVerify,
+  phone, myEmail, myAddress;
   String createAccountResult;
   Color createAccountColor;
   Color passwordMatchColor;
   String passwordsMatch;
   String gender;
+  String email;
+  String education;
+  String race;
+  String smoker;
+  int phoneNumber;
   Config innerConfig;
 
   @override
@@ -37,10 +44,17 @@ class CreatePageState extends State<CreatePage> {
     createAccountColor = Colors.black;
     createAccountResult = "";
     gender = "Male";
+    race = "White";
+    smoker = "No";
+    education="Bachelors";
     passwordMatchColor = Colors.black;
-    innerConfig = new Config("", "", "", "", false, false);
+    innerConfig = new Config("", "","","", "", "", "", false, false);
     innerConfig.dob = DateTime.now();
     innerConfig.gender = "Male";
+    innerConfig.race = "White";
+    innerConfig.smoker = "No";
+    innerConfig.education = "Bachelors";
+
     passwordsMatch = "";
 
     super.initState();
@@ -58,7 +72,7 @@ class CreatePageState extends State<CreatePage> {
       setState(() {});
     }
 
-    Widget dropDown() {
+    Widget dropDownGender() {
       return Padding(
         padding: EdgeInsets.all(30),
         child: DropdownButton<String>(
@@ -75,6 +89,78 @@ class CreatePageState extends State<CreatePage> {
           onChanged: (String newValue) {
             setState(() {
               innerConfig.gender = newValue;
+            });
+          },
+        ),
+      );
+    }
+
+    Widget dropDownEducation() {
+      return Padding(
+        padding: EdgeInsets.all(30),
+        child: DropdownButton<String>(
+          value: innerConfig.education,
+          iconSize: 24,
+          icon: Icon(Icons.arrow_downward),
+          items: <String>['Some High School','High School','Some College',
+            'Associates','Bachelors','Masters','PHD']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String newValue) {
+            setState(() {
+              innerConfig.education = newValue;
+            });
+          },
+        ),
+      );
+    }
+
+
+    Widget dropDownSmoker() {
+      return Padding(
+        padding: EdgeInsets.all(30),
+        child: DropdownButton<String>(
+          value: innerConfig.smoker,
+          iconSize: 24,
+          icon: Icon(Icons.arrow_downward),
+          items: <String>['No', 'Yes']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String newValue) {
+            setState(() {
+              innerConfig.smoker = newValue;
+            });
+          },
+        ),
+      );
+    }
+
+    Widget dropDownRace() {
+      return Padding(
+        padding: EdgeInsets.all(30),
+        child: DropdownButton<String>(
+          value: innerConfig.race,
+          iconSize: 24,
+          icon: Icon(Icons.arrow_downward),
+          items: <String>['White', 'Asian', 'Hispanic', 'Native American',
+              'Pacific Islander','Black']
+              .map<DropdownMenuItem<String>>((String value) {
+            return DropdownMenuItem<String>(
+              value: value,
+              child: Text(value),
+            );
+          }).toList(),
+          onChanged: (String newValue) {
+            setState(() {
+              innerConfig.race = newValue;
             });
           },
         ),
@@ -130,6 +216,18 @@ class CreatePageState extends State<CreatePage> {
           getTextFormField(lastName, "Your last name", (String tex) {
             innerConfig.actualLastName = tex;
           }),
+          getText("Email"),
+          getTextFormField(myEmail, "Your email", (String tex) {
+            innerConfig.email = tex;
+          }),
+          getText("Address"),
+          getTextFormField(myAddress, "Your Address", (String tex) {
+            innerConfig.address = tex;
+          }),
+          getText("Phone Number"),
+          getPhoneFormField(phone, "##########", (String num) {
+            innerConfig.phone = num;
+          }),
           getText("User Name"),
           getTextFormField(userName, "Your user name", (String tex) {
             innerConfig.username = tex;
@@ -145,7 +243,14 @@ class CreatePageState extends State<CreatePage> {
               (String tex) {
             update();
           }, isPassword: true),
-          dropDown(),
+          getText("Gender"),
+          dropDownGender(),
+          getText("Race"),
+          dropDownRace(),
+          getText("Education"),
+          dropDownEducation(),
+          getText("Smoker"),
+          dropDownSmoker(),
           getText(DateFormat("MM/dd/yyyy").format(innerConfig.dob)),
           getPaddedButton(
             "Set Date of birth",
