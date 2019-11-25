@@ -95,5 +95,6 @@ CREATE TABLE FEEDBACK(
 id int NOT NULL AUTO_INCREMENT, 
 type_ ENUM('Phone', 'Website', 'ImageLink', 'VideoLink'),
 link varchar(256),
-severity_level integer DEFAULT -1
+severity_level integer DEFAULT -1,
+PRIMARY KEY(id)
 );

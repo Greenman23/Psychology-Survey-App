@@ -236,28 +236,13 @@ END;
  //
  DELIMITER ;
  
- DROP FUNCTION IF EXISTS insert_locations;
- DELIMITER //
- CREATE FUNCTION insert_locations (username_ varchar(60), password varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60), date__ DATETIME) RETURNS INT DETERMINISTIC
- IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_) > 0)
- THEN
- INSERT INTO USER_LOCATIONS(country, state_province, city, date_, userid) VALUES(country_, state_, city_, date__, (SELECT `pk_user_id` FROM USERS WHERE `user_name` = username_ AND `password` = password_));
- RETURN 0;
- ELSE
- RETURN -1;
- END IF;
- END
-  
- //
- DELIMITER ;
- -- How to get most recent information https://stackoverflow.com/questions/10999522/how-to-get-the-latest-record-in-each-group-using-group-by
 
- DROP PROCEDURE IF EXISTS get_location_answer;
+ DROP PROCEDURE IF EXISTS get_location_answer_general;
  DELIMITER //
  CREATE PROCEDURE get_location_answer_general()
  BEGIN
  SELECT loc1.country, loc1.state_province, loc1.city, loc1.userid, questions.question, answers.actual_answer FROM USER_LOCATIONS AS loc1
- INNER JOIN (SELECT loc2.userid, MAX(loc2.date_) AS newest_date FROM USER_LOCATIONS AS loc2 GROUP BY loc2.userid)
+ INNER JOIN (SELECT loc2.userid, MAX(loc2.date_) AS newest_date FROM USER_LOCATIONS AS loc2 GROUP BY loc2.userid) AS subquery
  ON
  loc1.userid = loc2.userid AND newest_date = loc1.date_
  LEFT JOIN ANSWERS_TEXT AS answers
@@ -271,6 +256,21 @@ END;
  sqeustions.question_id = questions.pk_questions_id
  ORDER BY answers.date_ DESC
  LIMIT 100;
+ END
+ //
+ DELIMITER ;
+ 
+DROP PROCEDURE IF EXISTS insert_locations;
+ DROP FUNCTION IF EXISTS insert_locations;
+ DELIMITER //
+ CREATE FUNCTION insert_locations (username_ varchar(60), password_ varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60), date__ DATETIME) RETURNS INT DETERMINISTIC
+ IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_ AND `password`=password_) > 0)
+ THEN
+ INSERT INTO USER_LOCATIONS(country, state_province, city, date_, userid) VALUES(country_, state_, city_, date__, (SELECT `pk_user_id` FROM USERS WHERE `user_name` = username_ AND `password` = password_));
+ RETURN 0;
+ ELSE
+ RETURN -1;
+ END IF;
  END
  //
  DELIMITER ;
