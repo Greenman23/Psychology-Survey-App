@@ -2,6 +2,7 @@
  DROP FUNCTION IF EXISTS insert_user;
 DROP PROCEDURE IF EXISTS insert_answer;
  DROP FUNCTION IF EXISTS insert_survey_question;
+ DROP FUNCTION IF EXISTS insert_locations;
 
  DELIMITER //
  CREATE FUNCTION insert_user(first_name_ varchar(30), 
@@ -260,10 +261,9 @@ END;
  //
  DELIMITER ;
  
-DROP PROCEDURE IF EXISTS insert_locations;
- DROP FUNCTION IF EXISTS insert_locations;
  DELIMITER //
- CREATE FUNCTION insert_locations (username_ varchar(60), password_ varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60), date__ DATETIME) RETURNS INT DETERMINISTIC
+ CREATE FUNCTION insert_locations (username_ varchar(60), password_ varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60), date__ DATETIME) RETURNS INTEGER DETERMINISTIC
+ BEGIN
  IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_ AND `password`=password_) > 0)
  THEN
  INSERT INTO USER_LOCATIONS(country, state_province, city, date_, userid) VALUES(country_, state_, city_, date__, (SELECT `pk_user_id` FROM USERS WHERE `user_name` = username_ AND `password` = password_));
