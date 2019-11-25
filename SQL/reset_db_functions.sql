@@ -4,16 +4,25 @@ DROP PROCEDURE IF EXISTS insert_answer;
  DROP FUNCTION IF EXISTS insert_survey_question;
 
  DELIMITER //
- CREATE FUNCTION insert_user(first_name_ varchar(30), last_name_ varchar(30), username_ varchar(30), user_password_ varchar(30),
- sex_ ENUM('Male', 'Female'), dob_ DATE) RETURNS bool DETERMINISTIC
+ CREATE FUNCTION insert_user(first_name_ varchar(30), 
+last_name_ varchar(30), 
+email_ varchar(512),
+phone_ varchar(15),
+user_name_ varchar(30),
+user_password_ varchar(30),
+sex_ ENUM('Male', 'Female'),
+age_ DATE,
+is_smoker_ int, 
+education_ Enum('Some High School', 'High School', 'Some College', 'Bachelors', 'Masters', 'PHD'),
+address_ varchar(512)) RETURNS bool DETERMINISTIC
  BEGIN
  DECLARE ret_val bool;
 IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_) > 0)
 THEN
 RETURN FALSE;
 ELSE
-INSERT INTO USERS (first_name, last_name, user_name, user_password, sex, age) VALUES(first_name_, last_name_, username_, user_password_, sex_,
-dob_);
+INSERT INTO USERS (first_name, last_name, email, phone, user_name, user_password, sex, age, is_smoker, education, address) 
+VALUES(first_name_, last_name_, email_, phone_, user_name_, user_password_, sex_, age_, is_smoker_, education_, address_);
 RETURN TRUE;
 END IF;
 END
@@ -111,7 +120,7 @@ SELECT survey_version, survey_name  FROM SURVEYS GROUP BY survey_version ORDER B
  DELIMITER //
  CREATE PROCEDURE get_questions() 
  BEGIN
-SELECT question_version, answers, question_type, health_data  FROM QUESTIONS GROUP BY question_version ORDER BY question_creation_time;
+ SELECT question_version, answers, question_type, health_data  FROM QUESTIONS GROUP BY question_version ORDER BY question_creation_time;
  END
  //
  DELIMITER ;
@@ -146,9 +155,9 @@ SELECT question_version, answers, question_type, health_data  FROM QUESTIONS GRO
  
  DROP PROCEDURE IF EXISTS insert_answer;
 DELIMITER //
-CREATE PROCEDURE insert_answer(user_name_ varchar(30), password_ varchar(30), survey_id_ int, answer_ varchar(512))
+CREATE PROCEDURE insert_answer(user_name_ varchar(30), password_ varchar(30), survey_id_ int, answer_ varchar(512), date__ DATETIME)
 BEGIN
-INSERT INTO ANSWERS_TEXT (user_id, survey_question, actual_answer) VALUES ((SELECT pk_user_id FROM USERS WHERE user_name =  user_name_ and user_password = password_), survey_id_, answer_);
+INSERT INTO ANSWERS_TEXT (user_id, survey_question, actual_answer, date_) VALUES ((SELECT pk_user_id FROM USERS WHERE user_name =  user_name_ and user_password = password_), survey_id_, answer_, date__);
 SELECT user_id FROM ANSWERS_TEXT;
 END;
  //
@@ -156,13 +165,13 @@ DELIMITER;
  
  DROP FUNCTION IF EXISTS insert_survey_question;
    DELIMITER //
-CREATE FUNCTION insert_survey_question(survey_id_ int, question_id_ int, last_question_id int, category_ varchar(60)) RETURNS int DETERMINISTIC
+CREATE FUNCTION insert_survey_question(survey_id_ int, question_id_ int, last_question_id int, category_ varchar(60), chat_or_surv_ ENUM('C', 'S', 'B')) RETURNS int DETERMINISTIC
 BEGIN
 if(last_question_id != -1)
 THEN
-INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, last_survey_question, cat) VALUES(survey_id_, question_id_, last_question_id, category_);
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, last_survey_question, cat, chat_or_surv) VALUES(survey_id_, question_id_, last_question_id, category_, chat_or_surv_);
 ELSE 
-INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, cat) VALUES(survey_id_, question_id_, category_);
+INSERT INTO SURVEY_QUESTIONS(survey_id, question_id, cat, chat_or_surv) VALUES(survey_id_, question_id_, category_, chat_or_surv_);
 END IF;
 RETURN last_insert_id();
 END;
@@ -174,7 +183,7 @@ END;
     DELIMITER //
  CREATE PROCEDURE get_questions_by_survey(name_ varchar(60))
  BEGIN
- SELECT squestions.id, questions.question, questions.answers, questions.question_type, squestions.last_survey_question, questions.health_data FROM SURVEY_QUESTIONS as squestions
+ SELECT squestions.id, questions.question, questions.answers, questions.question_type, squestions.last_survey_question, questions.health_data, squestions.cat, squestions.chat_or_surv FROM SURVEY_QUESTIONS as squestions
  LEFT JOIN QUESTIONS AS questions
  ON
  squestions.question_id = questions.pk_questions_id
@@ -222,7 +231,7 @@ END;
  LEFT JOIN QUESTIONS AS questions
  ON 
  questions.pk_questions_id = squestions.question_id
- WHERE surveys.survey_name = survey_name_;
+ WHERE surveys.survey_name = survey_name_ AND squestions.chat_or_surv != C;
  END
  //
  DELIMITER ;
