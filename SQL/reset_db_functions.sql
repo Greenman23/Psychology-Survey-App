@@ -266,11 +266,11 @@ END;
  DELIMITER ;
  
  DELIMITER //
- CREATE FUNCTION insert_locations (username_ varchar(60), password_ varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60), date__ DATETIME) RETURNS INTEGER DETERMINISTIC
+ CREATE FUNCTION insert_locations (user_name_ varchar(60), password_ varchar(60), country_ varchar(60), state_ varchar(60), city_ varchar(60)) RETURNS INTEGER DETERMINISTIC
  BEGIN
- IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_ AND `password`=password_) > 0)
+ IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = user_name_ AND `user_password`=password_) > 0)
  THEN
- INSERT INTO USER_LOCATIONS(country, state_province, city, date_, userid) VALUES(country_, state_, city_, date__, (SELECT `pk_user_id` FROM USERS WHERE `user_name` = username_ AND `password` = password_));
+ INSERT INTO USER_LOCATIONS(country, state_province, city, date_, userid) VALUES(country_, state_, city_, NOW(), (SELECT `pk_user_id` FROM USERS WHERE `user_name` = user_name_ AND `user_password` = password_));
  RETURN 0;
  ELSE
  RETURN -1;

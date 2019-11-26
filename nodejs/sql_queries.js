@@ -215,11 +215,11 @@ module.exports  = {
     send_gps_location: function(user, pass, country, state, city, connection, callback){
         var currentDate = new Date()
         var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
-        '","' + city + '", DATE("' + currentDate + '"));'
+        '","' + city + '");'
         console.log(sendGPS)
         connection.query(sendGPS, function(error,results,feilds){
             if(error) console.error(error)
-            else print(results); callback("Yehaw")
+            else console.log(results); callback("Yehaw")
         })
     }
 }
