@@ -1,5 +1,6 @@
 import 'dart:io';
-
+import 'package:location/location.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_application/chatbot.dart';
@@ -16,6 +17,7 @@ import 'create_page.dart';
 import 'package:path/path.dart';
 import 'package:flutter_application/Http.dart';
 import 'package:flutter_application/survey_history_overview.dart';
+import 'package:geocoder/geocoder.dart';
 
 // Uncomment lines 7 and 10 to view the visual layout at runtime.
 // import 'package:flutter/rendering.dart' show debugPaintSizeEnabled;
@@ -40,13 +42,20 @@ class MyApp extends StatelessWidget {
 }
 
 class HomePage extends StatefulWidget {
-  final Config config = Config("","","","","" "", "", "", "", false, false);
+  final Config config = Config("", "", "", "", "" "", "", "", "", false, false);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  bool provideLocation;
+  Location location;
+  Map userLocationMap;
+  String stringAddress;
+  LocationData currentLocation;
+  String error;
+
   void update() {
     setState(() {});
   }
@@ -55,7 +64,79 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     int x = 2;
-    widget.config.getGlobalConfig(update);
+    location = new Location();
+    stringAddress = "";
+    widget.config.getGlobalConfig((){
+      initializeLocation().then((val){
+        updateLocation();
+        update();
+      });
+    });
+  }
+
+  void updateLocation() {
+    widget.config.locData = userLocationMap;
+    print(userLocationMap);
+  }
+
+  void setupAddresses(Coordinates coord) async {
+    Geocoder.local.findAddressesFromCoordinates(coord).then((err) {
+      if (userLocationMap == null) {
+        userLocationMap = {
+          'City': err[0].locality,
+          'County': err[0].subAdminArea,
+          'State': err[0].adminArea,
+          'Country': err[0].countryName,
+        };
+
+        stringAddress = err[0].locality +
+            ", " +
+            err[0].adminArea +
+            ", " +
+            err[0].countryName;
+        updateLocation();
+        setState(() {});
+      }
+    });
+  }
+
+  initializeLocation() async {
+    LocationData tempLoc;
+
+    try {
+      bool locationStatus = await location.serviceEnabled();
+      print("LocationStatus: " + locationStatus.toString());
+      if (locationStatus) {
+        provideLocation = await location.requestPermission();
+        print("Provide Location Inside Location Status: " +
+            provideLocation.toString());
+        if (provideLocation) {
+          tempLoc = await location.getLocation();
+
+          final cords = new Coordinates(tempLoc.latitude, tempLoc.longitude);
+
+          setupAddresses(cords);
+
+          if (mounted) {
+            setState(() {
+              currentLocation = tempLoc;
+            });
+          }
+        } else {
+          bool locationStatus = await location.serviceEnabled();
+          if (locationStatus) {
+            initializeLocation();
+          }
+        }
+      }
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = e.message;
+      } else if (e.code == 'SERVICE_STATUS_ERROR') {
+        error = e.message;
+      }
+      currentLocation = null;
+    }
   }
 
   @override
@@ -76,7 +157,6 @@ class _HomePageState extends State<HomePage> {
       minWidth: 400,
       height: 50,
     );
-
 
     void _pushSaved() {
       Navigator.of(context).push(MaterialPageRoute(
@@ -132,21 +212,20 @@ class _HomePageState extends State<HomePage> {
       }));
     }
 
-    void startHistory(Map map){
-        for(int i = 0; i < 2; i++)
-          {
-            int x = 2;
-          }
-          Map refinedMap = map['surveys'][0];
-          Navigator.of(context).push(MaterialPageRoute(
-            settings: RouteSettings(name: "/history_overview"),
-            builder: (BuildContext context) {
-             return Survey_History_Overview(config: widget.config, survey: refinedMap);
-            }
-          ));
+    void startHistory(Map map) {
+      for (int i = 0; i < 2; i++) {
+        int x = 2;
+      }
+      Map refinedMap = map['surveys'][0];
+      Navigator.of(context).push(MaterialPageRoute(
+          settings: RouteSettings(name: "/history_overview"),
+          builder: (BuildContext context) {
+            return Survey_History_Overview(
+                config: widget.config, survey: refinedMap);
+          }));
     }
 
-    void _viewHistory(){
+    void _viewHistory() {
       Navigator.of(context).push(MaterialPageRoute(
           settings: RouteSettings(name: "/survey"),
           builder: (BuildContext context) {
@@ -165,9 +244,9 @@ class _HomePageState extends State<HomePage> {
           builder: (BuildContext context) {
             return SurveyListStateful(
               config: widget.config,
-               getFutureList: getSurveys,
-               getInformation: getSurveyByName,
-               startTaskWithFuture: startSurvey,
+              getFutureList: getSurveys,
+              getInformation: getSurveyByName,
+              startTaskWithFuture: startSurvey,
             );
           }));
     }
@@ -181,8 +260,6 @@ class _HomePageState extends State<HomePage> {
             );
           }));
     }
-
-
 
     void update() {
       setState(() {});
@@ -242,15 +319,12 @@ class _HomePageState extends State<HomePage> {
       return Text("");
     }
 
-    Text getUsername()
-    {
-      if(widget.config.username != null)
-        {
-          if(widget.config.username != "")
-            {
-              return Text(widget.config.username);
-            }
+    Text getUsername() {
+      if (widget.config.username != null) {
+        if (widget.config.username != "") {
+          return Text(widget.config.username);
         }
+      }
       return Text("Welcome to the App!");
     }
 
@@ -259,10 +333,7 @@ class _HomePageState extends State<HomePage> {
       home: Scaffold(
         appBar: AppBar(
             title: Row(
-          children: <Widget>[
-            getUsername(),
-            getImage()
-          ],
+          children: <Widget>[getUsername(), getImage()],
         )),
         body: Column(
           children: [

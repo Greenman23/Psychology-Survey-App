@@ -10,6 +10,7 @@ class Config {
       this.actualLastName, this.email,
       this.address, this.phone, this.income,
       this.rememberPassword, this.loggedIn) {
+    this.alreadySentLoc = false;
     this.path = "";
   }
 
@@ -30,6 +31,7 @@ class Config {
   int hash;
   Image img;
   Map locData;
+  bool alreadySentLoc;
   String path;
   String income;
 
@@ -51,6 +53,7 @@ class Config {
     this.hash = 0;
     this.path = "";
     img = null;
+    this.alreadySentLoc = false;
     this.locData = null;
     income = "";
   }
