@@ -21,6 +21,8 @@ import 'package:dbcrypt/dbcrypt.dart';
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
 //final String URL = "http://192.168.2.33:8085";
 final String URL = "http://192.168.1.139:80";
+final DBCrypt dbCrypt = DBCrypt();
+final String salt = dbCrypt.gensaltWithRounds(12);
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -265,10 +267,7 @@ void outputAnswers(Config config, Map ogMap) {
 }
 
 String passwordHashing(Config config){
-  DBCrypt dbCrypt = DBCrypt();
-  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  String passwordHash = dbCrypt.hashpw(config.password, salt);
   return passwordHash;
 }
 
