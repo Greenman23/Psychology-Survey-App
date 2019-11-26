@@ -137,6 +137,12 @@ class _LoginPageState extends State<LoginPage> {
           setState(() {});
       });
     }
+    else
+      {
+        setState(() {
+
+        });
+      }
   }
 
   void updateLocation(){
