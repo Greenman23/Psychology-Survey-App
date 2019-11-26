@@ -15,14 +15,11 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:dbcrypt/dbcrypt.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
 //final String URL = "http://192.168.2.33:8085";
 final String URL = "http://192.168.1.139:80";
-final DBCrypt dbCrypt = DBCrypt();
-final String salt = dbCrypt.gensaltWithRounds(12);
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -266,8 +263,11 @@ void outputAnswers(Config config, Map ogMap) {
   });
 }
 
+
+//  Will be replaced with a actual hash later
 String passwordHashing(Config config){
-  String passwordHash = dbCrypt.hashpw(config.password, salt);
+//  String passwordHash = dbCrypt.hashpw(config.password, salt);
+  String passwordHash = config.password;
   return passwordHash;
 }
 
@@ -282,7 +282,7 @@ Future<String> chatBotResponse(Config config, String msg) async{
   print(msg);
 
   Map surveyMap = await getPost(map, 'chatBotRouter');
-  String mesage = surveyMap["Message"];
+  String message = surveyMap["Message"];
 
-  return mesage;
+  return message;
 }
