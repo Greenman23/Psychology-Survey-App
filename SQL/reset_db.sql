@@ -16,6 +16,7 @@ is_smoker int,
 education Enum('Some High School', 'High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'PHD'),
 address varchar(512),
 ethnicity Enum('White', 'Black', 'Hispanic', 'Asian', 'Native American', 'Pacific Islander', 'Other', 'Prefer not to say'),
+income varchar(15),
 PRIMARY KEY (pk_user_id)
 );
 
