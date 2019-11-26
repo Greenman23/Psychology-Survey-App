@@ -208,7 +208,13 @@ void signUp(Config config, Function(bool, String, Color) functor) {
     "Username": config.username,
     "Password": config.password,
     "Gender": config.gender,
-    "BirthDate": DateFormat("yyyy-MM-dd").format(config.dob)
+    "BirthDate": DateFormat("yyyy-MM-dd").format(config.dob),
+    "Email": config.email,
+    "Phone": config.phone,
+    "Is_Smoker" : config.smoker,
+    "Education" : config.education,
+    "Ethnicity" : config.race,
+    "Address" : config.address
   };
 
   if (config.is_empty_or_null()) {

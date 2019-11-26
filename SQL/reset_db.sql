@@ -15,7 +15,7 @@ age DATE NOT NULL,
 is_smoker int, 
 education Enum('Some High School', 'High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'PHD'),
 address varchar(512),
-ethnicity Enum('White', 'Black', 'Latino', 'Asian', 'Native American', 'Other', 'Prefer not to say'),
+ethnicity Enum('White', 'Black', 'Hispanic', 'Asian', 'Native American', 'Pacific Islander', 'Other', 'Prefer not to say'),
 PRIMARY KEY (pk_user_id)
 );
 

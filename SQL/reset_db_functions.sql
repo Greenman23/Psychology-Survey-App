@@ -15,7 +15,7 @@ sex_ ENUM('Male', 'Female'),
 age_ DATE,
 is_smoker_ int, 
 education_ Enum('Some High School', 'High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'PHD'),
-ethnicity_ Enum('White', 'Black', 'Latino', 'Asian', 'Native American', 'Other', 'Prefer not to say'),
+ethnicity_ Enum('White', 'Black', 'Hispanic', 'Asian', 'Native American', 'Pacific Islander', 'Other', 'Prefer not to say'),
 address_ varchar(512)) RETURNS bool DETERMINISTIC
  BEGIN
  DECLARE ret_val bool;

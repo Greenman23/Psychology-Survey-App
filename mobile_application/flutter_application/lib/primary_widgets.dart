@@ -75,6 +75,42 @@ Widget getPhoneFormField(
   );
 }
 
+
+Widget getMoneyFormField(
+    TextEditingController controller, String hint, Function(String) functor,
+    {bool isPassword: false, Color color: Colors.black}) {
+  return Padding(
+    padding: EdgeInsets.only(top: 10, bottom: 20, left: 30, right: 30),
+    child: TextFormField(
+
+      validator: (value){
+        if(value[0] != '\$')
+          {
+            return ":\$" + value;
+          }
+        return value;
+      },
+      keyboardType: TextInputType.numberWithOptions(),
+      maxLength: 15,
+      controller: controller,
+      onChanged: (String num) {
+        int offset = controller.selection.extent.offset;
+        functor(num);
+        if(controller.text.length < offset)
+          {
+            offset = controller.text.length;
+          }
+        controller.selection = TextSelection.collapsed(offset:offset);
+      },
+      style: TextStyle(color: color),
+      obscureText: isPassword,
+      decoration: InputDecoration(
+          hintText: hint,
+          hintStyle: TextStyle(color: Colors.grey, fontSize: 12)),
+    ),
+  );
+}
+
 Widget getText(String data, {double fontSize: 16, Color color: Colors.black}) {
   return Padding(
       padding: EdgeInsets.only(top: 10, bottom: 10),

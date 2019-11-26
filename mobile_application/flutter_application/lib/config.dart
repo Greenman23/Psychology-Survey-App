@@ -30,6 +30,7 @@ class Config {
   Image img;
   Map locData;
   String path;
+  String income;
 
   void clear() {
     this.username = "";
@@ -50,6 +51,7 @@ class Config {
     this.path = "";
     img = null;
     this.locData = null;
+    income = "";
   }
 
   bool has_spaces() {

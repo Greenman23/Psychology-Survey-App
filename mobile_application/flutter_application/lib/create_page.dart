@@ -21,7 +21,7 @@ class CreatePage extends StatefulWidget {
 
 class CreatePageState extends State<CreatePage> {
   TextEditingController firstName, lastName, userName, password, passwordVerify,
-  phone, myEmail, myAddress;
+  phone, myEmail, myAddress, income;
   String createAccountResult;
   Color createAccountColor;
   Color passwordMatchColor;
@@ -41,6 +41,7 @@ class CreatePageState extends State<CreatePage> {
     userName = new TextEditingController(text: "");
     password = new TextEditingController(text: "");
     passwordVerify = new TextEditingController(text: "");
+    income = new TextEditingController(text: "\$");
     createAccountColor = Colors.black;
     createAccountResult = "";
     gender = "Male";
@@ -251,6 +252,23 @@ class CreatePageState extends State<CreatePage> {
           dropDownEducation(),
           getText("Smoker"),
           dropDownSmoker(),
+          getText("Income"),
+          getMoneyFormField(income, "Approximate income to the nearest dollar", (String tex){
+
+            if(tex.length == 0)
+              {
+                tex = "\$";
+              }
+            if(tex.contains(".")) {
+              tex = tex.replaceAll(".", "");
+            }
+            if(income.text[0] != '\$')
+              {
+                tex = income.text.replaceAll("\$", "");
+                tex = "\$" + tex;
+              }
+            income.text = tex;
+          }),
           getText(DateFormat("MM/dd/yyyy").format(innerConfig.dob)),
           getPaddedButton(
             "Set Date of birth",
