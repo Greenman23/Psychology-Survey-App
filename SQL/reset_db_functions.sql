@@ -22,7 +22,7 @@ income_ varchar(15))
 
  BEGIN
  DECLARE ret_val bool;
-IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_) > 0)
+IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = user_name_) > 0)
 THEN
 RETURN FALSE;
 ELSE
