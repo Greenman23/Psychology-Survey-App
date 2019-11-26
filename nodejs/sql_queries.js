@@ -53,11 +53,15 @@ module.exports  = {
             callback(error_resp)
         }
     },
-    signup: function(FirstName, LastName, Username, Password, Gender, BirthDate, connection, callback){
-        if(FirstName != undefined && LastName != undefined && Username != undefined && Password != undefined && Gender != undefined &&
-            BirthDate !=undefined ) {
-            var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Username + 
-            '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"));'
+    signup: function(FirstName, LastName, Email, PhoneNumber, Username, Password, Gender, BirthDate,
+        Smoker, Education, Address, Race, income, connection, callback){
+        if(FirstName != undefined && LastName != undefined && Email != undefined
+            && PhoneNumber != undefined && Username != undefined && Password != undefined && Gender != undefined &&
+            BirthDate !=undefined && Smoker != undefined && Education != undefined && Race != undefined && Address != undefined ) {
+            var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Email + '","' + PhoneNumber + 
+            '","' + Username + '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"),"' + Smoker + 
+            '","' + Education +  '","' + Address + '","' + Race + '","' + income + '");'
+            console.log(new_user)
             var auth = 0;
             connection.query(new_user, function(error,res){
                 if(error) throw console.error(error) 
@@ -89,7 +93,7 @@ module.exports  = {
             callback(error_resp)
         }
     },
-     get_all_surveys: function(connection, callback){
+    get_all_surveys: function(connection, callback){
         var all_surveys = 'CALL get_surveys();'
         var jsonresponse
         var array = []

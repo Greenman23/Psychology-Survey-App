@@ -14,11 +14,13 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:dbcrypt/dbcrypt.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
 //final String URL = "http://192.168.2.33:8085";
 final String URL = "http://192.168.1.139:80";
+DBCrypt dbCrypt = DBCrypt();
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -139,11 +141,20 @@ Future<List<Survey_List>> getSurveyHistory(Config con) async {
 }
 
 void login(Config config, Function(String, Color) functor, Function() update) {
+
+  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
+
   Map map = {
     'Type': "login",
     'Username': config.username,
-    'Password': config.password
+    'Password': passwordHash
   };
+
 
   getPost(map, "login").then((Map value) {
     config.loggedIn = value["Authentication"];
@@ -201,12 +212,19 @@ void getSurveyQuestionHistory(
 }
 
 void signUp(Config config, Function(bool, String, Color) functor) {
+
+  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  print(passwordHash);
   Map map = {
     "Type": "signup",
     "FirstName": config.actualFirstName,
     "LastName": config.actualLastName,
     "Username": config.username,
-    "Password": config.password,
+    "Password": passwordHash,
     "Gender": config.gender,
     "BirthDate": DateFormat("yyyy-MM-dd").format(config.dob),
     "Email": config.email,
@@ -214,7 +232,8 @@ void signUp(Config config, Function(bool, String, Color) functor) {
     "Is_Smoker" : config.smoker,
     "Education" : config.education,
     "Ethnicity" : config.race,
-    "Address" : config.address
+    "Address" : config.address,
+    "Income" : config.income
   };
 
   if (config.is_empty_or_null()) {

@@ -8,7 +8,8 @@ import 'package:flutter_application/Http.dart';
 class Config {
   Config(this.username, this.password, this.actualFirstName,
       this.actualLastName, this.email,
-      this.address, this.phone,this.rememberPassword, this.loggedIn) {
+      this.address, this.phone, this.income,
+      this.rememberPassword, this.loggedIn) {
     this.path = "";
   }
 
@@ -44,7 +45,7 @@ class Config {
     this.email="";
     this.address="";
     this.phone="";
-    this.race="White";
+    this.race="Prefer not to say";
     this.rememberPassword = false;
     this.loggedIn = false;
     this.hash = 0;

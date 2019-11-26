@@ -45,14 +45,14 @@ class CreatePageState extends State<CreatePage> {
     createAccountColor = Colors.black;
     createAccountResult = "";
     gender = "Male";
-    race = "White";
+    race = "Prefer not to say";
     smoker = "No";
     education="Bachelors";
     passwordMatchColor = Colors.black;
-    innerConfig = new Config("", "","","", "", "", "", false, false);
+    innerConfig = new Config("","","","","", "", "", "", false, false);
     innerConfig.dob = DateTime.now();
     innerConfig.gender = "Male";
-    innerConfig.race = "White";
+    innerConfig.race = "Prefer not to say";
     innerConfig.smoker = "No";
     innerConfig.education = "Bachelors";
 
@@ -151,8 +151,9 @@ class CreatePageState extends State<CreatePage> {
           value: innerConfig.race,
           iconSize: 24,
           icon: Icon(Icons.arrow_downward),
-          items: <String>['White', 'Asian', 'Hispanic', 'Native American',
-              'Pacific Islander','Black']
+          items: <String>['White', 'Black', 'Hispanic', 'Asian',
+            'Native American', 'Pacific Islander', 'Other',
+            'Prefer not to say']
               .map<DropdownMenuItem<String>>((String value) {
             return DropdownMenuItem<String>(
               value: value,
@@ -268,6 +269,7 @@ class CreatePageState extends State<CreatePage> {
                 tex = "\$" + tex;
               }
             income.text = tex;
+            innerConfig.income = tex;
           }),
           getText(DateFormat("MM/dd/yyyy").format(innerConfig.dob)),
           getPaddedButton(

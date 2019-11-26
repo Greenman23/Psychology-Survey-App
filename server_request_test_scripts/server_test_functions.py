@@ -73,12 +73,19 @@ class Server_Test_Functions:
     def sign_up_test(self):
         firstName = input("enter a first name: ")
         lastName = input("enter a last name: ")
+        email = input("enter a email: ")
+        phone = input("enter phone number: ")
         username = input("enter a username: ")
         password = input("enter a password: ")
         gender = input("enter gender(Male, Female): ")
+        race = input("enter your race: ")
         birthDate = input("enter a birthday exe(YYYY-MM-DD): ")
-        sign_up_dict = {'FirstName': firstName, 'LastName': lastName, 'Username': username, 'Password': password,
-            'Gender': gender, 'BirthDate': birthDate}
+        smoker = input("do you smoke: ")
+        education = input("education level: ")
+        address = input("your address: ")
+        sign_up_dict = {'FirstName': firstName, 'LastName': lastName, 'email' : email, 'PhoneNumber' : phone,
+         'Username': username, 'Password': password,
+            'Gender': gender, 'Race' : race,'BirthDate': birthDate, 'Smoker' : smoker, 'Education' : education, 'Address' : address}
         sendUrl = URL  + '/signup'
         response = requests.post(sendUrl, json=sign_up_dict)
         print(json.dumps(response.json(), indent=4, sort_keys=True))
