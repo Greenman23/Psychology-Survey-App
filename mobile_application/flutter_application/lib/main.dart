@@ -76,6 +76,7 @@ class _HomePageState extends State<HomePage> {
 
   void updateLocation() {
     widget.config.locData = userLocationMap;
+    sendGPSLocation(widget.config);
     print(userLocationMap);
   }
 
@@ -84,7 +85,6 @@ class _HomePageState extends State<HomePage> {
       if (userLocationMap == null) {
         userLocationMap = {
           'City': err[0].locality,
-          'County': err[0].subAdminArea,
           'State': err[0].adminArea,
           'Country': err[0].countryName,
         };
