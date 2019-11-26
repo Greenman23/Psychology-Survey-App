@@ -53,7 +53,6 @@ webApp.post('/login', function(request,response){
         sendJSON(request,response,my_response)
     })
 })
-
 webApp.post('/allSurveys', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: allsurveys")
     let connection = mysql.createConnection(conInfo)
@@ -266,7 +265,6 @@ webApp.post('/userSurveyQuestionHistory', function(request,response){
         }
     })
 })
-
 webApp.post('/chatBotRouter', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: chatbot")
     let connection = mysql.createConnection(conInfo)
@@ -303,6 +301,33 @@ webApp.post('/chatBotRouter', function(request,response){
             }
         }
     })
+})
+webApp.post('/sendGPSLocation', function(request,response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: sendGPS")
+    let connection = mysql.createConnection(conInfo)
+    var login = 'SELECT verify_user("' + request.body.Username + '","' + request.body.Password + '");'
+    connection.query(login, function(error,results){
+        var authentication = 0
+        if(error){
+            console.error(error)
+        }
+        else{
+            for (let value of Object.values(results[0])) {
+               authentication = value
+            }
+            if(authentication==1){
+                var map = request.body.Map;
+                query.send_gps_location(request.body.Username, request.body.Password, map.Country, map.State, map.City,
+                    connection, function(resp){
+                        sendJSON(request,response,resp)
+                    })
+            }
+            else {
+                sendJSON404(request,response,{'Authentication' : false})
+            }
+        }
+    })
+
 })
 webApp.listen(80)
 console.log("Express server is running now")

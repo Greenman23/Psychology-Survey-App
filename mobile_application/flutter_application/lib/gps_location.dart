@@ -10,6 +10,7 @@ import 'package:flutter_application/config.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geocoder/geocoder.dart';
+import 'package:flutter_application/Http.dart';
 
 class GPSLocation extends StatefulWidget {
   final Config config;
@@ -50,9 +51,8 @@ class _GPSLocationState extends State<GPSLocation> {
           if(userLocationMap == null) {
             userLocationMap = {
               'City'    : err[0].locality,
-              'County'  : err[0].subAdminArea,
+              'Country'  : err[0].countryName,
               'State'   : err[0].adminArea,
-              'Country' : err[0].countryName,
             };
 
             stringAddress = err[0].locality+", "+err[0].adminArea+", "+
@@ -154,6 +154,7 @@ class _GPSLocationState extends State<GPSLocation> {
         new Container(
           child: getPaddedButton("Yes", () {
             widget.config.locData = userLocationMap;
+            sendGPSLocation(widget.config);
             Navigator.popUntil(this.context, ModalRoute.withName("/"));
           }),
         ),

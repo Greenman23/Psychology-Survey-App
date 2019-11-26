@@ -1,13 +1,3 @@
-
-/*function query(q, connection, callback){
-    connection.query(q, function(error,results,[])
-    {
-        if(error) throw console.error(error);
-        console.log(results)
-        callback(null,results)
-    });
-}*/
-function get_user_anwers(user, pass, survey, connection, callback){}
 module.exports  = {
     login: function(Username, Password, connection, callback){
         if(Username != undefined && Password != undefined){
@@ -221,5 +211,15 @@ module.exports  = {
             surveys['surveys'].push(tempDict)
             callback(surveys)
         })           
+    },
+    send_gps_location: function(user, pass, country, state, city, connection, callback){
+        var currentDate = new Date()
+        var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
+        '","' + city + '", DATE("' + currentDate + '"));'
+        console.log(sendGPS)
+        connection.query(sendGPS, function(error,results,feilds){
+            if(error) console.error(error)
+            else print(results); callback("Yehaw")
+        })
     }
 }

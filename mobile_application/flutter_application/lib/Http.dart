@@ -15,6 +15,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:steel_crypt/steel_crypt.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
@@ -263,10 +264,11 @@ void outputAnswers(Config config, Map ogMap) {
   });
 }
 
-
 //  Will be replaced with a actual hash later
 String passwordHashing(Config config){
 //  String passwordHash = dbCrypt.hashpw(config.password, salt);
+  var fortunaKey = CryptKey().genFortuna();
+  print(fortunaKey);
   String passwordHash = config.password;
   return passwordHash;
 }
@@ -285,4 +287,17 @@ Future<String> chatBotResponse(Config config, String msg) async{
   String message = surveyMap["Message"];
 
   return message;
+}
+
+void sendGPSLocation(Config config) {
+  String hashString = passwordHashing(config);
+  Map map = {
+    "Map": config.locData,
+    "Username": config.username,
+    "Password": hashString
+  };
+
+  getPost(map, "sendGPSLocation").then((Map value) {
+    print(value);
+  });
 }
