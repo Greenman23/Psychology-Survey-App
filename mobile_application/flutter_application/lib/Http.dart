@@ -4,6 +4,7 @@ import 'dart:ffi';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_application/chatbot.dart';
 import 'package:flutter_application/survey_list.dart';
 
@@ -20,7 +21,6 @@ import 'package:dbcrypt/dbcrypt.dart';
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
 //final String URL = "http://192.168.2.33:8085";
 final String URL = "http://192.168.1.139:80";
-DBCrypt dbCrypt = DBCrypt();
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -118,7 +118,8 @@ Future<List<Survey_List>> getSurveys(Config config) async {
 }
 
 Future<List<Survey_List>> getSurveyHistory(Config con) async {
-  Map map = {"username": con.username, "password": con.password};
+  String hashString = passwordHashing(con);
+  Map map = {"username": con.username, "password": hashString};
 
   Map surveyMap = await getPost(map, 'userSurveyHistory');
   var _list = [];
@@ -142,17 +143,12 @@ Future<List<Survey_List>> getSurveyHistory(Config con) async {
 
 void login(Config config, Function(String, Color) functor, Function() update) {
 
-  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
+  String hashString = passwordHashing(config);
 
   Map map = {
     'Type': "login",
     'Username': config.username,
-    'Password': passwordHash
+    'Password': hashString
   };
 
 
@@ -174,10 +170,11 @@ void login(Config config, Function(String, Color) functor, Function() update) {
 }
 
 void getPicture(Config config, Function functor) {
+  String hashString = passwordHashing(config);
   Map map = {
     'Type': "ProfilePic",
     "username": config.username,
-    "password": config.password
+    "password": hashString
   };
 
   getPicturePost(map, "ProfilePic").then((Image value) {
@@ -200,9 +197,10 @@ void getSurveyByName(Config con, String name, Function functor) {
 
 void getSurveyQuestionHistory(
     Config con, String surveyName, Function functor) async {
+  String hashString = passwordHashing(con);
   Map map = {
     "username": con.username,
-    "password": con.password,
+    "password": hashString,
     "SurveyName": surveyName
   };
 
@@ -213,18 +211,14 @@ void getSurveyQuestionHistory(
 
 void signUp(Config config, Function(bool, String, Color) functor) {
 
-  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
-  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
-  print(passwordHash);
+  String hashString = passwordHashing(config);
+
   Map map = {
     "Type": "signup",
     "FirstName": config.actualFirstName,
     "LastName": config.actualLastName,
     "Username": config.username,
-    "Password": passwordHash,
+    "Password": hashString,
     "Gender": config.gender,
     "BirthDate": DateFormat("yyyy-MM-dd").format(config.dob),
     "Email": config.email,
@@ -257,11 +251,12 @@ void signUp(Config config, Function(bool, String, Color) functor) {
 }
 
 void outputAnswers(Config config, Map ogMap) {
+  String hashString = passwordHashing(config);
   Map map = {
     "Type": "answers",
     "Map": ogMap,
     "Username": config.username,
-    "Password": config.password
+    "Password": hashString
   };
 
   getPost(map, "uploadAnswers").then((Map value) {
@@ -269,10 +264,19 @@ void outputAnswers(Config config, Map ogMap) {
   });
 }
 
+String passwordHashing(Config config){
+  DBCrypt dbCrypt = DBCrypt();
+  String passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  passwordHash = dbCrypt.hashpw(config.password, dbCrypt.gensalt());
+  return passwordHash;
+}
+
 Future<String> chatBotResponse(Config config, String msg) async{
+  String hashString = passwordHashing(config);
   Map map = {
     "username" : config.username,
-    "password" : config.password,
+    "password" : hashString,
     "message"  : msg
   };
 
