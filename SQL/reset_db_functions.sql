@@ -14,7 +14,8 @@ user_password_ varchar(30),
 sex_ ENUM('Male', 'Female'),
 age_ DATE,
 is_smoker_ int, 
-education_ Enum('Some High School', 'High School', 'Some College', 'Bachelors', 'Masters', 'PHD'),
+education_ Enum('Some High School', 'High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'PHD'),
+ethnicity_ Enum('White', 'Black', 'Latino', 'Asian', 'Native American', 'Other', 'Prefer not to say'),
 address_ varchar(512)) RETURNS bool DETERMINISTIC
  BEGIN
  DECLARE ret_val bool;
@@ -22,8 +23,8 @@ IF ((SELECT COUNT(`pk_user_id`) FROM USERS WHERE `user_name` = username_) > 0)
 THEN
 RETURN FALSE;
 ELSE
-INSERT INTO USERS (first_name, last_name, email, phone, user_name, user_password, sex, age, is_smoker, education, address) 
-VALUES(first_name_, last_name_, email_, phone_, user_name_, user_password_, sex_, age_, is_smoker_, education_, address_);
+INSERT INTO USERS (first_name, last_name, email, phone, user_name, user_password, sex, age, is_smoker, education, address, ethnicity) 
+VALUES(first_name_, last_name_, email_, phone_, user_name_, user_password_, sex_, age_, is_smoker_, education_, address_, ethnicity_);
 RETURN TRUE;
 END IF;
 END

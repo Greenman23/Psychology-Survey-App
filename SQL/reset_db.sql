@@ -13,8 +13,9 @@ user_password varchar(30) NOT NULL,
 sex ENUM('Male', 'Female') NOT NULL,
 age DATE NOT NULL,
 is_smoker int, 
-education Enum('Some High School', 'High School', 'Some College', 'Bachelors', 'Masters', 'PHD'),
+education Enum('Some High School', 'High School', 'Some College', 'Associates', 'Bachelors', 'Masters', 'PHD'),
 address varchar(512),
+ethnicity Enum('White', 'Black', 'Latino', 'Asian', 'Native American', 'Other', 'Prefer not to say'),
 PRIMARY KEY (pk_user_id)
 );
 
