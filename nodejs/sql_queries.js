@@ -218,7 +218,7 @@ module.exports  = {
         console.log(sendGPS)
         connection.query(sendGPS, function(error,results,feilds){
             if(error) console.error(error)
-            else console.log(results); callback({'Process' : 'Compelete'})
+            else callback({'Process' : 'Compelete'})
         })
     }
 }
