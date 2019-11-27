@@ -41,15 +41,17 @@ class ChatBotState extends State<ChatBot> {
   bool waitingForPast;
   bool userInControl;
   int messageIndex;
+  bool hasSubmittedResults;
 
 
   // Callback for getting replies here
   void getNewMessage(String msg) async {
-    //await Future.delayed(Duration(seconds: 1));
     String response;
     if(messageIndex < widget.conversation['Questions'].length)
     {
+      await Future.delayed(Duration(milliseconds: 500));
       response =  widget.conversation['Questions'][messageIndex]['Question'];
+      widget.conversation['Questions'][messageIndex]['Type'] = "C";
     }
     else
     {
@@ -189,6 +191,11 @@ class ChatBotState extends State<ChatBot> {
               {
                 widget.conversation['Questions'][messageIndex]['UserAnswer'] = user_message;
                 messageIndex+=1;
+                if(messageIndex >= widget.conversation['Questions'].length && !hasSubmittedResults)
+                  {
+                    outputAnswers(widget.con, widget.conversation);
+                    hasSubmittedResults = true;
+                  }
               }
             getNewMessage(user_message);
           },
@@ -226,6 +233,7 @@ class ChatBotState extends State<ChatBot> {
 
   @override
   void initState() {
+    hasSubmittedResults = false;
     widget.state = widget.STATE_NORMAL;
     controller = new TextEditingController();
     widgets = [];

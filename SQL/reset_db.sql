@@ -27,6 +27,8 @@ state_province varchar (60),
 city varchar (60),
 date_ datetime,
 userid int,
+longitude varchar(60),
+latitude varchar(60),
 PRIMARY KEY(id),
 FOREIGN KEY (userid) REFERENCES USERS(pk_user_id)
 );
