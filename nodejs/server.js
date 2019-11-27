@@ -70,7 +70,7 @@ webApp.post('/surveyQuestions', function(request,response){
 webApp.post('/uploadAnswers', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: uploadAnswers")
     let connection = mysql.createConnection(conInfo)
-    query.send_answers(request.body.Username, request.body.Password, connection, request.body.Map, function(status){
+    query.send_answers(request.body.Username, request.body.Password, connection, request.body.Map, request.body.Type,function(status){
         sendJSON(request,response,status)
     })
 })

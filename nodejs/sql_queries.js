@@ -50,7 +50,8 @@ module.exports  = {
             BirthDate !=undefined && Smoker != undefined && Education != undefined && Race != undefined && Address != undefined ) {
             var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Email + '","' + PhoneNumber + 
             '","' + Username + '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"),"' + Smoker + 
-            '","' + Education +  '","' + Address + '","' + Race + '","' + income + '");'
+            '","' + Education + '","' + Address + '","' + Race + '","' + income + '");'
+            console.log(new_user)
             var auth = 0;
             connection.query(new_user, function(error,res){
                 if(error) throw console.error(error) 
@@ -134,10 +135,11 @@ module.exports  = {
             callback(error_resp)
         }       
     },
-    send_answers: function(user, pass, connection, answers, callback){
+    send_answers: function(user, pass, connection, answers, type,callback){
         if(user != undefined && pass != undefined && answers != undefined ){  
             for(i = 0; i < answers.Questions.length; i++){
-                var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '");'
+                var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer 
+                + '","' + type + '");'
                 if(i == answers.Questions.length-1){
                     connection.query(answer, function(error)
                     {
