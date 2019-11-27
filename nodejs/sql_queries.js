@@ -137,9 +137,11 @@ module.exports  = {
     },
     send_answers: function(user, pass, connection, answers, type,callback){
         if(user != undefined && pass != undefined && answers != undefined ){  
+            current_date = new Date().toISOString()
+            console.log(current_date)
             for(i = 0; i < answers.Questions.length; i++){
-                var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer 
-                + '","' + type + '");'
+                var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '","' + current_date
+                + '","' + answers.Questions[i].Type + '");'
                 if(i == answers.Questions.length-1){
                     connection.query(answer, function(error)
                     {
