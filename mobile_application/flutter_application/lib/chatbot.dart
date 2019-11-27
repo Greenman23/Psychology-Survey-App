@@ -39,14 +39,25 @@ class ChatBotState extends State<ChatBot> {
   TextEditingController controller;
   List<Message> widgets;
   bool waitingForPast;
+  bool userInControl;
+  int messageIndex;
 
-  @override
-  void initState() {
-    widget.state = widget.STATE_NORMAL;
 
-    controller = new TextEditingController();
-    widgets = [];
-    waitingForPast = false;
+  // Callback for getting replies here
+  void getNewMessage(String msg) async {
+    //await Future.delayed(Duration(seconds: 1));
+    String response;
+    if(messageIndex < widget.conversation['Questions'].length)
+    {
+      response =  widget.conversation['Questions'][messageIndex]['Question'];
+    }
+    else
+    {
+      response = await chatBotResponse(widget.con, msg);
+    }
+    widgets.add(Message(isFromBot: true, mes: response));
+    widget.state = widget.STATE_NEW_MESSAGE;
+    setState(() {});
   }
 
   @override
@@ -71,7 +82,7 @@ class ChatBotState extends State<ChatBot> {
 
           child: Align(alignment: Alignment.bottomRight, heightFactor: .9, child: Text(
             message.mes,
-            style: TextStyle(fontSize: 22 ),
+            style: TextStyle(fontSize: 15 ),
           )),
           decoration: BoxDecoration(
               color: background,
@@ -135,14 +146,7 @@ class ChatBotState extends State<ChatBot> {
       setState(() {});
     }
 
-    // Callback for getting replies here
-    void getNewMessage(String msg) async {
-      //await Future.delayed(Duration(seconds: 1));
-      String response = await chatBotResponse(widget.con, msg);
-      widgets.add(Message(isFromBot: true, mes: response));
-      widget.state = widget.STATE_NEW_MESSAGE;
-      setState(() {});
-    }
+
 
     void nudge() async {
       await Future.delayed(Duration(milliseconds: 1));
@@ -181,10 +185,16 @@ class ChatBotState extends State<ChatBot> {
             widgets.add(Message(isFromBot: false, mes: controller.text));
             controller.clear();
             setState(() {});
+            if(messageIndex < widget.conversation['Questions'].length)
+              {
+                widget.conversation['Questions'][messageIndex]['UserAnswer'] = user_message;
+                messageIndex+=1;
+              }
             getNewMessage(user_message);
           },
           child: Icon(Icons.redo));
     }
+
 
     // https://stackoverflow.com/questions/49040679/flutter-how-to-make-a-
     // textfield-with-hinttext-but-no-underline dealing with the underline in
@@ -193,6 +203,10 @@ class ChatBotState extends State<ChatBot> {
         body: Padding(
             padding: EdgeInsets.only(top: 50),
             child: Stack(children: <Widget>[
+              Align(
+                alignment: Alignment.topRight,
+                child: getQuit(),
+              ),
               Column(
                 children: <Widget>[
                   Expanded(child: getListView()),
@@ -204,12 +218,22 @@ class ChatBotState extends State<ChatBot> {
                   ),
                 ],
               ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: getQuit(),
-              )
+
             ])));
     nudge();
     return scaff;
+  }
+
+  @override
+  void initState() {
+    widget.state = widget.STATE_NORMAL;
+    controller = new TextEditingController();
+    widgets = [];
+    waitingForPast = false;
+    userInControl = false;
+    messageIndex = 0;
+    if(messageIndex < widget.conversation['Questions'].length) {
+      getNewMessage("");
+    }
   }
 }
