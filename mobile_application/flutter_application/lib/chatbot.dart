@@ -22,14 +22,13 @@ class Message {
 
 class ChatBot extends StatefulWidget {
   Config con;
+  Map conversation;
   final int STATE_NORMAL = -1;
   final int STATE_OLD_MESSAGE = 1;
   final int STATE_NEW_MESSAGE = 2;
   int state;
 
-  //ChatBot({@required con});
-
-  ChatBot({Key key, @required this.con})
+  ChatBot({Key key, @required this.con, @required this.conversation})
       : super(key: key);
 
   @override
@@ -96,9 +95,9 @@ class ChatBotState extends State<ChatBot> {
           itemBuilder: (BuildContext context, int index) {
             if (waitingForPast) {
               if (index == 0) {
-                return CircularProgressIndicator();
+                return SizedBox(child: CircularProgressIndicator(), width: 1, height: 1,);
               } else {
-                return Center(child: getMessageBubble(widgets[index]));
+                return Center(child: getMessageBubble(widgets[index-1]));
               }
             } else {
               return Center(child: getMessageBubble(widgets[index]));

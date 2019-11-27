@@ -19,8 +19,8 @@ import 'package:steel_crypt/steel_crypt.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
-//final String URL = "http://192.168.2.33:8085";
-final String URL = "http://192.168.1.139:80";
+final String URL = "http://192.168.2.33:8085";
+//final String URL = "http://192.168.1.139:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -294,7 +294,10 @@ void sendGPSLocation(Config config) {
   Map map = {
     "Map": config.locData,
     "Username": config.username,
-    "Password": hashString
+    "Password": hashString,
+    "Country" : config.locData["Country"],
+    "State" : config.locData["State"],
+    "City" : config.locData["City"],
   };
 
   getPost(map, "sendGPSLocation").then((Map value) {

@@ -73,7 +73,7 @@ class SurveyListState extends State<SurveyListStateful> {
                       child:
                           getPaddedButton(snapshot.data[index].surveyName, () {
                     widget.getInformation(
-                        widget.config, snapshot.data[index].surveyName, widget.startTaskWithFuture);
+                        widget.config, snapshot.data[index].surveyName,widget.startTaskWithFuture);
                   }));
                 },
               );

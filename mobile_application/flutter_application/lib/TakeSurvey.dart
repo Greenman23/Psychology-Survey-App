@@ -32,7 +32,7 @@ class Survey_Question_State extends State<Survey_Question> {
   void initState() {
     Map question = widget.map['Questions'][widget.index];
     question['Answers'].remove("-1");
-
+    question['Type'] = "S";
     if (question['UserAnswer'].length != 0) {
       controller = new TextEditingController(text: question['UserAnswer'][0]);
       radioGroupValue = question['UserAnswer'][0];

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:location/location.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
@@ -76,7 +77,6 @@ class _HomePageState extends State<HomePage> {
 
   void updateLocation() {
     widget.config.locData = userLocationMap;
-    sendGPSLocation(widget.config);
     print(userLocationMap);
   }
 
@@ -212,6 +212,19 @@ class _HomePageState extends State<HomePage> {
       }));
     }
 
+    void startConversation(Map map) {
+      List<String> disabledValues = new List<String>();
+      Navigator.of(context)
+          .push(MaterialPageRoute(builder: (BuildContext context) {
+        return ChatBot(
+         conversation: map,
+        //  index: 0,
+         // disabledValues: disabledValues,
+          con: widget.config,
+        );
+      }));
+    }
+
     void startHistory(Map map) {
       for (int i = 0; i < 2; i++) {
         int x = 2;
@@ -251,15 +264,19 @@ class _HomePageState extends State<HomePage> {
           }));
     }
 
-    void _haveConversation() {
+    void _takeSurveyChatter() {
       Navigator.of(context).push(MaterialPageRoute(
-          settings: RouteSettings(name: "/chatbot"),
+          settings: RouteSettings(name: "/survey"),
           builder: (BuildContext context) {
-            return ChatBot(
-              con: widget.config,
+            return SurveyListStateful(
+              config: widget.config,
+              getFutureList: getSurveys,
+              getInformation: getSurveyByName,
+              startTaskWithFuture: startConversation,
             );
           }));
     }
+
 
     void update() {
       setState(() {});
@@ -280,14 +297,20 @@ class _HomePageState extends State<HomePage> {
           ),
         );
       } else {
+        if(!widget.config.alreadySentLoc && widget.config.locData != null)
+          {
+            sendGPSLocation(widget.config);
+            widget.config.alreadySentLoc = true;
+          }
         return Container(
           width: 400,
           child: ListView(
+
             //mainAxisAlignment: MainAxisAlignment.center,
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               getPaddedButton("Take Survey", _takeSurvey),
-              getPaddedButton("Have Conversation", _haveConversation),
+              getPaddedButton("Have Conversation", _takeSurveyChatter),
               getPaddedButton("View History", _viewHistory),
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),
