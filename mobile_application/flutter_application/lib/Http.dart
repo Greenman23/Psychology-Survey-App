@@ -86,7 +86,7 @@ Future<Map<String, dynamic>> uploadImage(Config config) async {
       new http.MultipartRequest("POST", Uri.parse(URL + "/uploadProfilePic"));
   Map<String, String> map = {
     "username": config.username,
-    "password": config.password
+    "password": passwordHashing(config)
   };
   request.headers.addAll(map);
   http.MultipartFile file =
@@ -278,15 +278,12 @@ void outputAnswers(Config config, Map ogMap) {
   });
 }
 
-//  Will be replaced with a actual hash later
 String passwordHashing(Config config){
-//  String passwordHash = dbCrypt.hashpw(config.password, salt);
-  var fortunaKey = EncryptionKey().key;
-  var salt = EncryptionKey().salt;
-  var aesEncrypter = AesCrypt(fortunaKey, 'cbc', 'pkcs7');
-  String encrypted = aesEncrypter.encrypt('somedatahere', salt);
-  print(encrypted);
-  String passwordHash = config.password;
+  String key = EncryptionKey().key;
+  String salt = EncryptionKey().salt;
+  AesCrypt encrypter = AesCrypt(key, 'cbc', 'pkcs7');
+  String encrypted = encrypter.encrypt(config.password, salt);
+//  String passwordHash = config.password;
   return encrypted;
 }
 
@@ -329,9 +326,6 @@ Future<List<Coordinates>> getGPSLocations(Config config) async {
   var _list = [];
   List<Coordinates> allCords = [];
   List allLocations = await getPostList(map, 'allGPS');
-//  for (int i = 0; i < allLocations.length; i++) {
-//    _list.add(allLocations[i]);
-//  }
   for (int i = 0; i < allLocations.length; i++) {
     Coordinates cords = new Coordinates(
         double.parse(allLocations[i]['Latitude']),

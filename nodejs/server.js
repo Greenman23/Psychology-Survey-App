@@ -37,7 +37,6 @@ webApp.post('/', function(request,response){
 })
 webApp.post('/signup', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: signup")
-    console.log(request.body)
     let connection = mysql.createConnection(conInfo)
     query.signup(request.body.FirstName, request.body.LastName, request.body.Email, request.body.Phone, request.body.Username,
         request.body.Password, request.body.Gender,request.body.BirthDate, request.body.Is_Smoker, request.body.Education, request.body.Address,
