@@ -42,7 +42,7 @@ class ChatBotState extends State<ChatBot> {
   bool userInControl;
   int messageIndex;
   bool hasSubmittedResults;
-
+  bool isWaitingForReply;
 
   // Callback for getting replies here
   void getNewMessage(String msg) async {
@@ -59,6 +59,7 @@ class ChatBotState extends State<ChatBot> {
     }
     widgets.add(Message(isFromBot: true, mes: response));
     widget.state = widget.STATE_NEW_MESSAGE;
+    isWaitingForReply = false;
     setState(() {});
   }
 
@@ -182,22 +183,25 @@ class ChatBotState extends State<ChatBot> {
     Widget getSend() {
       return FlatButton(
           onPressed: () {
-            String user_message = controller.text;
-            print(user_message);
-            widgets.add(Message(isFromBot: false, mes: controller.text));
-            controller.clear();
-            setState(() {});
-            if(messageIndex < widget.conversation['Questions'].length)
-              {
-                widget.conversation['Questions'][messageIndex]['UserAnswer'] = user_message;
-                messageIndex+=1;
-                if(messageIndex >= widget.conversation['Questions'].length && !hasSubmittedResults)
-                  {
-                    outputAnswers(widget.con, widget.conversation);
-                    hasSubmittedResults = true;
-                  }
+            if(!isWaitingForReply) {
+              String user_message = controller.text;
+              print(user_message);
+              widgets.add(Message(isFromBot: false, mes: controller.text));
+              controller.clear();
+              setState(() {});
+              if (messageIndex < widget.conversation['Questions'].length) {
+                widget.conversation['Questions'][messageIndex]['UserAnswer'] =
+                    user_message;
+                messageIndex += 1;
+                if (messageIndex >= widget.conversation['Questions'].length &&
+                    !hasSubmittedResults) {
+                  outputAnswers(widget.con, widget.conversation);
+                  hasSubmittedResults = true;
+                }
               }
-            getNewMessage(user_message);
+              isWaitingForReply = true;
+              getNewMessage(user_message);
+            }
           },
           child: Icon(Icons.redo));
     }
@@ -243,5 +247,6 @@ class ChatBotState extends State<ChatBot> {
     if(messageIndex < widget.conversation['Questions'].length) {
       getNewMessage("");
     }
+    isWaitingForReply = false;
   }
 }
