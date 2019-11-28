@@ -317,8 +317,8 @@ webApp.post('/sendGPSLocation', function(request,response){
             }
             if(authentication==1){
                 var map = request.body.Map;
-                query.send_gps_location(request.body.Username, request.body.Password, map.Country, map.State, map.City,
-                    connection, function(resp){
+                query.send_gps_location(request.body.Username, request.body.Password, map.Country, map.State, map.City, 
+                    map.Longitude,map.Latitude,connection, function(resp){
                         sendJSON(request,response,resp)
                     })
             }
@@ -327,6 +327,15 @@ webApp.post('/sendGPSLocation', function(request,response){
             }
         }
     })
+})
+webApp.post('/allGPS', function(request, response){
+    console.log("Incoming request from ip =>", request.headers.host, " Type: allsurveys")
+    let connection = mysql.createConnection(conInfo)
+    query.get_all_gps_locations(connection, function(get_survey_response){
+        sendJSON(request,response, get_survey_response)
+    })
+})
+webApp.post('/getChatbotResponse', function(request, response){
 
 })
 webApp.listen(80)

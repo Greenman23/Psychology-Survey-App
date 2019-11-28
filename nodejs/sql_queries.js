@@ -214,13 +214,38 @@ module.exports  = {
             callback(surveys)
         })           
     },
-    send_gps_location: function(user, pass, country, state, city, connection, callback){
-        var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
-        '","' + city + '");'
-        console.log(sendGPS)
-        connection.query(sendGPS, function(error,results,feilds){
+    send_gps_location: function(user, pass, country, state, city, long, lat,connection, callback){
+        if(user!=undefined, pass!=undefined, country!= undefined, city!=undefined, long!=undefined, lat!=undefined){
+            var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
+            '","' + city + '","' + long + '","' + lat +  '");'
+            // var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
+            // '","' + city + '");'
+            console.log(sendGPS)
+            connection.query(sendGPS, function(error,results,feilds){
+                if(error) console.error(error)
+                else callback({'Process' : 'Compelete'})
+            })
+        }
+        else {
+            callback({'Error' : 'Invalid Augments'})
+        }
+    },
+    get_all_gps_locations: function(connection, callback){
+        var allGPS = 'SELECT longitude, latitude FROM USER_LOCATIONS'
+        connection.query(allGPS, function(error, results, feilds){
             if(error) console.error(error)
-            else callback({'Process' : 'Compelete'})
+            else {
+                var array = []
+                for(let i = 0; i < results.length; i++){
+                    temp = {
+                        'Longitude'  : results[i].longitude,
+                        'Latitude' : results[i].latitude,
+                    }
+                    array.push(temp)
+                }
+                console.log(array)
+                callback(array)
+            }
         })
     }
 }

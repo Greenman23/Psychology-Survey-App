@@ -11,6 +11,7 @@ import 'package:flutter_application/survey_list.dart';
 import 'package:flutter_application/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
@@ -19,8 +20,8 @@ import 'package:steel_crypt/steel_crypt.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
-final String URL = "http://192.168.2.33:8085";
-//final String URL = "http://192.168.1.139:80";
+//final String URL = "http://192.168.2.33:8085";
+final String URL = "http://192.168.1.139:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
@@ -33,6 +34,20 @@ Future<Map<String, dynamic>> getPost(Map body, String addition) async {
   String reply = await response.transform(utf8.decoder).join();
   print(reply);
   Map<String, dynamic> jsonReply = jsonDecode(reply);
+  httpClient.close();
+  return jsonReply;
+}
+
+Future<List<dynamic>> getPostList(Map body, String addition) async {
+  HttpClient httpClient = new HttpClient();
+  HttpClientRequest r =
+  await httpClient.postUrl(Uri.parse(URL + "/" + addition));
+  r.headers.set('content-type', 'application/json');
+  r.add(utf8.encode(json.encode(body)));
+  HttpClientResponse response = await r.close();
+  String reply = await response.transform(utf8.decoder).join();
+  print(reply);
+  List<dynamic> jsonReply = jsonDecode(reply);
   httpClient.close();
   return jsonReply;
 }
@@ -298,9 +313,28 @@ void sendGPSLocation(Config config) {
     "Country" : config.locData["Country"],
     "State" : config.locData["State"],
     "City" : config.locData["City"],
+    "Longitude" : config.locData["Longitude"],
+    "Latitude" : config.locData["Latitude"]
   };
 
   getPost(map, "sendGPSLocation").then((Map value) {
     print(value);
   });
+}
+
+Future<List<Coordinates>> getGPSLocations(Config config) async {
+  Map map = {'Type': "getGPS"};
+  var _list = [];
+  List<Coordinates> allCords = [];
+  List allLocations = await getPostList(map, 'allGPS');
+//  for (int i = 0; i < allLocations.length; i++) {
+//    _list.add(allLocations[i]);
+//  }
+  for (int i = 0; i < allLocations.length; i++) {
+    Coordinates cords = new Coordinates(
+        double.parse(allLocations[i]['Latitude']),
+        double.parse(allLocations[i]['Longitude']));
+    allCords.add(cords);
+  }
+  return allCords;
 }

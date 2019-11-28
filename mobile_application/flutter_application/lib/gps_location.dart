@@ -4,6 +4,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:geocoder/geocoder.dart' as prefix0;
 import 'package:location/location.dart';
 import 'primary_widgets.dart';
 import 'package:flutter_application/config.dart';
@@ -24,6 +25,8 @@ class GPSLocation extends StatefulWidget {
 class _GPSLocationState extends State<GPSLocation> {
   Location location = new Location();
 
+  int idCount = 0;
+
   LocationData currentLocation;
 
   double currentLongitude, currentLatitude;
@@ -33,6 +36,8 @@ class _GPSLocationState extends State<GPSLocation> {
   bool provideLocation = false;
 
   GoogleMap worldMap;
+
+  Map<MarkerId, Marker> markers = <MarkerId, Marker>{};
 
   Completer<GoogleMapController> controller = Completer();
   static final CameraPosition initialMapCam =
@@ -53,6 +58,8 @@ class _GPSLocationState extends State<GPSLocation> {
               'City'    : err[0].locality,
               'Country'  : err[0].countryName,
               'State'   : err[0].adminArea,
+              'Longitude' : coord.longitude,
+              'Latitude' : coord.latitude
             };
 
             stringAddress = err[0].locality+", "+err[0].adminArea+", "+
@@ -62,6 +69,24 @@ class _GPSLocationState extends State<GPSLocation> {
             });
           }
         });
+  }
+
+  void _addMarker(List<Coordinates> cords) async
+  {
+    for(int i = 0; i < cords.length; i++) {
+      int markerIDVal = idCount;
+      idCount++;
+      final MarkerId markerID = MarkerId(markerIDVal.toString());
+
+      final Marker marker = Marker(
+          markerId: markerID,
+          position: LatLng(cords[i].latitude, cords[i].longitude),
+          infoWindow: InfoWindow(title: 'User', snippet: 'user of this app'));
+
+      setState(() {
+        markers[markerID] = marker;
+      });
+    }
   }
 
 
@@ -89,6 +114,10 @@ class _GPSLocationState extends State<GPSLocation> {
           final cords = new Coordinates(tempLoc.latitude, tempLoc.longitude);
 
           setupAddresses(cords);
+
+          List<Coordinates> allCords= await getGPSLocations(widget.config);
+
+          _addMarker(allCords);
 
           currentMapCam = CameraPosition(
               target: LatLng(tempLoc.latitude, tempLoc.longitude), zoom: 16);
@@ -128,6 +157,7 @@ class _GPSLocationState extends State<GPSLocation> {
       onMapCreated: (GoogleMapController con) {
         controller.complete(con);
       },
+      markers: Set<Marker>.of(markers.values),
     );
 
     String msg = 'Submitting your location data will allow for you to compare ' +
