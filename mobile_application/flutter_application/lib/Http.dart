@@ -7,7 +7,6 @@ import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_application/chatbot.dart';
 import 'package:flutter_application/survey_list.dart';
-
 import 'package:flutter_application/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,7 @@ import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:steel_crypt/steel_crypt.dart';
+import 'package:flutter_application/encryption_key.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
@@ -74,7 +74,6 @@ Future<Image> getPicturePost(Map body, String addition) async {
       count++;
     }
   }
-
   Image img = Image.memory(l);
   //String reply = await response.transform(utf8.decoder).join();
   var x = 2;
@@ -282,10 +281,13 @@ void outputAnswers(Config config, Map ogMap) {
 //  Will be replaced with a actual hash later
 String passwordHashing(Config config){
 //  String passwordHash = dbCrypt.hashpw(config.password, salt);
-  var fortunaKey = CryptKey().genFortuna();
-  print(fortunaKey);
+  var fortunaKey = EncryptionKey().key;
+  var salt = EncryptionKey().salt;
+  var aesEncrypter = AesCrypt(fortunaKey, 'cbc', 'pkcs7');
+  String encrypted = aesEncrypter.encrypt('somedatahere', salt);
+  print(encrypted);
   String passwordHash = config.password;
-  return passwordHash;
+  return encrypted;
 }
 
 Future<String> chatBotResponse(Config config, String msg) async{
