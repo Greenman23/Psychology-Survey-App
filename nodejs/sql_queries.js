@@ -50,7 +50,7 @@ module.exports  = {
             BirthDate !=undefined && Smoker != undefined && Education != undefined && Race != undefined && Address != undefined ) {
             var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Email + '","' + PhoneNumber + 
             '","' + Username + '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"),"' + Smoker + 
-            '","' + Education + '","' + Address + '","' + Race + '","' + income + '");'
+            '","' + Education + '","' + Race + '","' + Address + '","' + income + '");'
             console.log(new_user)
             var auth = 0;
             connection.query(new_user, function(error,res){
