@@ -218,8 +218,6 @@ class _HomePageState extends State<HomePage> {
           .push(MaterialPageRoute(builder: (BuildContext context) {
         return ChatBot(
          conversation: map,
-        //  index: 0,
-         // disabledValues: disabledValues,
           con: widget.config,
         );
       }));
@@ -310,7 +308,10 @@ class _HomePageState extends State<HomePage> {
             // crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
               getPaddedButton("Take Survey", _takeSurvey),
-              getPaddedButton("Have Conversation", _takeSurveyChatter),
+              getPaddedButton("Conversation Survey", _takeSurveyChatter),
+              getPaddedButton("Have Conversation", (){
+                startConversation({"Questions" : []});
+              }),
               getPaddedButton("View History", _viewHistory),
               getPaddedButton("Change Profile Picture", _changePicture),
               getPaddedButton("Change Location Data", _changeLocation),

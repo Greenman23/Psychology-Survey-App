@@ -150,7 +150,6 @@ class ChatBotState extends State<ChatBot> {
     }
 
 
-
     void nudge() async {
       await Future.delayed(Duration(milliseconds: 1));
       while (scroller.positions.isEmpty);
@@ -165,13 +164,13 @@ class ChatBotState extends State<ChatBot> {
       }
     }
 
-    scroller.addListener(() {
-      if (scroller.position.pixels <= 0 && !waitingForPast) {
-        waitingForPast = true;
-        setState(() {});
-        getPastMessage();
-      }
-    });
+//    scroller.addListener(() {
+//      if (scroller.position.pixels <= 0 && !waitingForPast) {
+//        waitingForPast = true;
+//        setState(() {});
+//        getPastMessage();
+//      }
+//    });
 
     Widget getQuit() {
       // return getPaddedButton("Quit", () {scroller.animateTo(1000000, duration: Duration(seconds: 1), curve: Curves.bounceOut);});
@@ -214,15 +213,13 @@ class ChatBotState extends State<ChatBot> {
         body: Padding(
             padding: EdgeInsets.only(top: 50),
             child: Stack(children: <Widget>[
-              Align(
-                alignment: Alignment.topRight,
-                child: getQuit(),
-              ),
+
               Column(
                 children: <Widget>[
                   Expanded(child: getListView()),
                   Row(
                     children: <Widget>[
+                      getQuit(),
                       Expanded(child: getMessage()),
                       getSend()
                     ],
