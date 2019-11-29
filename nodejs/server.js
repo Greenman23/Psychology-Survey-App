@@ -19,6 +19,7 @@ const conInfo = {
 var __profilePictureDirectory = 'assets/images/profile_images'
 var __defaultImagesDirectory = 'assets/images/default_images'
 var _botserverURL = 'http://localhost:8080'
+var _chatbotserverURL = 'http://localhost:8090'
 var webApp = express()
 webApp.use(express.json())
 
@@ -161,7 +162,10 @@ webApp.post('/profilePicAnalysis', function(req,response){
                 if(error){
                     sendJSON404(req,response, "Error when connecting to image server")
                 }
-        
+                else if(server_response.statusCode !=200){
+                    console.error(response_body)
+                    sendJSON404(req,response, "Error when connecting to image server")
+                }
                 else{
                     response.end(response_body)
                 }
@@ -195,9 +199,18 @@ webApp.post('/pictureAnalysis', function(req,response){
                                 console.error(error)
                             }
                         })
+                        console.error(error)
                         sendJSON404(req,response, "Error when connecting to image server")
                     }
-            
+                    else if(server_response.statusCode!=200){
+                        fs.unlink(files.image[0].path, function(error){
+                            if(error){
+                                console.error(error)
+                            }
+                        })
+                        console.error(response_body)
+                        sendJSON404(req,response, "Error when connecting to image server")
+                    }
                     else{
                         fs.unlink(files.image[0].path, function(error){
                             if(error){
@@ -264,10 +277,10 @@ webApp.post('/userSurveyQuestionHistory', function(request,response){
         }
     })
 })
-webApp.post('/chatBotRouter', function(request,response){
-    console.log("Incoming request from ip =>", request.headers.host, " Type: chatbot")
+webApp.post('/chatBotRouter', function(req,response){
+    console.log("Incoming request from ip =>", req.headers.host, " Type: chatbot")
     let connection = mysql.createConnection(conInfo)
-    var login = 'SELECT verify_user("' + request.body.username + '","' + request.body.password + '");'
+    var login = 'SELECT verify_user("' + req.body.username + '","' + req.body.password + '");'
     connection.query(login, function(error,results){
         var authentication = 0
         if(error){
@@ -277,26 +290,24 @@ webApp.post('/chatBotRouter', function(request,response){
             for (let value of Object.values(results[0])) {
                authentication = value
             }
+            authentication=1
             if(authentication==1){
-                console.log(request.body.message)
-                if(request.message === "How are you?"){
-                    sendJSON(request,response,{'Message' : 'I am good!'})
-                }
-                else if(request.body.message === "Hi"){
-                    sendJSON(request,response,{'Message' : 'Hi how are you?'})
-                }
-                else if(request.body.message === "What's your name?" || request.body.message === "Who are you?"){
-                    sendJSON(request,response,{'Message' : 'I am James your therapist'})
-                }
-                else if(request.body.message === "I need help"){
-                    sendJSON(request,response,{'Message' : 'I can help you'})
-                }
-                else {
-                    sendJSON(request,response,{'Message' : 'I can not understand you'})
-                }
+                request.post(_chatbotserverURL,{json: { message: req.body.message}}, function(err, res, body){
+                    if(err){
+                        console.error(err)
+                        sendJSON404(req,response,"Error communicating with bot")
+                    }
+                    else if(res.statusCode != 200){
+                        console.error(body)
+                        sendJSON404(req,response,"Error communicating with bot")
+                    }
+                    else {
+                        sendJSON(req,response,body)
+                    }
+                })  
             }
             else {
-                sendJSON404(request,response,"Invalid user")
+                sendJSON404(req,response,"Invalid user")
             }
         }
     })
