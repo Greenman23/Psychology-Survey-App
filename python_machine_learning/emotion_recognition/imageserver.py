@@ -26,13 +26,12 @@ def index():
 
     if em is None:
         emotion = {
-            'Error' : 'could not determine emotion from picture'
+            "Error" : "could not determine emotion from picture"
         }
     else: 
         emotion = {
-            'emotion' : em
+            "emotion" : em
         }
-
     emotion = json.dumps(emotion)
     emotion_json = json.loads(emotion)
 

@@ -163,7 +163,7 @@ webApp.post('/profilePicAnalysis', function(req,response){
                 }
         
                 else{
-                    sendJSON404(req,response,response_body)
+                    response.end(response_body)
                 }
             })
             var form = reques.form();

@@ -51,7 +51,6 @@ module.exports  = {
             var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Email + '","' + PhoneNumber + 
             '","' + Username + '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"),"' + Smoker + 
             '","' + Education + '","' + Race + '","' + Address + '","' + income + '");'
-            console.log(new_user)
             var auth = 0;
             connection.query(new_user, function(error,res){
                 if(error) throw console.error(error) 

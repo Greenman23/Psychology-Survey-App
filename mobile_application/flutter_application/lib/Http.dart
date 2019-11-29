@@ -165,7 +165,6 @@ void login(Config config, Function(String, Color) functor, Function() update) {
     'Password': hashString
   };
 
-
   getPost(map, "login").then((Map value) {
     config.loggedIn = value["Authentication"];
     config.hash = value["Hash"];
@@ -213,8 +212,8 @@ void getSurveyQuestionHistory(
     Config con, String surveyName, Function functor) async {
   String hashString = passwordHashing(con);
   Map map = {
-    "username": con.username,
-    "password": hashString,
+    "username":   con.username,
+    "password":   hashString,
     "SurveyName": surveyName
   };
 
@@ -295,14 +294,21 @@ Future<String> chatBotResponse(Config config, String msg) async{
     "message"  : msg
   };
 
-  print(msg);
-
   Map surveyMap = await getPost(map, 'chatBotRouter');
   String message = surveyMap["Message"];
 
   return message;
 }
 
+Future<String> emotionFromProfilePic(Config config) async {
+  String hashString = passwordHashing(config);
+  Map map = {
+    "username"  : config.username,
+    "password"  : hashString,
+  };
+  Map profileEmotionMap = await getPost(map, 'profilePicAnalysis');
+  return profileEmotionMap["emotion"];
+}
 void sendGPSLocation(Config config) {
   String hashString = passwordHashing(config);
   Map map = {
