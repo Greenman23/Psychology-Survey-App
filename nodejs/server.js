@@ -290,7 +290,6 @@ webApp.post('/chatBotRouter', function(req,response){
             for (let value of Object.values(results[0])) {
                authentication = value
             }
-            authentication=1
             if(authentication==1){
                 request.post(_chatbotserverURL,{json: { message: req.body.message}}, function(err, res, body){
                     if(err){
@@ -344,9 +343,6 @@ webApp.post('/allGPS', function(request, response){
     query.get_all_gps_locations(connection, function(get_survey_response){
         sendJSON(request,response, get_survey_response)
     })
-})
-webApp.post('/getChatbotResponse', function(request, response){
-
 })
 webApp.listen(80)
 console.log("Express server is running now")
