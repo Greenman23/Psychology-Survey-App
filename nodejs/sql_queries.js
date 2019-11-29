@@ -134,9 +134,11 @@ module.exports  = {
             callback(error_resp)
         }       
     },
+
     send_answers: function(user, pass, connection, answers, type,callback){
         if(user != undefined && pass != undefined && answers != undefined ){  
-            current_date = new Date().toISOString()
+            current_date = new Date()
+            current_date = new Date(current_date.getTime() - current_date.getTimezoneOffset() * 60 * 1000).toISOString()
             console.log(current_date)
             for(i = 0; i < answers.Questions.length; i++){
                 var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '","' + current_date
@@ -194,7 +196,6 @@ module.exports  = {
     },
     survey_question_history: function(user, pass, surveyname, connection, callback){
         answeredQuestions = 'CALL get_answers_by_taken("' + user + '","' + pass +  '","' + surveyname + '");'
-        console.log(answeredQuestions)
         connection.query(answeredQuestions, function(error,results,feilds){
             surveys = {
                 'surveys' : []
@@ -202,6 +203,8 @@ module.exports  = {
             var tempDict = {}
             for (let value of Object.values(results[0])) {
                 var date = value.date
+                d2 = new Date(value.date).toLocaleString("en-US", {timeZone: "America/New_York"})
+                console.log(d2)
                 if(value.question!=undefined){
                     if(tempDict.hasOwnProperty(date)){
                         tempDict[date].push({'Question' : value.question, 'Answer' : value.actual_answer })
