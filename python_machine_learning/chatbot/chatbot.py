@@ -10,8 +10,7 @@ class Bot:
     def trainbot(self):
         trainer = ListTrainer(self.__chatbot)
 
-        trainer.train(
-        "chatterbot.corpus.english.conversations")
+        trainer.train("chatterbot.corpus.english")
 
         trainer.train([
             "I have problems with drugs",
@@ -67,7 +66,9 @@ class Bot:
             trainer.train(item)
 
 
-    def get_response(self,mes):
+
+
+    def bot_response(self,mes):
         return self.__chatbot.get_response(mes)
 
 # bot = Bot()
