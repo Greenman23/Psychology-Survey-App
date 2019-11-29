@@ -26,41 +26,38 @@ class Survey_Overview extends StatelessWidget {
                         survey['Questions'][index]['UserAnswer']);
                     items.insert(0, survey['Questions'][index]['Question']);
                     if (items.length == 1) {
-                      return Container();
+                      items.add("Did not answer");
                     }
                     current_index += 1;
-                    return Container(
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(width: 2),
-                        ),
-                      ),
-                      child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: items.map<Widget>(
-                            (String answer) {
-                              if (firstItem) {
-                                firstItem = false;
-                                return Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        (current_index).toString() +
-                                            ": " +
-                                            answer,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                        ),
-                                      ),
-                                    ]);
-                              } else {
-                                return Padding(
-                                    padding: EdgeInsets.only(left: 15),
-                                    child: Text(answer));
-                              }
-                            },
-                          ).toList()),
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                     children:[Text("Question " + (index + 1).toString() + ":\t"), getQuestionAnswer(items[0], items[1])],
+//                      child: Column(
+//                          crossAxisAlignment: CrossAxisAlignment.start,
+//                          children: items.map<Widget>(
+//                            (String answer) {
+//                              if (firstItem) {
+//                                firstItem = false;
+//                                return Column(
+//                                    crossAxisAlignment:
+//                                        CrossAxisAlignment.start,
+//                                    children: [
+//                                      Text(
+//                                        (current_index).toString() +
+//                                            ": " +
+//                                            answer,
+//                                        style: TextStyle(
+//                                          fontSize: 16,
+//                                        ),
+//                                      ),
+//                                    ]);
+//                              } else {
+//                                return Padding(
+//                                    padding: EdgeInsets.only(left: 15),
+//                                    child: Text(answer));
+//                              }
+//                            },
+//                          ).toList()),
                     );
                   })),
           Row(

@@ -118,3 +118,35 @@ Widget getText(String data, {double fontSize: 16, Color color: Colors.black}) {
           textAlign: TextAlign.center,
           style: TextStyle(fontSize: fontSize, color: color)));
 }
+
+
+Widget getQuestionAnswer(String question, String answer)
+{
+  return Padding(padding: EdgeInsets.all(5), child: Container(
+      decoration: BoxDecoration(border: Border.all(width: 2)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Padding(
+              padding: EdgeInsets.only(
+                  left: 10, right: 5, top: 5),
+              child: Container(
+                child: Text("Question:\t" + question),
+                decoration: BoxDecoration(
+                    border: Border.all(width: .5),
+                    color: Colors.green),
+              )),
+          //Container(child:Text("Answer:\t" + answer['Answer']), color: Colors.blue,),
+          Padding(
+              padding: EdgeInsets.only(
+                  left: 25, right: 5, top: 5),
+              child: Container(
+                child: Text("Answer:\t" + answer),
+                decoration: BoxDecoration(
+                    border: Border.all(width: .5),
+                    color: Colors.blue),
+              )),
+          Divider(),
+        ],
+      )));
+}
