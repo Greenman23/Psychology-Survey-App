@@ -10,7 +10,6 @@ bottle.BaseRequest.MEMFILE_MAX = 10240 * 10240
 
 
 helper = Bot()
-helper.__init__()
 helper.trainbot()
 
 @bottle.post('/')
