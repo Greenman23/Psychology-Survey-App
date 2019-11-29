@@ -194,6 +194,7 @@ module.exports  = {
     },
     survey_question_history: function(user, pass, surveyname, connection, callback){
         answeredQuestions = 'CALL get_answers_by_taken("' + user + '","' + pass +  '","' + surveyname + '");'
+        console.log(answeredQuestions)
         connection.query(answeredQuestions, function(error,results,feilds){
             surveys = {
                 'surveys' : []
@@ -206,7 +207,6 @@ module.exports  = {
                         tempDict[date].push({'Question' : value.question, 'Answer' : value.actual_answer })
                     }
                     else{
-                        var tempDict = {}
                         tempDict[date] = [{'Question' : value.question, 'Answer' : value.actual_answer }] 
                     }       
                 }
