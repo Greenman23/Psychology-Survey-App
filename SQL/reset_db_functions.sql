@@ -236,7 +236,9 @@ END;
  LEFT JOIN QUESTIONS AS questions
  ON 
  questions.pk_questions_id = squestions.question_id
+ORDER BY "date"
  WHERE surveys.survey_name = survey_name_ AND answers.chat_or_surv != 'C';
+
  END
  //
  DELIMITER ;
