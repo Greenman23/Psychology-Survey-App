@@ -197,12 +197,15 @@ void getPicture(Config config, Function functor) {
   });
 }
 
-void getSurveyByName(Config con, String name, Function functor) {
+void getSurveyByName(Config con, String name, Function functor, ) {
   Map map = {"Type": "getQuestionsForSurvey", "SurveyName": name};
 
   getPost(map, "surveyQuestions").then((Map value) {
     for (int i = 0; i < value['Questions'].length; i++) {
       value['Questions'][i]['UserAnswer'] = new List<String>();
+      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{CATEGORY}'), value['Questions'][i]['Category']);
+      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{Category}'), value['Questions'][i]['Category']);
+
     }
     functor(value);
   });
@@ -218,6 +221,12 @@ void getSurveyQuestionHistory(
 };
 
   getPost(map, 'userSurveyQuestionHistory').then((Map value) {
+    for (int i = 0; i < value['Questions'].length; i++) {
+      value['Questions'][i]['UserAnswer'] = new List<String>();
+      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{CATEGORY}'), value['Questions'][i]['Category']);
+      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{Category}'), value['Questions'][i]['Category']);
+
+    }
     functor(value);
   });
 }

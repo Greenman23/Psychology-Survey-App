@@ -26,7 +26,7 @@ class Survey_Overview extends StatelessWidget {
                         survey['Questions'][index]['UserAnswer']);
                     items.insert(0, survey['Questions'][index]['Question']);
                     if (items.length == 1) {
-                      items.add("Did not answer");
+                      items.add("Did not answer or was not needed");
                     }
                     current_index += 1;
                     return Column(

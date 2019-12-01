@@ -29,7 +29,19 @@ class ChatBot extends StatefulWidget {
   int state;
 
   ChatBot({Key key, @required this.con, @required this.conversation})
-      : super(key: key);
+      : super(key: key)
+  {
+    Map concopy = new Map();
+    concopy['Questions'] = [];
+    for(int i = 0; i < this.conversation['Questions'].length; i++)
+      {
+        if(this.conversation['Questions'][i]['ChatorSurv'] != "S")
+          {
+            concopy['Questions'].add(this.conversation['Questions'][i]);
+          }
+      }
+    this.conversation = concopy;
+  }
 
   @override
   State createState() => ChatBotState();

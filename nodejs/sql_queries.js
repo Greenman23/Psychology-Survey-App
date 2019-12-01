@@ -118,7 +118,8 @@ module.exports  = {
                         'QuestionType': value.question_type,
                         'LastSurveyQuestion': value.last_survey_question,
                         'HealthData': value.health_data,
-                        'Category' : value.cat 
+                        'Category' : value.cat, 
+                        'ChatorSurv' : value.chat_or_surv
                     }
                     suveyQuestions['Questions'].push(temp)
                 }

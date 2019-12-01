@@ -18,7 +18,19 @@ class Survey_Question extends StatefulWidget {
       @required this.index,
       @required this.disabledValues,
       @required this.config})
-      : super(key: key);
+      : super(key: key)
+  {
+    Map concopy = new Map();
+    concopy['Questions'] = [];
+    for(int i = 0; i < this.map['Questions'].length; i++)
+    {
+      if(this.map['Questions'][i]['ChatorSurv'] != "C")
+      {
+        concopy['Questions'].add(this.map['Questions'][i]);
+      }
+    }
+    this.map = concopy;
+  }
 
   @override
   Survey_Question_State createState() => Survey_Question_State();
