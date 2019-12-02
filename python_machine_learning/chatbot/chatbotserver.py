@@ -1,4 +1,4 @@
-import bottle
+from bottle import Bottle, run, BaseRequest, request
 import json
 import shutil
 import io
@@ -6,15 +6,20 @@ import os
 from PIL import Image
 from chatbot import Bot
 import base64
-bottle.BaseRequest.MEMFILE_MAX = 10240 * 10240
+BaseRequest.MEMFILE_MAX = 10240 * 10240
 
+app = Bottle()
 
 helper = Bot()
 helper.trainbot()
 
-@bottle.post('/')
+@app.route('/')
+def noindex():
+    return "You cannot talk to me this way. Please talk to me via post"
+
+@app.route('/', method='POST')
 def index():
-    question = bottle.request.json
+    question = request.json
     ask = question['message']
     answer = helper.bot_response(ask)
     resp_dict = {
@@ -24,5 +29,4 @@ def index():
     response_json = json.loads(resp)
     return response_json
 
-
-bottle.run(host='localhost', port=8090)
+run(app, host='0.0.0.0', port=80, reloader=True, debug=True)

@@ -11,7 +11,7 @@ class Bot:
         trainer = ChatterBotCorpusTrainer(self.__chatbot)
 
         trainer.train("chatterbot.corpus.english")
-        trainer.train("chatterbot.corpus.custom.depression")
+        # trainer.train("chatterbot.corpus.custom.depression")
         # trainer.train([
         #     "I have problems with drugs",
         #     "Have you looked for help?",

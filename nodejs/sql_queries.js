@@ -47,7 +47,8 @@ module.exports  = {
         Smoker, Education, Address, Race, income, connection, callback){
         if(FirstName != undefined && LastName != undefined && Email != undefined
             && PhoneNumber != undefined && Username != undefined && Password != undefined && Gender != undefined &&
-            BirthDate !=undefined && Smoker != undefined && Education != undefined && Race != undefined && Address != undefined ) {
+            BirthDate !=undefined && Smoker != undefined && Education != undefined && Race != undefined && Address != undefined 
+            && income != undefined) {
             var new_user = 'SELECT insert_user("' + FirstName + '","' + LastName + '","' + Email + '","' + PhoneNumber + 
             '","' + Username + '","' + Password + '","' + Gender + '", DATE("' + BirthDate + '"),"' + Smoker + 
             '","' + Education + '","' + Race + '","' + Address + '","' + income + '");'
@@ -136,7 +137,7 @@ module.exports  = {
         }       
     },
 
-    send_answers: function(user, pass, connection, answers, type,callback){
+    send_answers: function(user, pass, connection, answers, callback){
         if(user != undefined && pass != undefined && answers != undefined ){  
             current_date = new Date()
             current_date = new Date(current_date.getTime() - current_date.getTimezoneOffset() * 60 * 1000).toISOString()
@@ -220,7 +221,7 @@ module.exports  = {
         })           
     },
     send_gps_location: function(user, pass, country, state, city, long, lat,connection, callback){
-        if(user!=undefined, pass!=undefined, country!= undefined, city!=undefined, long!=undefined, lat!=undefined){
+        if(user!=undefined, pass!=undefined, country!= undefined, state!=undefined, city!=undefined, long!=undefined, lat!=undefined){
             var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
             '","' + city + '","' + long + '","' + lat +  '");'
             // var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 

@@ -18,8 +18,10 @@ const conInfo = {
 }
 var __profilePictureDirectory = 'assets/images/profile_images'
 var __defaultImagesDirectory = 'assets/images/default_images'
-var _botserverURL = 'http://localhost:8080'
-var _chatbotserverURL = 'http://localhost:8090'
+// var _botserverURL = 'http://localhost:8080'
+var _botserverURL = 'http://ec2-54-198-29-167.compute-1.amazonaws.com:80'
+// var _chatbotserverURL = 'http://localhost:8090'
+var _chatbotserverURL = 'http://ec2-35-170-201-82.compute-1.amazonaws.com:80'
 var webApp = express()
 webApp.use(express.json())
 
@@ -33,6 +35,9 @@ function sendJSON404(request,response, msg){
     console.log("Response sent to =>" + request.connection.remoteAddress + ".")
     response.status(404).send(dictstring)
 }
+webApp.get('/', function(request,response){
+    response.end("This server has no functionality for get request!")
+})
 webApp.post('/', function(request,response){
     sendJSON(request,response,'Please use an operation')
 })

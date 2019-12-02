@@ -1,4 +1,4 @@
-import bottle
+from bottle import route, request, BaseRequest, run
 import json
 from kerasmodel import ImageDetection
 import shutil
@@ -6,13 +6,16 @@ import io
 import os 
 from PIL import Image
 import base64
-bottle.BaseRequest.MEMFILE_MAX = 10240 * 10240
+BaseRequest.MEMFILE_MAX = 10240 * 10240
 
 keras = ImageDetection() 
+@route('/')
+def notpost():
+    return "Please end your image through a post request!"
 
-@bottle.post('/')
+@route('/', method='POST')
 def index():
-    image = bottle.request.files.get('image')
+    image = request.files.get('image')
     path = './images_to_be_feed/' + image.filename
     try:
         save = os.path.join("./images_to_be_feed", image.filename)
@@ -38,4 +41,4 @@ def index():
     return emotion_json
 
 
-bottle.run(host='localhost', port=8080)
+run(host='localhost', port=8080)

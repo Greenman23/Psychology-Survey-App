@@ -10,8 +10,8 @@ import glob
 IP = socket.gethostname()
 URL = "http://" + IP + ":80"
 
-bottleUrl = "http://localhost:8080"
-
+bottleUrlLocal = "http://localhost:8080"
+bottleImageUrl = "http://ec2-54-198-29-167.compute-1.amazonaws.com:80"
 class Server_Test_Functions:
 
     def __init__(self):
@@ -203,7 +203,7 @@ class Server_Test_Functions:
                 'image': (imageName, image)
             }
             try:
-                response = requests.post(bottleUrl, files=multipart_form_data)
+                response = requests.post(bottleImageUrl, files=multipart_form_data)
                 print(json.dumps(response.json(), indent=4, sort_keys=True))
             
             except requests.exceptions.Timeout:
