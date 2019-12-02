@@ -343,10 +343,10 @@ class _HomePageState extends State<HomePage> {
       return Text("");
     }
 
-    Text getUsername() {
+    Widget getUsername() {
       if (widget.config.username != null) {
         if (widget.config.username != "") {
-          return Text(widget.config.username);
+          return(SizedBox( child: Text(widget.config.username), width: 100));
         }
       }
       return Text("Welcome to the App!");

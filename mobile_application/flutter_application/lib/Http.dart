@@ -222,12 +222,7 @@ void getSurveyQuestionHistory(
 };
 
   getPost(map, 'userSurveyQuestionHistory').then((Map value) {
-    for (int i = 0; i < value['Questions'].length; i++) {
-      value['Questions'][i]['UserAnswer'] = new List<String>();
-      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{CATEGORY}'), value['Questions'][i]['Category']);
-      value['Questions'][i]['Question'] =  value['Questions'][i]['Question'].replaceAll(new RegExp(r'{Category}'), value['Questions'][i]['Category']);
 
-    }
     functor(value);
   });
 }
