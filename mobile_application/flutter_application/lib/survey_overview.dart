@@ -69,7 +69,7 @@ class Survey_Overview extends StatelessWidget {
               getPaddedButton("See results", () {
                 outputAnswers(config, survey);
                 Navigator.of(buildContext).push(MaterialPageRoute(
-                                builder: (BuildContext context) {return Results();
+                                builder: (BuildContext context) {return Results(con: config,);
                     }));
               })
             ],
