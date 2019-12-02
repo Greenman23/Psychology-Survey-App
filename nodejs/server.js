@@ -75,7 +75,7 @@ webApp.post('/surveyQuestions', function(request,response){
 webApp.post('/uploadAnswers', function(request,response){
     console.log("Incoming request from ip =>", request.headers.host, " Type: uploadAnswers")
     let connection = mysql.createConnection(conInfo)
-    query.send_answers(request.body.Username, request.body.Password, connection, request.body.Map, request.body.Type,function(status){
+    query.send_answers(request.body.Username, request.body.Password, connection, request.body.Map, function(status){
         sendJSON(request,response,status)
     })
 })
@@ -273,6 +273,7 @@ webApp.post('/userSurveyQuestionHistory', function(request,response){
             }
             if(authentication==1){
                 query.survey_question_history(request.body.username,request.body.password, request.body.SurveyName,connection,function(history){
+                    console.log(history)
                     sendJSON(request,response,history)
                 })
             }

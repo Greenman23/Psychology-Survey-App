@@ -317,7 +317,13 @@ Future<String> emotionFromProfilePic(Config config) async {
     "password"  : hashString,
   };
   Map profileEmotionMap = await getPost(map, 'profilePicAnalysis');
-  return profileEmotionMap["emotion"];
+  print(profileEmotionMap);
+  if(profileEmotionMap["emotion"] != null) {
+    return profileEmotionMap["emotion"];
+  }
+  else {
+    return "could not determine emotion from your picture";
+  }
 }
 void sendGPSLocation(Config config) {
   String hashString = passwordHashing(config);

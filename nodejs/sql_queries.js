@@ -138,10 +138,10 @@ module.exports  = {
     },
 
     send_answers: function(user, pass, connection, answers, callback){
+
         if(user != undefined && pass != undefined && answers != undefined ){  
             current_date = new Date()
             current_date = new Date(current_date.getTime() - current_date.getTimezoneOffset() * 60 * 1000).toISOString()
-            console.log(current_date)
             for(i = 0; i < answers.Questions.length; i++){
                 var answer = 'CALL insert_answer("' + user + '","' + pass + '",' +  answers.Questions[i].ID + ',"' + answers.Questions[i].UserAnswer + '","' + current_date
                 + '","' + answers.Questions[i].Type + '");'
@@ -155,6 +155,7 @@ module.exports  = {
                             "Process" : "Done",
                         }
                         connection.end()
+                        console.log("Done")
                         callback(insert_status)
                     })
                 }
@@ -165,6 +166,7 @@ module.exports  = {
                             console.error(error)
                         }
                     })
+                    console.log('Still working')
                 }
             }
         }
