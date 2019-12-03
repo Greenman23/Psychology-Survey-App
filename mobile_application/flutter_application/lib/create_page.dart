@@ -42,6 +42,11 @@ class CreatePageState extends State<CreatePage> {
     password = new TextEditingController(text: "");
     passwordVerify = new TextEditingController(text: "");
     income = new TextEditingController(text: "\$");
+    myEmail = new TextEditingController(text: "");
+    myAddress = new TextEditingController(text: "");
+    phone = new TextEditingController(text:"");
+
+
     createAccountColor = Colors.black;
     createAccountResult = "";
     gender = "Male";
