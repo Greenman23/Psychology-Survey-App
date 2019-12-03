@@ -4,28 +4,24 @@ import 'primary_widgets.dart';
 import 'survey_overview.dart';
 import 'package:flutter_application/config.dart';
 
-
-
 class Survey_Question extends StatefulWidget {
   Map map;
   int index;
   String surveyName;
   List<String> disabledValues;
   Config config;
+
   Survey_Question(
       {Key key,
       @required this.map,
       @required this.index,
       @required this.disabledValues,
       @required this.config})
-      : super(key: key)
-  {
+      : super(key: key) {
     Map concopy = new Map();
     concopy['Questions'] = [];
-    for(int i = 0; i < this.map['Questions'].length; i++)
-    {
-      if(this.map['Questions'][i]['ChatorSurv'] != "C")
-      {
+    for (int i = 0; i < this.map['Questions'].length; i++) {
+      if (this.map['Questions'][i]['ChatorSurv'] != "C") {
         concopy['Questions'].add(this.map['Questions'][i]);
       }
     }
@@ -225,36 +221,36 @@ class Survey_Question_State extends State<Survey_Question> {
       Navigator.of(context)
           .push(MaterialPageRoute(builder: (BuildContext context) {
         return Survey_Overview(
-            config: widget.config,
-            survey: widget.map,);
+          config: widget.config,
+          survey: widget.map,
+        );
       }));
     }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Text("Survey"),
-        ),
-        body: Column(
-          children: <Widget>[
-            getText(widget.map['Questions'][widget.index]['Question'],
-                fontSize: 22),
-            Expanded(child: getWidgetByQuestion()),
-            Align(
-                alignment: Alignment.bottomLeft,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    getPaddedButton("Last", () {
-                      Navigator.pop(context);
-                    }),
-                    getPaddedButton("Next", () {
-                      navigateToNext();
-                    })
-                  ],
-                )),
-          ],
-        ));
+        body: Padding(
+          padding: EdgeInsets.only(top: 40),
+            child: Column(
+      children: <Widget>[
+        getText(widget.map['Questions'][widget.index]['Question'],
+            fontSize: 22),
+        Expanded(child: getWidgetByQuestion()),
+        Align(
+            alignment: Alignment.bottomLeft,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                getPaddedButton("Last", () {
+                  Navigator.pop(context);
+                }),
+                getPaddedButton("Next", () {
+                  navigateToNext();
+                })
+              ],
+            )),
+      ],
+    )));
   }
 }

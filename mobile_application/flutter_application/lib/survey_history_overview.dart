@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'primary_widgets.dart';
-import 'reults.dart';
+import 'results.dart';
 import 'package:flutter_application/Http.dart';
 import 'package:flutter_application/config.dart';
 

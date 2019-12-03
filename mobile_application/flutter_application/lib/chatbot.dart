@@ -29,17 +29,14 @@ class ChatBot extends StatefulWidget {
   int state;
 
   ChatBot({Key key, @required this.con, @required this.conversation})
-      : super(key: key)
-  {
+      : super(key: key) {
     Map concopy = new Map();
     concopy['Questions'] = [];
-    for(int i = 0; i < this.conversation['Questions'].length; i++)
-      {
-        if(this.conversation['Questions'][i]['ChatorSurv'] != "S")
-          {
-            concopy['Questions'].add(this.conversation['Questions'][i]);
-          }
+    for (int i = 0; i < this.conversation['Questions'].length; i++) {
+      if (this.conversation['Questions'][i]['ChatorSurv'] != "S") {
+        concopy['Questions'].add(this.conversation['Questions'][i]);
       }
+    }
     this.conversation = concopy;
   }
 
@@ -59,14 +56,11 @@ class ChatBotState extends State<ChatBot> {
   // Callback for getting replies here
   void getNewMessage(String msg) async {
     String response;
-    if(messageIndex < widget.conversation['Questions'].length)
-    {
+    if (messageIndex < widget.conversation['Questions'].length) {
       await Future.delayed(Duration(milliseconds: 500));
-      response =  widget.conversation['Questions'][messageIndex]['Question'];
+      response = widget.conversation['Questions'][messageIndex]['Question'];
       widget.conversation['Questions'][messageIndex]['Type'] = "C";
-    }
-    else
-    {
+    } else {
       response = await chatBotResponse(widget.con, msg);
     }
     widgets.add(Message(isFromBot: true, mes: response));
@@ -94,11 +88,13 @@ class ChatBotState extends State<ChatBot> {
         padding: EdgeInsets.only(right: paddingVal),
         child: Container(
           width: 300,
-
-          child: Align(alignment: Alignment.bottomRight, heightFactor: .9, child: Text(
-            message.mes,
-            style: TextStyle(fontSize: 15 ),
-          )),
+          child: Align(
+              alignment: Alignment.bottomRight,
+              heightFactor: .9,
+              child: Text(
+                message.mes,
+                style: TextStyle(fontSize: 15),
+              )),
           decoration: BoxDecoration(
               color: background,
               border: Border.all(color: background),
@@ -121,9 +117,13 @@ class ChatBotState extends State<ChatBot> {
           itemBuilder: (BuildContext context, int index) {
             if (waitingForPast) {
               if (index == 0) {
-                return SizedBox(child: CircularProgressIndicator(), width: 1, height: 1,);
+                return SizedBox(
+                  child: CircularProgressIndicator(),
+                  width: 1,
+                  height: 1,
+                );
               } else {
-                return Center(child: getMessageBubble(widgets[index-1]));
+                return Center(child: getMessageBubble(widgets[index - 1]));
               }
             } else {
               return Center(child: getMessageBubble(widgets[index]));
@@ -137,6 +137,7 @@ class ChatBotState extends State<ChatBot> {
         padding: EdgeInsets.only(left: 10, right: 10),
         child: Container(
           height: 50,
+          width: 60,
           decoration: BoxDecoration(
             border: Border.all(
               style: BorderStyle.solid,
@@ -147,6 +148,7 @@ class ChatBotState extends State<ChatBot> {
           child: TextFormField(
             controller: controller,
             decoration: InputDecoration.collapsed(hintText: "Send a message"),
+            maxLines: 3,
           ),
         ),
       );
@@ -160,7 +162,6 @@ class ChatBotState extends State<ChatBot> {
       widget.state = widget.STATE_OLD_MESSAGE;
       setState(() {});
     }
-
 
     void nudge() async {
       await Future.delayed(Duration(milliseconds: 1));
@@ -194,7 +195,7 @@ class ChatBotState extends State<ChatBot> {
     Widget getSend() {
       return FlatButton(
           onPressed: () {
-            if(!isWaitingForReply) {
+            if (!isWaitingForReply) {
               String user_message = controller.text;
               print(user_message);
               widgets.add(Message(isFromBot: false, mes: controller.text));
@@ -217,7 +218,6 @@ class ChatBotState extends State<ChatBot> {
           child: Icon(Icons.redo));
     }
 
-
     // https://stackoverflow.com/questions/49040679/flutter-how-to-make-a-
     // textfield-with-hinttext-but-no-underline dealing with the underline in
     // textformfield
@@ -225,20 +225,23 @@ class ChatBotState extends State<ChatBot> {
         body: Padding(
             padding: EdgeInsets.only(top: 50),
             child: Stack(children: <Widget>[
-
-              Column(
-                children: <Widget>[
-                  Expanded(child: getListView()),
-                  Row(
-                    children: <Widget>[
-                      getQuit(),
-                      Expanded(child: getMessage()),
-                      getSend()
-                    ],
-                  ),
-                ],
+              Align(
+                child: getQuit(),
+                alignment: Alignment.topRight,
               ),
-
+              Padding(
+                  padding: EdgeInsets.only(top: 25),
+                  child: Column(
+                    children: <Widget>[
+                      Expanded(child: getListView()),
+                      Row(
+                        children: <Widget>[
+                          Expanded(child: getMessage()),
+                          getSend()
+                        ],
+                      ),
+                    ],
+                  )),
             ])));
     nudge();
     return scaff;
@@ -253,7 +256,7 @@ class ChatBotState extends State<ChatBot> {
     waitingForPast = false;
     userInControl = false;
     messageIndex = 0;
-    if(messageIndex < widget.conversation['Questions'].length) {
+    if (messageIndex < widget.conversation['Questions'].length) {
       getNewMessage("");
     }
     isWaitingForReply = false;

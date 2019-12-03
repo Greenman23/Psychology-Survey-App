@@ -17,6 +17,7 @@ import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:steel_crypt/steel_crypt.dart';
 import 'package:flutter_application/encryption_key.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 // This should be moved somewhere else at some point
 //final String URL = "http://ec2-52-91-113-106.compute-1.amazonaws.com:80";
@@ -26,20 +27,29 @@ final String URL = "http://ec2-3-86-232-85.compute-1.amazonaws.com:80";
 // We learned how to create post requests here
 //https://stackoverflow.com/questions/50278258/http-post-with-json-on-body-flutter-dart
 Future<Map<String, dynamic>> getPost(Map body, String addition) async {
-  HttpClient httpClient = new HttpClient();
-  HttpClientRequest r =
-      await httpClient.postUrl(Uri.parse(URL + "/" + addition));
-  r.headers.set('content-type', 'application/json');
-  r.add(utf8.encode(json.encode(body)));
-  HttpClientResponse response = await r.close();
-  String reply = await response.transform(utf8.decoder).join();
-  print(reply);
-  Map<String, dynamic> jsonReply = jsonDecode(reply);
-  httpClient.close();
-  return jsonReply;
+  try {
+    HttpClient httpClient = new HttpClient();
+    HttpClientRequest r =
+    await httpClient.postUrl(Uri.parse(URL + "/" + addition));
+    r.headers.set('content-type', 'application/json');
+    r.add(utf8.encode(json.encode(body)));
+    HttpClientResponse response = await r.close();
+    String reply = await response.transform(utf8.decoder).join();
+    print(reply);
+    Map<String, dynamic> jsonReply = jsonDecode(reply);
+    httpClient.close();
+    return jsonReply;
+  }
+  catch(exc)
+  {
+    Fluttertoast.showToast(msg: "ERROR: Could not connect to server", gravity: ToastGravity.TOP, backgroundColor: Colors.red);
+    return null;
+  }
 }
 
 Future<List<dynamic>> getPostList(Map body, String addition) async {
+  try
+  {
   HttpClient httpClient = new HttpClient();
   HttpClientRequest r =
   await httpClient.postUrl(Uri.parse(URL + "/" + addition));
@@ -51,6 +61,12 @@ Future<List<dynamic>> getPostList(Map body, String addition) async {
   List<dynamic> jsonReply = jsonDecode(reply);
   httpClient.close();
   return jsonReply;
+}
+catch(exc)
+  {
+    Fluttertoast.showToast(msg: "ERROR: Could not connect to server");
+    return null;
+  }
 }
 
 Future<Image> getPicturePost(Map body, String addition) async {
@@ -317,7 +333,7 @@ Future<String> emotionFromProfilePic(Config config) async {
     return profileEmotionMap["emotion"];
   }
   else {
-    return "could not determine emotion from your picture";
+    return "not perceivable";
   }
 }
 void sendGPSLocation(Config config) {
