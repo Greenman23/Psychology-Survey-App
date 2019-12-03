@@ -230,27 +230,38 @@ class Survey_Question_State extends State<Survey_Question> {
 
   Widget build(BuildContext context) {
     return Scaffold(
-        body: Padding(
-          padding: EdgeInsets.only(top: 40),
-            child: Column(
-      children: <Widget>[
-        getText(widget.map['Questions'][widget.index]['Question'],
-            fontSize: 22),
-        Expanded(child: getWidgetByQuestion()),
-        Align(
-            alignment: Alignment.bottomLeft,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                getPaddedButton("Last", () {
+        body: GestureDetector(
+          onHorizontalDragUpdate: (DragUpdateDetails details)
+            {
+                if (details.delta.dx > 15) {
                   Navigator.pop(context);
-                }),
-                getPaddedButton("Next", () {
+                }
+                else if(details.delta.dx < -15){
                   navigateToNext();
-                })
-              ],
-            )),
-      ],
-    )));
+                }
+            },
+
+            child: Padding(
+                padding: EdgeInsets.only(top: 40),
+                child: Column(
+                  children: <Widget>[
+                    getText(widget.map['Questions'][widget.index]['Question'],
+                        fontSize: 22),
+                    Expanded(child: getWidgetByQuestion()),
+                    Align(
+                        alignment: Alignment.bottomLeft,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            getPaddedButton("Last", () {
+                              Navigator.pop(context);
+                            }),
+                            getPaddedButton("Next", () {
+                              navigateToNext();
+                            })
+                          ],
+                        )),
+                  ],
+                ))));
   }
 }
