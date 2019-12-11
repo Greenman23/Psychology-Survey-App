@@ -18,10 +18,10 @@ const conInfo = {
 }
 var __profilePictureDirectory = 'assets/images/profile_images'
 var __defaultImagesDirectory = 'assets/images/default_images'
-// var _botserverURL = 'http://localhost:8080'
-var _botserverURL = 'http://ec2-54-198-29-167.compute-1.amazonaws.com:80'
-// var _chatbotserverURL = 'http://localhost:8090'
-var _chatbotserverURL = 'http://ec2-35-170-201-82.compute-1.amazonaws.com:80'
+var _botserverURL = 'http://localhost:8080'
+// var _botserverURL = 'http://ec2-54-198-29-167.compute-1.amazonaws.com:80'
+var _chatbotserverURL = 'http://localhost:8090'
+// var _chatbotserverURL = 'http://ec2-35-170-201-82.compute-1.amazonaws.com:80'
 var webApp = express()
 webApp.use(express.json())
 
@@ -273,7 +273,6 @@ webApp.post('/userSurveyQuestionHistory', function(request,response){
             }
             if(authentication==1){
                 query.survey_question_history(request.body.username,request.body.password, request.body.SurveyName,connection,function(history){
-                    console.log(history)
                     sendJSON(request,response,history)
                 })
             }

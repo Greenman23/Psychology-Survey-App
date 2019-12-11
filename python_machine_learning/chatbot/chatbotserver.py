@@ -29,4 +29,4 @@ def index():
     response_json = json.loads(resp)
     return response_json
 
-run(app, host='0.0.0.0', port=80, reloader=True, debug=True)
+run(app, host="localhost", port=8090, reloader=True, debug=True)

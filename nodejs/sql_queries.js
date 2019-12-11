@@ -166,7 +166,6 @@ module.exports  = {
                             console.error(error)
                         }
                     })
-                    console.log('Still working')
                 }
             }
         }
@@ -208,7 +207,6 @@ module.exports  = {
             for (let value of Object.values(results[0])) {
                 var date = value.date
                 d2 = new Date(value.date).toLocaleString("en-US", {timeZone: "America/New_York"})
-                console.log(d2)
                 if(value.question!=undefined){
                     if(tempDict.hasOwnProperty(date)){
                         tempDict[date].push({'Question' : value.question, 'Answer' : value.actual_answer })
@@ -226,9 +224,6 @@ module.exports  = {
         if(user!=undefined, pass!=undefined, country!= undefined, state!=undefined, city!=undefined, long!=undefined, lat!=undefined){
             var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
             '","' + city + '","' + long + '","' + lat +  '");'
-            // var sendGPS = 'SELECT insert_locations("' + user + '","' + pass +  '","' + country + '","' + state + 
-            // '","' + city + '");'
-            console.log(sendGPS)
             connection.query(sendGPS, function(error,results,feilds){
                 if(error) console.error(error)
                 else callback({'Process' : 'Compelete'})
@@ -237,7 +232,7 @@ module.exports  = {
         else {
             callback({'Error' : 'Invalid Augments'})
         }
-    },
+    }, 
     get_all_gps_locations: function(connection, callback){
         var allGPS = 'SELECT longitude, latitude FROM USER_LOCATIONS'
         connection.query(allGPS, function(error, results, feilds){
@@ -251,7 +246,6 @@ module.exports  = {
                     }
                     array.push(temp)
                 }
-                console.log(array)
                 callback(array)
             }
         })
