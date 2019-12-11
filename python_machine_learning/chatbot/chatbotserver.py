@@ -1,11 +1,6 @@
 from bottle import Bottle, run, BaseRequest, request
 import json
-import shutil
-import io
-import os 
-from PIL import Image
 from chatbot import Bot
-import base64
 BaseRequest.MEMFILE_MAX = 10240 * 10240
 
 app = Bottle()
