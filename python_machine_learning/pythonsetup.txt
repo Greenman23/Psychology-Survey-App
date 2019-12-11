@@ -1,8 +1,13 @@
+Run this to delete old environment
+
 conda deactivate
 conda remove -y --name Eric --all   
 
-conda create -y --name Eric python=3.7.3
-conda activate Eric
+
+Run this to create new environment
+
+conda create -y --name Julian python=3.7.3
+conda activate Julian
 pip  install  chatterbot
 pip  install  --ignore-installed PyYAML chatterbot_corpus
 pip  install  tensorflow
