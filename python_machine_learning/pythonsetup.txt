@@ -1,0 +1,12 @@
+conda deactivate
+conda remove -y --name Eric --all   
+
+conda create -y --name Eric python=3.7.3
+conda activate Eric
+pip  install  chatterbot
+pip  install  --ignore-installed PyYAML chatterbot_corpus
+pip  install  tensorflow
+pip install opencv-python
+pip install bottle
+pip install keras
+pip install pillow
