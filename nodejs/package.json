@@ -19,7 +19,7 @@
   "dependencies": {
     "async": "^3.1.0",
     "connect-form": "^0.2.1",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "form-data": "^3.0.0",
     "http": "0.0.0",
     "multiparty": "^4.2.1",
